@@ -13,7 +13,7 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "mitalk"
-include ':presentation'
-include ':di'
-include ':data'
-include ':domain'
+include(":presentation")
+include(":di")
+include(":data")
+include(":domain")
