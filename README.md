@@ -1,1 +1,1 @@
-# mitalk-andorid
+# mitalk-android
