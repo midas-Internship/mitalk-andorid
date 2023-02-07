@@ -1,20 +1,20 @@
 import org.gradle.api.JavaVersion
 
 object Version {
-    const val GRADLE_ANDROID = "7.0.4"
-    const val GRADLE_KOTLIN = "1.6.10"
+    const val GRADLE_ANDROID = "7.2.2"
+    const val GRADLE_KOTLIN = "1.7.0"
 
     val JAVA_VERSION = JavaVersion.VERSION_1_8
     const val KOTLINX_COROUTINES = "1.6.0"
 
-    const val COMPILE_SDK_VERSION = 32
-    const val MIN_SDK_VERSION = 26
-    const val TARGET_SDK_VERSION = 32
+    const val COMPILE_SDK_VERSION = 33
+    const val MIN_SDK_VERSION = 28
+    const val TARGET_SDK_VERSION = 33
 
     const val CORE_KTX = "1.5.0"
     const val LIFECYCLE_KTX = "2.4.0-alpha01"
 
-    const val COMPOSE_ACTIVITY = ""
+    const val COMPOSE_ACTIVITY = "1.3.1"
     const val COMPOSE = "1.2.0"
     const val COMPOSE_MATERIAL = "1.2.0"
 
