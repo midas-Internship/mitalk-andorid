@@ -38,6 +38,11 @@ object Dependency {
         const val ROOM_COMPILER = "androidx.room:room-compiler:${Version.ROOM}"
     }
 
+    object Mvi {
+        const val ORBIT_CORE = "org.orbit-mvi:orbit-core:${Version.ORBIT}"
+        const val ORBIT_VIEWMODEL = "org.orbit-mvi:orbit-viewmodel:${Version.ORBIT}"
+        const val ORBIT_TEST = "org.orbit-mvi:orbit-test:${Version.ORBIT}"
+    }
     object Retrofit {
         const val RETROFIT = "com.squareup.retrofit2:retrofit:${Version.RETROFIT}"
         const val RETROFIT_CONVERTER_GSON =

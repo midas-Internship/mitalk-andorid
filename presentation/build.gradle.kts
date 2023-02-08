@@ -79,6 +79,10 @@ dependencies {
 
     testImplementation(Dependency.UnitTest.JUNIT)
 
+    implementation(Dependency.Mvi.ORBIT_CORE)
+    implementation(Dependency.Mvi.ORBIT_VIEWMODEL)
+    testImplementation(Dependency.Mvi.ORBIT_TEST)
+
     androidTestImplementation(Dependency.AndroidTest.ANDROID_JUNIT)
     androidTestImplementation(Dependency.AndroidTest.ESPRESSO_CORE)
     androidTestImplementation(Dependency.AndroidTest.COMPOSE_TEST)

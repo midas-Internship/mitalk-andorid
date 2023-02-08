@@ -22,6 +22,8 @@ object Version {
 
     const val ROOM = "2.4.3"
 
+    const val ORBIT = "4.3.2"
+
     const val RETROFIT = "2.7.1"
     const val OKHTTP = "3.14.9"
 
