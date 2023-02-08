@@ -1,7 +1,7 @@
 name: Android CI
 on:
   pull_request:
-    branches: [ develop ]
+    branches: [ "develop" ]
 
 jobs:
   build:
@@ -31,9 +31,9 @@ jobs:
             ${{runner.os}}-gradle-
 
       - name: Access BASE_URL
-          env:
+        env:
             BASE_URL: ${{ secrets.BASE_URL }}
-          run: echo BASE_URL=\"$BASE_URL\" >> ./local.properties
+        run: echo BASE_URL=\"$BASE_URL\" >> ./local.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -42,4 +42,4 @@ jobs:
         run: ./gradlew ktlintCheck
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew clean assembleRelease
