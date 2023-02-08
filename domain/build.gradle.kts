@@ -38,6 +38,7 @@ dependencies {
     implementation(Dependency.Hilt.HILT_ANDROID_COMPILER)
 
     testImplementation(Dependency.UnitTest.JUNIT)
+    testImplementation(Dependency.UnitTest.MOCKITO_KOTLIN)
 
     androidTestImplementation(Dependency.AndroidTest.ANDROID_JUNIT)
     androidTestImplementation(Dependency.AndroidTest.ESPRESSO_CORE)
