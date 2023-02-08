@@ -18,12 +18,13 @@ object Version {
     const val COMPOSE_ACTIVITY = "1.3.1"
     const val COMPOSE = "1.2.0"
     const val COMPOSE_MATERIAL = "1.2.0"
+    const val HILT_NAV = "1.0.0"
 
     const val HILT = "2.38.1"
 
     const val ROOM = "2.4.3"
 
-    const val ORBIT = "4.3.2"
+    const val ORBIT = "4.5.0"
 
     const val RETROFIT = "2.7.1"
     const val OKHTTP = "3.14.9"

@@ -1,4 +1,4 @@
-package com.example.mitalk.sample.mvi
+package com.example.mitalk.ui.theme.sample.mvi
 
 data class SampleState(
     val clickCount: Int = 0,
