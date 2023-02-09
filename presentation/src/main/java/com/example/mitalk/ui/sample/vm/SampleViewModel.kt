@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.exception.BadRequestException
 import com.example.domain.exception.TooManyRequestsException
 import com.example.domain.sample.SampleUseCase
-import com.example.mitalk.ui.sample.ui.mvi.SampleEffect
-import com.example.mitalk.ui.sample.ui.mvi.SampleState
+import com.example.mitalk.ui.sample.mvi.SampleEffect
+import com.example.mitalk.ui.sample.mvi.SampleState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost

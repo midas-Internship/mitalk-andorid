@@ -1,4 +1,4 @@
-package com.example.mitalk.ui.theme
+package com.example.mitalk.util.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
