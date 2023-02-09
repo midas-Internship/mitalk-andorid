@@ -1,6 +1,5 @@
-package com.example.mitalk.ui.theme.sample.ui
+package com.example.mitalk.ui.sample.ui
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.mitalk.ui.theme.sample.mvi.SampleEffect
-import com.example.mitalk.ui.theme.sample.vm.SampleViewModel
+import com.example.mitalk.ui.sample.ui.mvi.SampleEffect
+import com.example.mitalk.ui.sample.vm.SampleViewModel
 import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.rememberToast
 import kotlinx.coroutines.InternalCoroutinesApi
