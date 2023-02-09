@@ -59,15 +59,15 @@ android {
             "META-INF/ASL2.0",
             "META-INF/gradle/incremental.annotation.processors"
     )
+    hilt {
+        enableAggregatingTask = true
+    }
 }
-
 dependencies {
     implementation(project(":domain"))
     implementation(project(":di"))
-    implementation(project(":data"))
 
     implementation(Dependency.AndroidX.CORE_KTX)
-    implementation(Dependency.AndroidX.LIFECYCLE_VIEWMODEL_KTX)
     implementation(Dependency.AndroidX.LIFECYCLE)
 
     implementation(Dependency.Compose.Activity)
