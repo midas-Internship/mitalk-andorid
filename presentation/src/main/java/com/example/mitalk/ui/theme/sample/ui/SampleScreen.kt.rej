@@ -1,9 +1,0 @@
-diff a/presentation/src/main/java/com/example/mitalk/ui/theme/sample/ui/SampleScreen.kt b/presentation/src/main/java/com/example/mitalk/ui/theme/sample/ui/SampleScreen.kt	(rejected hunks)
-@@ -14,7 +14,6 @@
- import androidx.compose.ui.Modifier
- import androidx.compose.ui.tooling.preview.Preview
- import androidx.compose.ui.unit.dp
--import androidx.hilt.navigation.compose.hiltViewModel
- import com.example.mitalk.ui.theme.sample.mvi.SampleEffect
- import com.example.mitalk.ui.theme.sample.vm.SampleViewModel
- import com.example.mitalk.util.observeWithLifecycle

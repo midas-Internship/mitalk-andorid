@@ -34,8 +34,8 @@ android {
 }
 
 dependencies {
-    implementation(Dependency.Hilt.HILT_ANDROID)
-    implementation(Dependency.Hilt.HILT_ANDROID_COMPILER)
+
+    implementation("javax.inject:javax.inject:1")
 
     testImplementation(Dependency.UnitTest.JUNIT)
     testImplementation(Dependency.UnitTest.MOCKITO_KOTLIN)

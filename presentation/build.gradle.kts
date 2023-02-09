@@ -2,9 +2,9 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 
 plugins {
     id("com.android.application")
-    id("dagger.hilt.android.plugin")
     id("kotlin-android")
     id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -62,8 +62,9 @@ android {
 }
 
 dependencies {
-    implementation (project(":domain"))
-    implementation (project(":di"))
+    implementation(project(":domain"))
+    implementation(project(":di"))
+    implementation(project(":data"))
 
     implementation(Dependency.AndroidX.CORE_KTX)
     implementation(Dependency.AndroidX.LIFECYCLE_VIEWMODEL_KTX)
@@ -73,7 +74,7 @@ dependencies {
     implementation(Dependency.Compose.UI)
     implementation(Dependency.Compose.PREVIEW)
     implementation(Dependency.Compose.MATERIAL)
-    //implementation(Dependency.Compose.COMPOSE_HILT_NAV)
+    implementation(Dependency.Compose.COMPOSE_HILT_NAV)
 
     implementation(Dependency.Kotlin.COROUTINES_CORE)
     implementation(Dependency.Kotlin.COROUTINES_ANDROID)
@@ -86,9 +87,9 @@ dependencies {
 
     testImplementation(Dependency.UnitTest.JUNIT)
 
-//    implementation(Dependency.Mvi.ORBIT_CORE)
-//    implementation(Dependency.Mvi.ORBIT_VIEWMODEL)
-//    testImplementation(Dependency.Mvi.ORBIT_TEST)
+    implementation(Dependency.Mvi.ORBIT_CORE)
+    implementation(Dependency.Mvi.ORBIT_VIEWMODEL)
+    implementation(Dependency.Mvi.ORBIT_TEST)
 
     androidTestImplementation(Dependency.AndroidTest.ANDROID_JUNIT)
     androidTestImplementation(Dependency.AndroidTest.ESPRESSO_CORE)
@@ -97,4 +98,5 @@ dependencies {
     debugImplementation(Dependency.AndroidTest.COMPOSE_MANIFEST)
 
     implementation(Dependency.Coil.COIL)
+
 }

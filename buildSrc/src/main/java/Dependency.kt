@@ -18,7 +18,7 @@ object Dependency {
     object AndroidX {
         const val CORE_KTX = "androidx.core:core-ktx:${Version.CORE_KTX}"
         const val LIFECYCLE_VIEWMODEL_KTX =
-            "androidx.lifecycle:lifecycle-viewmodel-ktx:${Version.LIFECYCLE_KTX}"
+            "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
         const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:${Version.LIFECYCLE_KTX}"
 }
 

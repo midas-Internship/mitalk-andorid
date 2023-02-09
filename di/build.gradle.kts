@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-android")
     id("kotlin-kapt")
 }
 
@@ -34,12 +35,12 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(project(":domain"))
 
     implementation(Dependency.Hilt.HILT_ANDROID)
-    implementation(Dependency.Hilt.HILT_ANDROID_COMPILER)
-    
+    kapt(Dependency.Hilt.HILT_ANDROID_COMPILER)
+
     implementation(Dependency.Room.ROOM)
     kapt(Dependency.Room.ROOM_COMPILER)
 

@@ -15,34 +15,33 @@ import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 
+
 import javax.inject.Inject
 
 @HiltViewModel
 class SampleViewModel @Inject constructor(
     private val sampleUseCase: SampleUseCase,
-) : ViewModel() {
+) :  ContainerHost<SampleState, SampleEffect>, ViewModel() {
 
-//    ContainerHost<SampleState, SampleEffect>,
-//
-//    override val container =  container<SampleState, SampleEffect>(SampleState())
-//
-//    fun checkCount(clickCount: Int) = intent {
-//        viewModelScope.launch {
-//            sampleUseCase(
-//                clickCount = clickCount,
-//            ).onSuccess {
-//                reduce { state.copy(returnCount = it.returnCount) }
-//            }.onFailure {
-//                when (it) {
-//                    is BadRequestException -> postSideEffect(SampleEffect.CannotCountClickCount)
-//                    is TooManyRequestsException -> postSideEffect(SampleEffect.TooManyClickCount)
-//                    else -> postSideEffect(SampleEffect.UnknownException)
-//                }
-//            }
-//        }
-//    }
-//
-//    fun inputClickCount(data: Int) = intent {
-//        reduce { state.copy(clickCount = data + 1) }
-//    }
+    override val container =  container<SampleState, SampleEffect>(SampleState())
+
+    fun checkCount(clickCount: Int) = intent {
+        viewModelScope.launch {
+            sampleUseCase(
+                clickCount = clickCount,
+            ).onSuccess {
+                reduce { state.copy(returnCount = it.returnCount) }
+            }.onFailure {
+                when (it) {
+                    is BadRequestException -> postSideEffect(SampleEffect.CannotCountClickCount)
+                    is TooManyRequestsException -> postSideEffect(SampleEffect.TooManyClickCount)
+                    else -> postSideEffect(SampleEffect.UnknownException)
+                }
+            }
+        }
+    }
+
+    fun inputClickCount(data: Int) = intent {
+        reduce { state.copy(clickCount = data + 1) }
+    }
 }

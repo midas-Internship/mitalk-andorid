@@ -20,7 +20,7 @@ object Version {
     const val COMPOSE_MATERIAL = "1.2.0"
     const val HILT_NAV = "1.0.0"
 
-    const val HILT = "2.38.1"
+    const val HILT = "2.39"
 
     const val ROOM = "2.4.3"
 
