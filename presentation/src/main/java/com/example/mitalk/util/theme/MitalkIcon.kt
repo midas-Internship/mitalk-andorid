@@ -19,8 +19,14 @@ class MitalkIcon private constructor(
 
         @Stable
         val Google_Icon = MitalkIcon(
-            drawableId = R.drawable.img_google,
+            drawableId = R.drawable.icon_google,
             contentDescription = "google icon",
+        )
+
+        @Stable
+        val Comma = MitalkIcon(
+            drawableId = R.drawable.comma,
+            contentDescription = "comma",
         )
     }
 }
