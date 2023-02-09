@@ -1,4 +1,4 @@
-package com.example.mitalk.util.theme
+package com.example.mitalk.util.theme.base
 
 import androidx.compose.ui.graphics.Color
 
