@@ -18,7 +18,7 @@ object Dependency {
     object AndroidX {
         const val CORE_KTX = "androidx.core:core-ktx:${Version.CORE_KTX}"
         const val LIFECYCLE_VIEWMODEL_KTX =
-            "androidx.lifecycle:lifecycle-viewmodel-ktx:${Version.LIFECYCLE_KTX}"
+            "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
         const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:${Version.LIFECYCLE_KTX}"
 }
 
@@ -27,6 +27,7 @@ object Dependency {
         const val UI = "androidx.compose.ui:ui:${Version.COMPOSE}"
         const val PREVIEW = "androidx.compose.ui:ui-tooling-preview:${Version.COMPOSE}"
         const val MATERIAL = "androidx.compose.material:material:${Version.COMPOSE_MATERIAL}"
+        const val COMPOSE_HILT_NAV = "androidx.hilt:hilt-navigation-compose:${Version.HILT_NAV}"
     }
 
     object Hilt {
@@ -39,6 +40,11 @@ object Dependency {
         const val ROOM_COMPILER = "androidx.room:room-compiler:${Version.ROOM}"
     }
 
+    object Mvi {
+        const val ORBIT_CORE = "org.orbit-mvi:orbit-core:${Version.ORBIT}"
+        const val ORBIT_VIEWMODEL = "org.orbit-mvi:orbit-viewmodel:${Version.ORBIT}"
+        const val ORBIT_TEST = "org.orbit-mvi:orbit-test:${Version.ORBIT}"
+    }
     object Retrofit {
         const val RETROFIT = "com.squareup.retrofit2:retrofit:${Version.RETROFIT}"
         const val RETROFIT_CONVERTER_GSON =

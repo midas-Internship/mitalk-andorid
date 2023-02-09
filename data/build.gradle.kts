@@ -1,7 +1,6 @@
 plugins {
-    id("org.jetbrains.kotlin.android")
-    id("dagger.hilt.android.plugin")
     id("com.android.library")
+    id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
 }
 
@@ -37,8 +36,7 @@ android {
 dependencies {
     implementation(project(":domain"))
 
-    implementation(Dependency.Hilt.HILT_ANDROID)
-    kapt(Dependency.Hilt.HILT_ANDROID_COMPILER)
+    implementation("javax.inject:javax.inject:1")
 
     implementation(Dependency.Room.ROOM)
     kapt(Dependency.Room.ROOM_COMPILER)
