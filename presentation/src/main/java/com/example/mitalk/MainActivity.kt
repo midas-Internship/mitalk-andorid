@@ -10,8 +10,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.mitalk.ui.theme.sample.ui.SampleScreen
-import com.example.mitalk.ui.theme.MitalkTheme
+import com.example.mitalk.ui.sample.ui.SampleScreen
+import com.example.mitalk.util.theme.MitalkTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

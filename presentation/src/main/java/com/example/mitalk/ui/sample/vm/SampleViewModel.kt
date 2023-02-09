@@ -1,12 +1,12 @@
-package com.example.mitalk.ui.theme.sample.vm
+package com.example.mitalk.ui.sample.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exception.BadRequestException
 import com.example.domain.exception.TooManyRequestsException
 import com.example.domain.sample.SampleUseCase
-import com.example.mitalk.ui.theme.sample.mvi.SampleEffect
-import com.example.mitalk.ui.theme.sample.mvi.SampleState
+import com.example.mitalk.ui.sample.mvi.SampleEffect
+import com.example.mitalk.ui.sample.mvi.SampleState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost

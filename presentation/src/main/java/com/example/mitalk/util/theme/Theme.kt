@@ -1,4 +1,4 @@
-package com.example.mitalk.ui.theme
+package com.example.mitalk.util.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
