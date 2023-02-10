@@ -4,6 +4,8 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.runtime.*
@@ -23,6 +25,17 @@ import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.*
 
+data class QuestionDataSample(
+    val question: String,
+    val answer: String,
+)
+
+private val questionListSample = listOf(
+    QuestionDataSample("질문", "답변"),
+    QuestionDataSample("ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ", "ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ"),
+    QuestionDataSample("질문", "답변"),
+)
+
 @Composable
 fun QuestionScreen(
     navController: NavController,
@@ -35,7 +48,13 @@ fun QuestionScreen(
         
         Spacer(modifier = Modifier.height(19.dp))
 
-        QuestionContent(question = "질문", answer = "답변")
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(13.dp)
+        ) {
+            items(questionListSample) {
+                QuestionContent(question = it.question, answer = it.answer)
+            }
+        }
     }
 }
 
@@ -92,7 +111,10 @@ private fun QuestionContent(
 
             Spacer(modifier = Modifier.width(6.dp))
             
-            Medium13NO(text = question)
+            Medium13NO(
+                text = question,
+                modifier = Modifier.width(280.dp)
+            )
 
            SeeAnswerIcon(rotateValue = rotateValue)
         }
