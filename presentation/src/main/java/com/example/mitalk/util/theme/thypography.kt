@@ -1,5 +1,6 @@
 package com.example.mitalk.util.theme
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -10,6 +11,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mitalk.R
 
@@ -49,6 +51,20 @@ object MiTalkTypography {
         fontFamily = notoSansKR,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
+    )
+
+    @Stable
+    val bold11NO = TextStyle(
+        fontFamily = notoSansKR,
+        fontWeight = FontWeight.Bold,
+        fontSize = 11.sp
+    )
+
+    @Stable
+    val bold20NO = TextStyle(
+        fontFamily = notoSansKR,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
     )
 
     @Stable
@@ -102,6 +118,37 @@ fun Regular14NO(
         modifier = modifier,
         text = text,
         style = MiTalkTypography.regular14NO,
+        color = color,
+        textAlign = textAlign,
+    )
+}
+
+@Composable
+fun Bold11NO(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = MitalkColor.Black,
+    textAlign: TextAlign = TextAlign.Start,
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = MiTalkTypography.bold11NO,
+        color = color,
+        textAlign = textAlign,
+    )
+}
+@Composable
+fun Bold20NO(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = MitalkColor.Black,
+    textAlign: TextAlign = TextAlign.Start,
+) {
+    Text(
+        modifier = modifier.padding(0.dp),
+        text = text,
+        style = MiTalkTypography.bold20NO,
         color = color,
         textAlign = textAlign,
     )
