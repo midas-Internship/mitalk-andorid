@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -45,6 +44,13 @@ object MiTalkTypography {
         fontFamily = notoSansKR,
         fontWeight = FontWeight.Medium,
         fontSize = 13.sp,
+    )
+
+    @Stable
+    val regular7No = TextStyle(
+        fontFamily = notoSansKR,
+        fontWeight = FontWeight.Normal,
+        fontSize = 7.sp
     )
 
     @Stable
@@ -123,6 +129,21 @@ fun Medium13NO(
     )
 }
 
+@Composable
+fun Regular7NO(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = MitalkColor.Black,
+    textAlign: TextAlign = TextAlign.Start,
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = MiTalkTypography.regular7No,
+        color = color,
+        textAlign = textAlign,
+    )
+}
 @Composable
 fun Regular12NO(
     modifier: Modifier = Modifier,
