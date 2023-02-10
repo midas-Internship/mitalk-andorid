@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -14,13 +15,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.MitalkIcon
 import com.example.mitalk.util.theme.Regular14NO
+import com.example.mitalk.R
 
 @Composable
 fun MiHeader(
     navController: NavController,
     modifier: Modifier = Modifier,
     backPressed: Boolean = true,
-    btnText: String = "메인",
+    btnText: String = stringResource(id = R.string.main),
     text: String? = null,
     content: (@Composable () -> Unit)? = null,
 ) {
