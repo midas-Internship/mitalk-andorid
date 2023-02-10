@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.R
 import com.example.mitalk.ui.util.MiHeader
+import com.example.mitalk.util.theme.MitalkColor
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.MitalkColor
 import com.example.mitalk.util.theme.MitalkIcon
