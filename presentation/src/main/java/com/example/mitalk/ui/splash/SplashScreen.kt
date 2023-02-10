@@ -16,6 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.Medium21GM
 import com.example.mitalk.util.theme.MitalkColor
@@ -26,7 +29,9 @@ import com.example.mitalk.util.theme.Regular12NO
 private val BtnShape = RoundedCornerShape(8.dp)
 
 @Composable
-fun SplashScreen() {
+fun SplashScreen(
+    navController: NavController,
+) {
     Column {
         Spacer(modifier = Modifier.height(93.dp))
 
@@ -70,10 +75,18 @@ fun SplashScreen() {
                     shape = BtnShape,
                     color = Color(0xFFA69E9E)
                 )
-                .miClickable { },
+                .miClickable {
+                    navController.navigate(AppNavigationItem.Main.route) {
+                        popUpTo(AppNavigationItem.Splash.route) {
+                            inclusive = true
+                        }
+                    }
+                },
             contentAlignment = Alignment.Center,
         ) {
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                Image(
                    painter = painterResource(id = MitalkIcon.Google_Icon.drawableId),
                    contentDescription = MitalkIcon.Google_Icon.contentDescription,
@@ -104,5 +117,6 @@ fun CommaAboveText(text: String) {
 @Composable
 @Preview(showBackground = true)
 fun ShowSplashScreen() {
-    SplashScreen()
+    val navController = rememberNavController()
+    SplashScreen(navController)
 }
