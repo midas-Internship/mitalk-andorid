@@ -47,7 +47,7 @@ fun Modifier.miClickable(
     }
 }
 
-fun Modifier.simSelectable(
+fun Modifier.miSelectable(
     selected: Boolean,
     rippleEnabled: Boolean = true,
     rippleColor: Color? = null,
