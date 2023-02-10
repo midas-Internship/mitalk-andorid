@@ -1,5 +1,6 @@
 package com.example.mitalk.ui.main
 
+import android.view.ViewDebug.CapturedViewProperty
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,23 +12,22 @@ import androidx.compose.material.IconButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.example.mitalk.util.theme.Bold13NO
-import com.example.mitalk.util.theme.Light13NO
-import com.example.mitalk.util.theme.MitalkColor
-import com.example.mitalk.util.theme.MitalkIcon
 import com.example.mitalk.R
 import com.example.mitalk.util.miClickable
+import com.example.mitalk.util.theme.*
 
 @Composable
 fun EvaluationDialog(
     name: String,
     visible: Boolean,
     onDismissRequest: () -> Unit,
-    onBtnPressed: (Int, String, String) -> Unit,
+    onBtnPressed: (Int, String?, String?) -> Unit,
 ) {
     var starCount by remember { mutableStateOf(5) }
 
@@ -51,6 +51,11 @@ fun EvaluationDialog(
                 Spacer(modifier = Modifier.height(8.dp))
                 DialogStar(starCount = starCount, onStarPressed = { starCount = it })
                 Spacer(modifier = Modifier.height(8.dp))
+                DialogWhatLike(starCount = starCount)
+                Spacer(modifier = Modifier.height(9.dp))
+                Spacer(modifier = Modifier.height(42.dp))
+                Spacer(modifier = Modifier.height(5.dp))
+                DialogBtn(starCount = starCount, onBtnPressed = onBtnPressed)
             }
         }
     }
@@ -134,5 +139,41 @@ fun DialogStar(
 fun DialogWhatLike(
     starCount: Int,
 ) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentWidth(align = Alignment.CenterHorizontally),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Bold08NO(text = stringResource(id = R.string.what_like_counselor))
+        Regular06NO(text = " ( "+((5-starCount) * 25).toString()+" )")
+    }
+}
 
+@Stable
+private val BtnShape = RoundedCornerShape(2.dp)
+@Composable
+fun DialogBtn(
+    starCount: Int,
+    onBtnPressed: (Int, String?, String?) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentWidth(Alignment.CenterHorizontally)
+            .width(125.dp)
+            .height(25.dp)
+            .background(
+                color = Color(0xFFFFDC64),
+                shape = BtnShape
+            )
+            .clip(shape = BtnShape)
+            .miClickable {
+                onBtnPressed((5 - starCount) * 25, null, null)
+            },
+        contentAlignment = Alignment.Center,
+    ) {
+        Bold08NO(text = stringResource(id = R.string.submit))
+    }
 }

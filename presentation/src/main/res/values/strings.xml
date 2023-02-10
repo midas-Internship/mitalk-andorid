@@ -41,4 +41,7 @@
 
     <!--evaluation dialog-->
     <string name="how_was_counselor">상담사님은 어떠셨나요?</string>
+    <string name="what_like_counselor">어떤 점이 좋았나요?</string>
+    <string name="submit">제출</string>
+    
 </resources>
