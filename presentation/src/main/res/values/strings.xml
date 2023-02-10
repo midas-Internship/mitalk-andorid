@@ -38,4 +38,7 @@
     <string name="alliance_inquiry_comment">제품구매 문의, 이벤트 문의 등</string>
 
     <string name="etc">기타</string>
+
+    <!--evaluation dialog-->
+    <string name="how_was_counselor">상담사님은 어떠셨나요?</string>
 </resources>
