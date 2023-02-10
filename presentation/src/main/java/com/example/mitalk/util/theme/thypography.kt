@@ -1,5 +1,6 @@
 package com.example.mitalk.util.theme
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -10,6 +11,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mitalk.R
 
@@ -96,6 +98,21 @@ object MiTalkTypography {
 }
 
 @Composable
+fun Regular7NO(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = MitalkColor.Black,
+    textAlign: TextAlign = TextAlign.Start,
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = MiTalkTypography.regular7No,
+        color = color,
+        textAlign = textAlign,
+    )
+}
+@Composable
 fun Light09NO(
     modifier: Modifier = Modifier,
     text: String,
@@ -127,21 +144,6 @@ fun Medium13NO(
     )
 }
 
-@Composable
-fun Regular7NO(
-    modifier: Modifier = Modifier,
-    text: String,
-    color: Color = MitalkColor.Black,
-    textAlign: TextAlign = TextAlign.Start,
-) {
-    Text(
-        modifier = modifier,
-        text = text,
-        style = MiTalkTypography.regular7No,
-        color = color,
-        textAlign = textAlign,
-    )
-}
 @Composable
 fun Regular12NO(
     modifier: Modifier = Modifier,
