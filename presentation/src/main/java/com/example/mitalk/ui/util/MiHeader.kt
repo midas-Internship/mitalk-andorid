@@ -20,14 +20,14 @@ fun MiHeader(
     navController: NavController,
     modifier: Modifier = Modifier,
     backPressed: Boolean = true,
-    content: (@Composable () -> Unit)? = null,
     btnText: String = "메인",
-    text: String? = null
+    text: String? = null,
+    content: (@Composable () -> Unit)? = null,
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(36.dp)
+            .height(56.dp)
             .bottomBorder(
                 strokeWidth = 1.dp,
                 color = Color(0xFFD8D8D8),
@@ -59,9 +59,7 @@ fun MiHeader(
         }
 
         if (content != null) {
-            Box(modifier = Modifier.fillMaxSize()){
-                content()
-            }
+            content()
         }
 
         if (text != null) {
