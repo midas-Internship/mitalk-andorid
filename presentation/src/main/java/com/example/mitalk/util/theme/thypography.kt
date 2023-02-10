@@ -31,6 +31,13 @@ internal val gmartketSans = FontFamily(
 object MiTalkTypography {
 
     @Stable
+    val regular7No = TextStyle(
+        fontFamily = notoSansKR,
+        fontWeight = FontWeight.Normal,
+        fontSize = 7.sp
+    )
+
+    @Stable
     val regular12NO = TextStyle(
         fontFamily = notoSansKR,
         fontWeight = FontWeight.Normal,
@@ -53,6 +60,21 @@ object MiTalkTypography {
 
 }
 
+@Composable
+fun Regular7NO(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = MitalkColor.Black,
+    textAlign: TextAlign = TextAlign.Start,
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = MiTalkTypography.regular7No,
+        color = color,
+        textAlign = textAlign,
+    )
+}
 @Composable
 fun Regular12NO(
     modifier: Modifier = Modifier,
