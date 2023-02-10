@@ -34,5 +34,35 @@ class MitalkIcon private constructor(
             drawableId = R.drawable.back,
             contentDescription = "back",
         )
+
+        @Stable
+        val Logo = MitalkIcon(
+            drawableId = R.drawable.img_logo,
+            contentDescription = "logo",
+        )
+
+        @Stable
+        val Counselor_Img = MitalkIcon(
+            drawableId = R.drawable.img_counselor,
+            contentDescription = "counselor",
+        )
+
+        @Stable
+        val Record_Img = MitalkIcon(
+            drawableId = R.drawable.img_record,
+            contentDescription = "record",
+        )
+
+        @Stable
+        val Question_Img = MitalkIcon(
+            drawableId = R.drawable.img_question,
+            contentDescription = "question"
+        )
+
+        @Stable
+        val Bulb_Img = MitalkIcon(
+            drawableId = R.drawable.img_bulb,
+            contentDescription = "bulb"
+        )
     }
 }
