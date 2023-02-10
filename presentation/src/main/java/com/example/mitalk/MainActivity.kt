@@ -3,10 +3,14 @@ package com.example.mitalk
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.mitalk.ui.main.MainScreen
+import com.example.mitalk.ui.question.QuestionScreen
 import com.example.mitalk.ui.sample.ui.SampleScreen
+import com.example.mitalk.ui.splash.SplashScreen
 import com.example.mitalk.util.theme.base.MitalkTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -16,21 +20,35 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MitalkTheme {
-               SampleScreen()
+               BaseApp()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+fun BaseApp() {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
+        composable(AppNavigationItem.Splash.route) {
+            SplashScreen(navController = navController)
+        }
+
+        composable(AppNavigationItem.Main.route) {
+            MainScreen(navController = navController)
+        }
+
+        composable(AppNavigationItem.Question.route) {
+            QuestionScreen(navController = navController)
+        }
+    }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MitalkTheme {
-        Greeting("Android")
-    }
+sealed class AppNavigationItem(val route: String) {
+    object Splash : AppNavigationItem("Splash")
+
+    object Main : AppNavigationItem("Main")
+
+    object Question : AppNavigationItem("Question")
 }
