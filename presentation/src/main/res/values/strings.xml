@@ -10,10 +10,10 @@
 
     <string name="counselor_connect_again">상담사 재연결|</string>
     <string name="counselor_connect_again_comment">상담사와 상담중입니다!</string>
-    
+
     <string name="record_open">상담 기록 열람</string>
     <string name="record_open_comment">과거에 했던 상담을 다시 열람합니다.</string>
-    
+
     <string name="question_many">자주 묻는 질문</string>
     <string name="question_many_comment">사람들이 자주 묻는 질문입니다.</string>
 
