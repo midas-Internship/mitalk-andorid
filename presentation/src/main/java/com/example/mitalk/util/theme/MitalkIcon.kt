@@ -106,5 +106,17 @@ class MitalkIcon private constructor(
             drawableId = R.drawable.img_etc,
             contentDescription = "etc"
         )
+
+        @Stable
+        val Star_On = MitalkIcon(
+            drawableId = R.drawable.img_star_on,
+            contentDescription = "star on"
+        )
+
+        @Stable
+        val Star_Off = MitalkIcon(
+            drawableId = R.drawable.img_star_off,
+            contentDescription = "star off"
+        )
     }
 }

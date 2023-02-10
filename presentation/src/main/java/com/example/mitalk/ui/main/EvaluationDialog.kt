@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -21,6 +20,7 @@ import com.example.mitalk.util.theme.Light13NO
 import com.example.mitalk.util.theme.MitalkColor
 import com.example.mitalk.util.theme.MitalkIcon
 import com.example.mitalk.R
+import com.example.mitalk.util.miClickable
 
 @Composable
 fun EvaluationDialog(
@@ -102,12 +102,37 @@ fun DialogStar(
             .fillMaxWidth()
             .wrapContentWidth(align = Alignment.CenterHorizontally),
     ) {
-        items(listOf(1,2,3,4,5)) {
+        items(listOf(5,4,3,2,1)) {
             if(starCount <= it) {
-                Image(painter = , contentDescription = )
+                Image(
+                    painter = painterResource(id = MitalkIcon.Star_On.drawableId),
+                    contentDescription = MitalkIcon.Star_On.contentDescription,
+                    modifier = Modifier
+                        .miClickable(
+                            rippleEnabled = false
+                        ) {
+                            onStarPressed(it)
+                        }
+                )
             } else {
-                Image(painter = , contentDescription = )
+                Image(
+                    painter = painterResource(id = MitalkIcon.Star_Off.drawableId),
+                    contentDescription = MitalkIcon.Star_On.contentDescription,
+                    modifier = Modifier
+                        .miClickable(
+                            rippleEnabled = false
+                        ) {
+                            onStarPressed(it)
+                        }
+                )
             }
         }
     }
+}
+
+@Composable
+fun DialogWhatLike(
+    starCount: Int,
+) {
+
 }
