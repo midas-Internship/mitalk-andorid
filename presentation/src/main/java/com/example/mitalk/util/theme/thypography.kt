@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -33,6 +34,20 @@ internal val gmartketSans = FontFamily(
 object MiTalkTypography {
 
     @Stable
+    val light09NO = TextStyle(
+        fontFamily = notoSansKR,
+        fontWeight = FontWeight.Light,
+        fontSize = 9.sp
+    )
+
+    @Stable
+    val medium13NO = TextStyle(
+        fontFamily = notoSansKR,
+        fontWeight = FontWeight.Medium,
+        fontSize = 13.sp,
+    )
+
+    @Stable
     val regular12NO = TextStyle(
         fontFamily = notoSansKR,
         fontWeight = FontWeight.Normal,
@@ -54,6 +69,13 @@ object MiTalkTypography {
     )
 
     @Stable
+    val bold13NO = TextStyle(
+        fontFamily = notoSansKR,
+        fontWeight = FontWeight.Bold,
+        fontSize = 13.sp,
+    )
+
+    @Stable
     val bold20NO = TextStyle(
         fontFamily = notoSansKR,
         fontWeight = FontWeight.Bold,
@@ -67,6 +89,38 @@ object MiTalkTypography {
         fontSize = 21.sp,
     )
 
+}
+
+@Composable
+fun Light09NO(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = MitalkColor.Black,
+    textAlign: TextAlign = TextAlign.Start
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = MiTalkTypography.light09NO,
+        color = color,
+        textAlign = textAlign,
+    )
+}
+
+@Composable
+fun Medium13NO(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = MitalkColor.Black,
+    textAlign: TextAlign = TextAlign.Start,
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = MiTalkTypography.medium13NO,
+        color = color,
+        textAlign = textAlign,
+    )
 }
 
 @Composable
@@ -116,6 +170,23 @@ fun Bold11NO(
         textAlign = textAlign,
     )
 }
+
+@Composable
+fun Bold13NO(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = MitalkColor.Black,
+    textAlign: TextAlign = TextAlign.Start,
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = MiTalkTypography.bold13NO,
+        color = color,
+        textAlign = textAlign,
+    )
+}
+
 @Composable
 fun Bold20NO(
     modifier: Modifier = Modifier,
