@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.R
@@ -125,7 +126,9 @@ fun MainScreen(
             backgroundColor = MitalkColor.MainBrown,
             icon = painterResource(id = MitalkIcon.Question_Img.drawableId)
         ) {
-
+            navController.navigate(
+                route = AppNavigationItem.Question.route
+            )
         }
     }
 }
