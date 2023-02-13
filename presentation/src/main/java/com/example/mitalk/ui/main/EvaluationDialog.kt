@@ -29,7 +29,7 @@ fun EvaluationDialog(
     onDismissRequest: () -> Unit,
     onBtnPressed: (Int, String?, String?) -> Unit,
 ) {
-    var starCount by remember { mutableStateOf(5) }
+    var starCount by remember { mutableStateOf(1) }
 
     if (visible) {
         Dialog(
@@ -54,6 +54,7 @@ fun EvaluationDialog(
                 DialogWhatLike(starCount = starCount)
                 Spacer(modifier = Modifier.height(9.dp))
                 Spacer(modifier = Modifier.height(42.dp))
+
                 Spacer(modifier = Modifier.height(5.dp))
                 DialogBtn(starCount = starCount, onBtnPressed = onBtnPressed)
             }
@@ -139,15 +140,24 @@ fun DialogStar(
 fun DialogWhatLike(
     starCount: Int,
 ) {
+    val text =
+        if ((5 - starCount) < 2) stringResource(id = R.string.what_bad_counselor)
+        else stringResource(id = R.string.what_like_counselor)
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentWidth(align = Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Bold08NO(text = stringResource(id = R.string.what_like_counselor))
+        Bold08NO(text = text)
         Regular06NO(text = " ( "+((5-starCount) * 25).toString()+" )")
     }
+}
+
+@Composable
+fun DialogEditText() {
+
 }
 
 @Stable
@@ -156,7 +166,6 @@ private val BtnShape = RoundedCornerShape(2.dp)
 fun DialogBtn(
     starCount: Int,
     onBtnPressed: (Int, String?, String?) -> Unit,
-    onDismissRequest: () -> Unit
 ) {
     Box(
         modifier = Modifier
