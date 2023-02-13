@@ -23,6 +23,11 @@ android {
             "BASE_URL",
             gradleLocalProperties(rootDir).getProperty("BASE_URL")
         )
+        buildConfigField(
+            "String",
+            "CLIENT_ID",
+            gradleLocalProperties(rootDir).getProperty("CLIENT_ID")
+        )
     }
 
     buildTypes {
@@ -99,4 +104,5 @@ dependencies {
 
     implementation(Dependency.Coil.COIL)
 
+    implementation(Dependency.Google.OAUTH)
 }

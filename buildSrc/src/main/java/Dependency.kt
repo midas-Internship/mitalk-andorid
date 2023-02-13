@@ -70,4 +70,8 @@ object Dependency {
     object Coil {
         const val COIL = "io.coil-kt:coil:${Version.COIL}"
     }
+
+    object Google {
+        const val OAUTH = "com.google.android.gms:play-services-auth:${Version.OAUTH}"
+    }
 }
