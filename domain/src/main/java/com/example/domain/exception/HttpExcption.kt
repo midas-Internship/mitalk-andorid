@@ -70,3 +70,30 @@ class OtherHttpException(
 class UnknownException(
     override val message: String?,
 ) : RuntimeException()
+
+class NoInternetException : RuntimeException() {
+    override val message: String
+        get() = "네트워크가 불안정합니다. 데이터나 와이파이 연결 상태를 확인해주세요."
+}
+
+/**
+ * 인터넷이 없을 경우 발생하는 RuntimeException
+ */
+class NoConnectivityException : RuntimeException() {
+    override val message: String
+        get() = "네트워크가 불안정합니다. 데이터나 와이파이 연결 상태를 확인해주세요."
+}
+
+class NeedLoginException : RuntimeException() {
+    override val message: String
+        get() = "토큰이 만료되어 로그인이 필요합니다"
+}
+
+/**
+ * RefreshToken 이 존재하지 않아 발생하는 Exception
+ */
+class RefreshTokenNotFound : RuntimeException() {
+    override val message: String
+        get() = "토큰이 존재하지 않습니다 로그인이 필요합니다."
+}
+
