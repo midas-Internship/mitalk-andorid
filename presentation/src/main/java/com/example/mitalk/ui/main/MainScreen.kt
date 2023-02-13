@@ -4,8 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,7 +35,8 @@ fun MainScreen(
     val counselorComment =
         if (callCheck) stringResource(id = R.string.counselor_connect_again_comment)
         else stringResource(id = R.string.counselor_connect_comment)
-        
+
+    var dialogVisible by remember { mutableStateOf(true) }
 
     Column {
         MiHeader(
@@ -107,6 +107,15 @@ fun MainScreen(
         ) {
 
         }
+
+        EvaluationDialog(
+            name = "백승민",
+            visible = dialogVisible,
+            onDismissRequest = {
+                dialogVisible = !dialogVisible
+            },
+            onBtnPressed = { _,_,_ -> }
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
         
