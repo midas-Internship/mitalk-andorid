@@ -1,5 +1,7 @@
 package com.example.mitalk.ui.chat
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -24,6 +27,7 @@ import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.Bold11NO
 import com.example.mitalk.util.theme.MiTalkTypography
+import com.example.mitalk.util.theme.MitalkColor
 import com.example.mitalk.util.theme.MitalkIcon
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -91,30 +95,38 @@ fun ChatInput(
 ) {
     var isExpand by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("") }
-
+    var targetValue by remember { mutableStateOf(0F) }
+    val rotateValue: Float by animateFloatAsState(
+        targetValue = targetValue,
+        tween(300)
+    )
     Row(
         modifier = Modifier
             .height(40.dp)
             .fillMaxWidth()
     ) {
         Spacer(modifier = Modifier.width(7.dp))
+        IconButton(icon = MitalkIcon.Plus, modifier = Modifier.rotate(rotateValue), onClick = {
+            isExpand = !isExpand
+            targetValue = if (isExpand) {
+                45F
+            } else {
+                0F
+            }
+        })
         if (isExpand) {
-            IconButton(icon = MitalkIcon.Cancel) {
-                isExpand = false
-            }
             Spacer(modifier = Modifier.width(5.dp))
-            IconButton(icon = MitalkIcon.Picture) {
-            }
+            IconButton(icon = MitalkIcon.Picture, onClick = {
+
+            })
             Spacer(modifier = Modifier.width(5.dp))
-            IconButton(icon = MitalkIcon.Video) {
-            }
+            IconButton(icon = MitalkIcon.Video, onClick = {
+
+            })
             Spacer(modifier = Modifier.width(5.dp))
-            IconButton(icon = MitalkIcon.Document) {
-            }
-        } else {
-            IconButton(icon = MitalkIcon.Plus) {
-                isExpand = true
-            }
+            IconButton(icon = MitalkIcon.Document, onClick = {
+
+            })
         }
         Spacer(modifier = Modifier.width(5.dp))
         TextField(
@@ -126,29 +138,32 @@ fun ChatInput(
                 .background(Color.White),
             textStyle = MiTalkTypography.regular12NO
         )
-        IconButton(icon = MitalkIcon.Send) {
+        IconButton(icon = MitalkIcon.Send, onClick = {
             if (!text.isNullOrBlank()) {
                 sendAction(text)
             }
             text = ""
-        }
+        })
     }
 }
 
 @Composable
 fun IconButton(
     icon: MitalkIcon,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Box(modifier = Modifier.width(20.dp)) {
+    Box(modifier = Modifier
+        .width(20.dp)
+        .miClickable(rippleEnabled = false) {
+            onClick()
+        }) {
         Icon(
             painter = painterResource(id = icon.drawableId),
             contentDescription = icon.contentDescription,
-            modifier = Modifier
+            tint = MitalkColor.MainBlue,
+            modifier = modifier
                 .fillMaxHeight()
-                .miClickable {
-                    onClick()
-                }
         )
     }
 }
