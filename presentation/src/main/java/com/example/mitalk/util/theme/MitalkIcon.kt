@@ -84,6 +84,12 @@ class MitalkIcon private constructor(
         )
 
         @Stable
+        val Counselor = MitalkIcon(
+            drawableId = R.drawable.ic_counselor,
+            contentDescription = "counselor"
+        )
+
+        @Stable
         val Counselor_Img = MitalkIcon(
             drawableId = R.drawable.img_counselor,
             contentDescription = "counselor",
