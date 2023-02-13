@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -15,9 +16,9 @@ import com.example.mitalk.ui.main.MainScreen
 import com.example.mitalk.ui.question.QuestionScreen
 import com.example.mitalk.ui.record.RecordDetailScreen
 import com.example.mitalk.ui.record.RecordScreen
-import com.example.mitalk.ui.sample.ui.SampleScreen
 import com.example.mitalk.ui.splash.SplashScreen
 import com.example.mitalk.util.theme.base.MitalkTheme
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,7 +27,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MitalkTheme {
-               BaseApp()
+                BaseApp()
             }
         }
     }
@@ -35,8 +36,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BaseApp() {
     val navController = rememberNavController()
-
-    NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
+    val startDestination =
+        if (GoogleSignIn.getLastSignedInAccount(LocalContext.current) != null) AppNavigationItem.Main.route else AppNavigationItem.Splash.route
+    NavHost(navController = navController, startDestination = startDestination) {
         composable(AppNavigationItem.Splash.route) {
             SplashScreen(navController = navController)
         }
