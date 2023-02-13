@@ -44,5 +44,11 @@
     <string name="what_like_counselor">어떤 점이 좋았나요?</string>
     <string name="what_bad_counselor">어떤 점이 아쉬웠나요?</string>
     <string name="submit">제출</string>
+    <string name="can_choose_from0_to2">2개까지 선택가능</string>
     
+    <string name="is_kind">친절해요</string>
+    <string name="is_unkind">불친절해요</string>
+    <string name="is_good_explanation">설명이 좋아요</string>
+    <string name="is_bad_explanation">어려운 설명</string>
+
 </resources>

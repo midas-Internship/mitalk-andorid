@@ -53,8 +53,8 @@ fun EvaluationDialog(
                 Spacer(modifier = Modifier.height(8.dp))
                 DialogWhatLike(starCount = starCount)
                 Spacer(modifier = Modifier.height(9.dp))
+                EvaluateItem(text = "친절해요", onPressed = {_->})
                 Spacer(modifier = Modifier.height(42.dp))
-
                 Spacer(modifier = Modifier.height(5.dp))
                 DialogBtn(starCount = starCount, onBtnPressed = onBtnPressed)
             }
@@ -151,7 +151,51 @@ fun DialogWhatLike(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Bold08NO(text = text)
-        Regular06NO(text = " ( "+((5-starCount) * 25).toString()+" )")
+        Regular06NO(text = "(" + stringResource(id = R.string.can_choose_from0_to2) + ")")
+    }
+}
+
+@Composable
+fun EvaluateList(
+    starCount: Int,
+) {
+    val list1 =
+        if ((5 - starCount) < 2) listOf(
+            stringResource(id = R.string.is_kind),
+        ) else listOf(
+            stringResource(id = R.string.is_unkind),
+        )
+    val list2 = 
+        if ((5 - starCount < 2)) listOf(
+            stringResource(id = R.string.is_good_explanation)
+        ) else listOf(
+            stringResource(id = R.string.is_bad_explanation)
+        )
+}
+
+@Stable
+private val EvaluateItemShape = RoundedCornerShape(5.dp)
+
+@Composable
+fun EvaluateItem(
+    text: String,
+    onPressed: (String) -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .background(
+                color = Color(0xFFE9EBE9),
+                shape = EvaluateItemShape,
+            )
+            .clip(shape = EvaluateItemShape)
+            .miClickable(rippleEnabled = false) { onPressed(text) }
+    ) {
+        Medium10NO(
+            text = text,
+            modifier = Modifier
+                .padding(horizontal = 14.dp)
+                .padding(vertical = 6.dp)
+        )
     }
 }
 
