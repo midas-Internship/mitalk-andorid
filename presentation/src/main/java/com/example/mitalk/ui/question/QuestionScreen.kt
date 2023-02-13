@@ -18,12 +18,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.R
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.*
+import com.example.mitalk.vm.question.QuestionViewModel
 
 data class QuestionDataSample(
     val question: String,
@@ -39,6 +41,7 @@ private val questionListSample = listOf(
 @Composable
 fun QuestionScreen(
     navController: NavController,
+    vm: QuestionViewModel = hiltViewModel(),
 ) {
     Column {
         MiHeader(
