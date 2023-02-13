@@ -1,18 +1,18 @@
 package com.example.mitalk.ui.chat
 
-import android.widget.Space
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Icon
-import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,13 +22,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.R
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.*
+import com.example.mitalk.util.theme.base.MitalkTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.time.LocalTime
@@ -36,8 +36,13 @@ import java.time.LocalTime
 @Stable
 private val CounselorChat =
     RoundedCornerShape(topStart = 0.dp, topEnd = 5.dp, bottomEnd = 5.dp, bottomStart = 5.dp)
+
+@Stable
 private val ClientChat =
     RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, bottomEnd = 0.dp, bottomStart = 5.dp)
+
+@Stable
+private val ChatEditText = RoundedCornerShape(13.dp)
 
 data class ChatData(
     val text: String,
@@ -146,21 +151,42 @@ fun ChatInput(
             })
         }
         Spacer(modifier = Modifier.width(5.dp))
-        TextField(
-            value = text,
-            onValueChange = { text = it },
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(1f)
-                .background(Color.White),
-            textStyle = MiTalkTypography.regular12NO
-        )
+        ChatEditText(value = text, modifier = Modifier.weight(1f), onValueChange = {
+            text = it
+        })
         IconButton(icon = MitalkIcon.Send, onClick = {
             if (!text.isNullOrBlank()) {
                 sendAction(text)
             }
             text = ""
         })
+    }
+}
+
+@Composable
+fun ChatEditText(value: String, onValueChange: (String) -> Unit, modifier: Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxHeight()
+            .background(color = MitalkColor.White, shape = ChatEditText)
+            .border(width = 1.dp, color = Color(0xD2D2D2), shape = ChatEditText),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        BasicTextField(
+            value = value,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 15.dp, vertical = 5.dp),
+            onValueChange = { onValueChange(it) },
+            textStyle = MiTalkTypography.regular14NO,
+            decorationBox = @Composable {
+                Box(
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    it()
+                }
+            }
+        )
     }
 }
 
@@ -244,6 +270,8 @@ fun IconButton(
 @Composable
 @Preview
 fun showChatRoomScreen() {
-    val navController = rememberNavController()
-    ChatRoomScreen(navController)
+    MitalkTheme() {
+        val navController = rememberNavController()
+        ChatRoomScreen(navController)
+    }
 }
