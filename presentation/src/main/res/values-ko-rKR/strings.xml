@@ -17,7 +17,6 @@
     <string name="function_suggest">기능 제안</string>
     <string name="function_suggest_comment">새로운 기능을 제안해요</string>
     <string name="bug_report">버그 제보</string>
-    <string name="bug_report_comment">null point exception</string>
     <string name="function_question">기능 질문</string>
     <string name="function_question_comment">\'이건 무슨 기능이죠?\'</string>
     <string name="product_feedback">제품 피드백</string>
