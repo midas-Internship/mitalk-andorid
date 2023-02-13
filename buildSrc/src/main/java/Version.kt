@@ -35,4 +35,6 @@ object Version {
     const val ESPRESSO_CORE = "3.3.0"
 
     const val COIL = "0.10.0"
+
+    const val OAUTH = "19.0.0"
 }
