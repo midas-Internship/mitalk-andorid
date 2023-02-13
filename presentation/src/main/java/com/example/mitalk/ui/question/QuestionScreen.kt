@@ -43,6 +43,15 @@ fun QuestionScreen(
     navController: NavController,
     vm: QuestionViewModel = hiltViewModel(),
 ) {
+
+    val container = vm.container
+    val state = container.stateFlow.collectAsState().value
+    val sideEffect = container.sideEffectFlow
+
+    LaunchedEffect(vm) {
+        vm.getQuestionList()
+    }
+
     Column {
         MiHeader(
             navController = navController,
@@ -54,7 +63,7 @@ fun QuestionScreen(
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(13.dp)
         ) {
-            items(questionListSample) {
+            items(state.questionList) {
                 QuestionContent(question = it.question, answer = it.answer)
             }
         }
