@@ -4,6 +4,7 @@ import android.view.ViewDebug.CapturedViewProperty
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -53,7 +54,7 @@ fun EvaluationDialog(
                 Spacer(modifier = Modifier.height(8.dp))
                 DialogWhatLike(starCount = starCount)
                 Spacer(modifier = Modifier.height(9.dp))
-                EvaluateItem(text = "친절해요", onPressed = {_->})
+                EvaluateList(starCount = starCount)
                 Spacer(modifier = Modifier.height(42.dp))
                 Spacer(modifier = Modifier.height(5.dp))
                 DialogBtn(starCount = starCount, onBtnPressed = onBtnPressed)
@@ -161,16 +162,57 @@ fun EvaluateList(
 ) {
     val list1 =
         if ((5 - starCount) < 2) listOf(
-            stringResource(id = R.string.is_kind),
-        ) else listOf(
             stringResource(id = R.string.is_unkind),
+            stringResource(id = R.string.is_not_useful),
+            stringResource(id = R.string.inappropriate_answer)
+        ) else listOf(
+            stringResource(id = R.string.is_kind),
+            stringResource(id = R.string.is_useful),
+            stringResource(id = R.string.listen_well),
         )
     val list2 = 
         if ((5 - starCount < 2)) listOf(
-            stringResource(id = R.string.is_good_explanation)
+            stringResource(id = R.string.is_bad_explanation),
+            stringResource(id = R.string.abuse_slang),
+            stringResource(id = R.string.is_slow_reply),
         ) else listOf(
-            stringResource(id = R.string.is_bad_explanation)
+            stringResource(id = R.string.is_good_explanation),
+            stringResource(id = R.string.is_comfortable),
+            stringResource(id = R.string.is_fast_reply),
         )
+    
+    Row(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .wrapContentWidth(Alignment.End),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalAlignment = Alignment.End,
+        ) {
+            items(list1) {
+                EvaluateItem(
+                    text = it,
+                    onPressed = {},
+                    modifier = Modifier.padding(end = 6.dp)
+                )
+            }
+        }
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            items(list2) {
+                EvaluateItem(
+                    text = it,
+                    onPressed = {
+
+                    },
+                    modifier = Modifier.padding(start = 6.dp)
+                )
+            }
+        }
+    }
 }
 
 @Stable
@@ -178,17 +220,19 @@ private val EvaluateItemShape = RoundedCornerShape(5.dp)
 
 @Composable
 fun EvaluateItem(
+    modifier: Modifier = Modifier,
     text: String,
     onPressed: (String) -> Unit,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .background(
                 color = Color(0xFFE9EBE9),
                 shape = EvaluateItemShape,
             )
             .clip(shape = EvaluateItemShape)
-            .miClickable(rippleEnabled = false) { onPressed(text) }
+            .miClickable(rippleEnabled = false) { onPressed(text) },
+        contentAlignment = Alignment.Center,
     ) {
         Medium10NO(
             text = text,
