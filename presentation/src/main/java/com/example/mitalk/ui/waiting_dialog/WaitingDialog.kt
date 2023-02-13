@@ -20,8 +20,7 @@ import com.example.mitalk.util.theme.MitalkColor
 @Composable
 fun WaitingDialog(
     visible: Boolean,
-    onDismissRequest: () -> Unit,
-    onBtnPressed: (Int, String?, String?) -> Unit
+    onDismissRequest: () -> Unit
 ) {
     if (visible) {
         Dialog(onDismissRequest = onDismissRequest) {
@@ -69,7 +68,5 @@ fun WaitingDialog(
 @Composable
 @Preview(showBackground = true)
 fun ShowMainScreen() {
-    WaitingDialog(visible = true, onDismissRequest = { }, onBtnPressed = { _, _, _ ->
-
-    })
+    WaitingDialog(visible = true, onDismissRequest = { })
 }
