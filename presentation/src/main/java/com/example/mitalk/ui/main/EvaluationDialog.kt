@@ -1,6 +1,5 @@
 package com.example.mitalk.ui.main
 
-import android.view.ViewDebug.CapturedViewProperty
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -31,6 +30,12 @@ fun EvaluationDialog(
     onBtnPressed: (Int, String?, String?) -> Unit,
 ) {
     var starCount by remember { mutableStateOf(1) }
+    var goodEvaluationSelected1 by remember { mutableStateOf<String?>(null) }
+    var goodEvaluationSelected2 by remember { mutableStateOf<String?>(null) }
+    var badEvaluationSelected1 by remember { mutableStateOf<String?>(null) }
+    var badEvaluationSelected2 by remember { mutableStateOf<String?>(null) }
+    var evaluationComment by remember { mutableStateOf<String?>(null) }
+
 
     if (visible) {
         Dialog(
@@ -54,7 +59,47 @@ fun EvaluationDialog(
                 Spacer(modifier = Modifier.height(8.dp))
                 DialogWhatLike(starCount = starCount)
                 Spacer(modifier = Modifier.height(9.dp))
-                EvaluateList(starCount = starCount)
+                EvaluateList(
+                    starCount = starCount,
+                    onPressed = {
+                        if ((5 - starCount) < 2) {
+                            when (it) {
+                                badEvaluationSelected1 -> {
+                                    badEvaluationSelected1 = null
+                                }
+                                badEvaluationSelected2 -> {
+                                    val swap = badEvaluationSelected1
+                                    badEvaluationSelected1 = null
+                                    badEvaluationSelected2 = swap
+                                }
+                                else -> {
+                                    val swap = badEvaluationSelected2
+                                    badEvaluationSelected2 = it
+                                    badEvaluationSelected1 = swap
+                                }
+                            }
+                        } else {
+                            when (it) {
+                                goodEvaluationSelected1 -> {
+                                    goodEvaluationSelected1 = null
+                                }
+                                goodEvaluationSelected2 -> {
+                                    val swap = goodEvaluationSelected1
+                                    goodEvaluationSelected1 = null
+                                    goodEvaluationSelected2 = swap
+                                }
+                                else -> {
+                                    val swap = goodEvaluationSelected2
+                                    goodEvaluationSelected2 = it
+                                    goodEvaluationSelected1 = swap
+                                }
+                            }
+                        }
+                    },
+                    evaluationAnswerList =
+                    if ((5-starCount)<2) listOf(badEvaluationSelected1, badEvaluationSelected2)
+                    else listOf(goodEvaluationSelected1, goodEvaluationSelected2)
+                )
                 Spacer(modifier = Modifier.height(42.dp))
                 Spacer(modifier = Modifier.height(5.dp))
                 DialogBtn(starCount = starCount, onBtnPressed = onBtnPressed)
@@ -109,8 +154,8 @@ fun DialogStar(
             .fillMaxWidth()
             .wrapContentWidth(align = Alignment.CenterHorizontally),
     ) {
-        items(listOf(5,4,3,2,1)) {
-            if(starCount <= it) {
+        items(listOf(5, 4, 3, 2, 1)) {
+            if (starCount <= it) {
                 Image(
                     painter = painterResource(id = MitalkIcon.Star_On.drawableId),
                     contentDescription = MitalkIcon.Star_On.contentDescription,
@@ -159,6 +204,8 @@ fun DialogWhatLike(
 @Composable
 fun EvaluateList(
     starCount: Int,
+    onPressed: (String) -> Unit,
+    evaluationAnswerList: List<String?>,
 ) {
     val list1 =
         if ((5 - starCount) < 2) listOf(
@@ -170,7 +217,7 @@ fun EvaluateList(
             stringResource(id = R.string.is_useful),
             stringResource(id = R.string.listen_well),
         )
-    val list2 = 
+    val list2 =
         if ((5 - starCount < 2)) listOf(
             stringResource(id = R.string.is_bad_explanation),
             stringResource(id = R.string.abuse_slang),
@@ -180,7 +227,7 @@ fun EvaluateList(
             stringResource(id = R.string.is_comfortable),
             stringResource(id = R.string.is_fast_reply),
         )
-    
+
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -194,7 +241,8 @@ fun EvaluateList(
             items(list1) {
                 EvaluateItem(
                     text = it,
-                    onPressed = {},
+                    onPressed = onPressed,
+                    evaluationAnswerList = evaluationAnswerList,
                     modifier = Modifier.padding(end = 6.dp)
                 )
             }
@@ -205,9 +253,8 @@ fun EvaluateList(
             items(list2) {
                 EvaluateItem(
                     text = it,
-                    onPressed = {
-
-                    },
+                    onPressed = onPressed,
+                    evaluationAnswerList = evaluationAnswerList,
                     modifier = Modifier.padding(start = 6.dp)
                 )
             }
@@ -223,15 +270,23 @@ fun EvaluateItem(
     modifier: Modifier = Modifier,
     text: String,
     onPressed: (String) -> Unit,
+    evaluationAnswerList: List<String?>
 ) {
+    val containState = evaluationAnswerList.contains(text)
+    val backgroundColor =
+        if (containState) Color(0xFFBEBEBE)
+        else Color(0xFFE9EBE9)
+
     Box(
         modifier = modifier
             .background(
-                color = Color(0xFFE9EBE9),
+                color = backgroundColor,
                 shape = EvaluateItemShape,
             )
             .clip(shape = EvaluateItemShape)
-            .miClickable(rippleEnabled = false) { onPressed(text) },
+            .miClickable(rippleEnabled = false) {
+                onPressed(text)
+            },
         contentAlignment = Alignment.Center,
     ) {
         Medium10NO(
@@ -250,6 +305,7 @@ fun DialogEditText() {
 
 @Stable
 private val BtnShape = RoundedCornerShape(2.dp)
+
 @Composable
 fun DialogBtn(
     starCount: Int,
