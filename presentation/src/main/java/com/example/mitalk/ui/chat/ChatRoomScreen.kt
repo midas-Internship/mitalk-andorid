@@ -1,7 +1,9 @@
 package com.example.mitalk.ui.chat
 
+import android.widget.Space
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,26 +13,25 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.TextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.mitalk.R
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
-import com.example.mitalk.util.theme.Bold11NO
-import com.example.mitalk.util.theme.MiTalkTypography
-import com.example.mitalk.util.theme.MitalkColor
-import com.example.mitalk.util.theme.MitalkIcon
+import com.example.mitalk.util.theme.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 
 @Stable
 private val CounselorChat =
@@ -38,20 +39,33 @@ private val CounselorChat =
 private val ClientChat =
     RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, bottomEnd = 0.dp, bottomStart = 5.dp)
 
+data class ChatData(
+    val text: String,
+    val isMe: Boolean,
+    val time: String
+)
+
 @Composable
 fun ChatRoomScreen(
     navController: NavController
 ) {
-    var chatList = remember { mutableStateListOf<String>() }
+    var chatList = remember { mutableStateListOf<ChatData>() }
     var chatListState = rememberLazyListState()
+    val socketClient = ChatClient {
+        chatList.add(ChatData(text = it, isMe = false, time = LocalTime.now().toString()))
+        MainScope().launch {
+            chatListState.scrollToItem(chatList.size - 1)
+        }
+    }
 
     Column {
         MiHeader(navController = navController, modifier = Modifier.background(Color(0xFFF2F2F2)))
         Box(modifier = Modifier.weight(1f)) {
-            ChatList(chatList = listOf(), chatListState = chatListState)
+            ChatList(chatList = chatList, chatListState = chatListState)
         }
         ChatInput(sendAction = {
-            chatList.add(it)
+            socketClient.send(it)
+            chatList.add(ChatData(text = it, isMe = true, time = LocalTime.now().toString()))
             MainScope().launch {
                 chatListState.scrollToItem(chatList.size - 1)
             }
@@ -61,30 +75,33 @@ fun ChatRoomScreen(
 }
 
 @Composable
-fun ChatList(chatList: List<String>, chatListState: LazyListState) {
+fun ChatList(chatList: List<ChatData>, chatListState: LazyListState) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(4.dp),
         state = chatListState
     ) {
+        items(1) {
+            Spacer(modifier = Modifier.height(20.dp))
+        }
         itemsIndexed(chatList) { _, item ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight(),
-                horizontalArrangement = if (true) Arrangement.End else Arrangement.Start
+                    .wrapContentHeight()
+                    .padding(start = 20.dp, end = 10.dp, top = 10.dp),
+                horizontalArrangement = if (item.isMe) Arrangement.End else Arrangement.Start
             ) {
-                Bold11NO(
-                    text = item,
-                    modifier = Modifier
-                        .background(
-                            color = if (true) Color.Blue else Color.Gray,
-                            shape = if (true) ClientChat else CounselorChat
-                        )
-                        .padding(horizontal = 7.dp, vertical = 5.dp)
-                )
+                if (item.isMe) {
+                    ClientChat(item = item)
+                } else {
+                    CounselorChat(item = item)
+                }
             }
+        }
+        items(1) {
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
@@ -144,6 +161,62 @@ fun ChatInput(
             }
             text = ""
         })
+    }
+}
+
+@Composable
+fun CounselorChat(
+    item: ChatData
+) {
+    Row(
+        verticalAlignment = Alignment.Bottom
+    ) {
+        Image(
+            painter = painterResource(id = MitalkIcon.Counselor.drawableId),
+            contentDescription = MitalkIcon.Counselor.contentDescription,
+            modifier = Modifier
+                .size(35.dp)
+                .align(Alignment.Top),
+        )
+        Spacer(modifier = Modifier.width(3.dp))
+        Column {
+            Light09NO(text = stringResource(id = R.string.counselor))
+            Bold11NO(
+                text = item.text,
+                color = MitalkColor.White,
+                modifier = Modifier
+                    .background(
+                        color = MitalkColor.MainBlue,
+                        shape = CounselorChat
+                    )
+                    .widthIn(min = 0.dp, max = 180.dp)
+                    .padding(horizontal = 7.dp, vertical = 5.dp)
+            )
+        }
+        Spacer(modifier = Modifier.width(3.dp))
+        Light09NO(text = item.time)
+    }
+}
+
+@Composable
+fun ClientChat(
+    item: ChatData
+) {
+    Row(
+        verticalAlignment = Alignment.Bottom
+    ) {
+        Light09NO(text = item.time)
+        Spacer(modifier = Modifier.width(3.dp))
+        Bold11NO(
+            text = item.text,
+            modifier = Modifier
+                .background(
+                    color = MitalkColor.White,
+                    shape = ClientChat
+                )
+                .widthIn(min = 0.dp, max = 200.dp)
+                .padding(horizontal = 7.dp, vertical = 5.dp)
+        )
     }
 }
 
