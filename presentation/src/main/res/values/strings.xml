@@ -58,4 +58,6 @@
     <string name="inappropriate_answer">적절하지 않은 답변</string>
     <string name="is_fast_reply">답변이 빨라요</string>
     <string name="is_slow_reply">느린 답변시간</string>
+    
+    <string name="evaluation_comment_hint">솔직한 후기 부탁드립니다</string>
 </resources>

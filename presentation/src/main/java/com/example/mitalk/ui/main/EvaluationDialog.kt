@@ -7,6 +7,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.runtime.*
@@ -16,6 +19,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.mitalk.R
@@ -34,7 +39,7 @@ fun EvaluationDialog(
     var goodEvaluationSelected2 by remember { mutableStateOf<String?>(null) }
     var badEvaluationSelected1 by remember { mutableStateOf<String?>(null) }
     var badEvaluationSelected2 by remember { mutableStateOf<String?>(null) }
-    var evaluationComment by remember { mutableStateOf<String?>(null) }
+    var evaluationComment by remember { mutableStateOf<String>("") }
 
 
     if (visible) {
@@ -100,7 +105,11 @@ fun EvaluationDialog(
                     if ((5-starCount)<2) listOf(badEvaluationSelected1, badEvaluationSelected2)
                     else listOf(goodEvaluationSelected1, goodEvaluationSelected2)
                 )
-                Spacer(modifier = Modifier.height(42.dp))
+                Spacer(modifier = Modifier.height(36.dp))
+                DialogEditText(
+                    value = evaluationComment,
+                    onValueChanged = { evaluationComment = it }
+                )
                 Spacer(modifier = Modifier.height(5.dp))
                 DialogBtn(starCount = starCount, onBtnPressed = onBtnPressed)
             }
@@ -299,8 +308,45 @@ fun EvaluateItem(
 }
 
 @Composable
-fun DialogEditText() {
+fun DialogEditText(
+    value: String,
+    onValueChanged: (String) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 40.dp)
+            .fillMaxWidth()
+            .height(25.dp)
+            .background(
+                color = Color(0xFFE9E9E9),
+                shape = RoundedCornerShape(5.dp)
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        BasicTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp),
+            value = value,
+            onValueChange = onValueChanged,
+            textStyle = MiTalkTypography.regular7No,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Default,
+            ),
+            decorationBox = @Composable {
+                Box(
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    it()
 
+                    if (value.isEmpty()) {
+                        Regular7NO(text = stringResource(id = R.string.evaluation_comment_hint))
+                    }
+                }
+            }
+        )
+    }
 }
 
 @Stable
