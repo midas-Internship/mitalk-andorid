@@ -20,8 +20,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField(
             "String",
-            "BASE_URL",
-            gradleLocalProperties(rootDir).getProperty("BASE_URL")
+            "SOCKET_URL",
+            gradleLocalProperties(rootDir).getProperty("SOCKET_URL")
         )
         buildConfigField(
             "String",
