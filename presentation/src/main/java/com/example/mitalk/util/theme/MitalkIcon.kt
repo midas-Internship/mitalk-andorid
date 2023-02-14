@@ -166,5 +166,29 @@ class MitalkIcon private constructor(
             drawableId = R.drawable.img_star_off,
             contentDescription = "star off"
         )
+
+        @Stable
+        val Two_Circle_Icon = MitalkIcon(
+            drawableId = R.drawable.icon_two_circle,
+            contentDescription = "two circle",
+        )
+
+        @Stable
+        val Empty_Circle_Icon = MitalkIcon(
+            drawableId = R.drawable.icon_empty_circle,
+            contentDescription = "empty circle",
+        )
+
+        @Stable
+        val Fill_Circle_Icon = MitalkIcon(
+            drawableId = R.drawable.icon_fill_circle,
+            contentDescription = "fill circle"
+        )
+
+        @Stable
+        val Record_Icon = MitalkIcon(
+            drawableId = R.drawable.icon_record,
+            contentDescription = "icon record"
+        )
     }
 }
