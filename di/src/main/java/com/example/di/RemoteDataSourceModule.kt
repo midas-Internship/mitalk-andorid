@@ -1,5 +1,7 @@
 package com.example.di
 
+import com.example.data.remote.datasource.RemoteAuthDataSource
+import com.example.data.remote.datasource.RemoteAuthDataSourceImpl
 import com.example.data.remote.datasource.RemoteQuestionDataSource
 import com.example.data.remote.datasource.RemoteQuestionDataSourceImpl
 import dagger.Binds
@@ -17,4 +19,10 @@ abstract class RemoteDataSourceModule {
     abstract fun provideRemoteQuestionDataSource(
         remoteQuestionDataSourceImpl: RemoteQuestionDataSourceImpl
     ): RemoteQuestionDataSource
+
+    @Singleton
+    @Binds
+    abstract fun provideRemoteAuthDataSource(
+        remoteAuthDataSourceImpl: RemoteAuthDataSourceImpl
+    ): RemoteAuthDataSource
 }

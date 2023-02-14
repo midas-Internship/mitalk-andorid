@@ -20,6 +20,8 @@ object Dependency {
         const val LIFECYCLE_VIEWMODEL_KTX =
             "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
         const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:${Version.LIFECYCLE_KTX}"
+        const val APP_COMPAT = "androidx.appcompat:appcompat:${Version.APP_COMPAT}"
+        const val PREFERENCE_KTX = "androidx.preference:preference-ktx:${Version.PREFERENCE_KTX}"
 }
 
     object Compose {
@@ -57,6 +59,7 @@ object Dependency {
     object UnitTest {
         const val JUNIT = "junit:junit:${Version.JUNIT}"
         const val MOCKITO_KOTLIN = "org.mockito.kotlin:mockito-kotlin:${Version.MOCKITO_KOTLIN}"
+        const val MOCKITO_INLINE = "org.mockito:mockito-inline:${Version.MOCKITO_INLINE}"
     }
 
     object AndroidTest {
@@ -69,5 +72,13 @@ object Dependency {
 
     object Coil {
         const val COIL = "io.coil-kt:coil:${Version.COIL}"
+    }
+
+    object Google {
+        const val OAUTH = "com.google.android.gms:play-services-auth:${Version.OAUTH}"
+    }
+
+    object JavaX {
+        const val INJECT = "javax.inject:javax.inject:${Version.INJECT}"
     }
 }

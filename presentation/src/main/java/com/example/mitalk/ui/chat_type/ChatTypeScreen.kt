@@ -146,7 +146,7 @@ fun ChatTypeBox(
         modifier = modifier
             .fillMaxWidth()
             .miClickable {
-
+                onPressed()
             }
     ) {
         Column(

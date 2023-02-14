@@ -1,7 +1,9 @@
 package com.example.di
 
+import com.example.data.repository.AuthRepositoryImpl
 import com.example.data.repository.QuestionRepositoryImpl
 import com.example.data.sample.SampleRepositoryImpl
+import com.example.domain.repository.AuthRepository
 import com.example.domain.repository.QuestionRepository
 import com.example.domain.sample.SampleRepository
 import dagger.Binds
@@ -22,4 +24,9 @@ abstract class RepositoryModule {
     abstract fun provideQuestionRepository(
         questionRepositoryImpl: QuestionRepositoryImpl,
     ): QuestionRepository
+
+    @Binds
+    abstract fun provideAuthRepository(
+        authRepositoryImpl: AuthRepositoryImpl
+    ): AuthRepository
 }

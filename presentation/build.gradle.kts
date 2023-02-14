@@ -20,8 +20,13 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField(
             "String",
-            "BASE_URL",
-            gradleLocalProperties(rootDir).getProperty("BASE_URL")
+            "SOCKET_URL",
+            gradleLocalProperties(rootDir).getProperty("SOCKET_URL")
+        )
+        buildConfigField(
+            "String",
+            "CLIENT_ID",
+            gradleLocalProperties(rootDir).getProperty("CLIENT_ID")
         )
     }
 
@@ -99,4 +104,5 @@ dependencies {
 
     implementation(Dependency.Coil.COIL)
 
+    implementation(Dependency.Google.OAUTH)
 }

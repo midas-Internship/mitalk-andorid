@@ -1,37 +1,81 @@
 package com.example.mitalk.ui.splash
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.domain.param.LoginParam
 import com.example.mitalk.AppNavigationItem
+import com.example.mitalk.mvi.LoginSideEffect
 import com.example.mitalk.util.miClickable
+import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.Medium21GM
 import com.example.mitalk.util.theme.MitalkColor
 import com.example.mitalk.util.theme.MitalkIcon
 import com.example.mitalk.util.theme.Regular12NO
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.example.mitalk.vm.splash.SplashViewModel
+import kotlinx.coroutines.InternalCoroutinesApi
 
 @Stable
 private val BtnShape = RoundedCornerShape(8.dp)
 
+@OptIn(InternalCoroutinesApi::class)
 @Composable
 fun SplashScreen(
     navController: NavController,
+    vm: SplashViewModel = hiltViewModel()
 ) {
+    val container = vm.container
+    val state = container.stateFlow.collectAsState().value
+    val sideEffect = container.sideEffectFlow
+    val gso = GoogleSignInOptions.Builder()
+        .requestEmail()
+        .build()
+    val client = GoogleSignIn.getClient(LocalContext.current, gso)
+    val googleLoginLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            val result = GoogleSignIn.getSignedInAccountFromIntent(it.data).result
+            if (result != null) {
+                vm.login(
+                    LoginParam(
+                        email = result.email ?: "",
+                        name = "${result.familyName}${result.givenName}",
+                        profileImg = result.photoUrl.toString()
+                    )
+                )
+            }
+        }
+    sideEffect.observeWithLifecycle {
+        when (it) {
+            LoginSideEffect.LoginSuccess -> {
+                navController.navigate(AppNavigationItem.Main.route) {
+                    popUpTo(AppNavigationItem.Splash.route) {
+                        inclusive = true
+                    }
+                }
+            }
+        }
+    }
     Column {
         Spacer(modifier = Modifier.height(93.dp))
 
@@ -43,9 +87,9 @@ fun SplashScreen(
                 .fillMaxWidth()
                 .height(300.dp)
         )
-        
+
         Spacer(modifier = Modifier.height(10.dp))
-        
+
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -76,23 +120,19 @@ fun SplashScreen(
                     color = Color(0xFFA69E9E)
                 )
                 .miClickable {
-                    navController.navigate(AppNavigationItem.Main.route) {
-                        popUpTo(AppNavigationItem.Splash.route) {
-                            inclusive = true
-                        }
-                    }
+                    googleLoginLauncher.launch(client.signInIntent)
                 },
             contentAlignment = Alignment.Center,
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-               Image(
-                   painter = painterResource(id = MitalkIcon.Google_Icon.drawableId),
-                   contentDescription = MitalkIcon.Google_Icon.contentDescription,
-                   modifier = Modifier.size(28.dp),
-               )
-                
+                Image(
+                    painter = painterResource(id = MitalkIcon.Google_Icon.drawableId),
+                    contentDescription = MitalkIcon.Google_Icon.contentDescription,
+                    modifier = Modifier.size(28.dp),
+                )
+
                 Spacer(modifier = Modifier.width(10.dp))
 
                 Regular12NO(text = "Continue with Google")
@@ -114,6 +154,7 @@ fun CommaAboveText(text: String) {
         Medium21GM(text = text)
     }
 }
+
 @Composable
 @Preview(showBackground = true)
 fun ShowSplashScreen() {
