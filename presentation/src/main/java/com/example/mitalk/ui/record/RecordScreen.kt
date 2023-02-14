@@ -1,9 +1,12 @@
 package com.example.mitalk.ui.record
 
+import android.util.Log
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,13 +30,13 @@ fun RecordScreen(
 ) {
 
     val recordList = listOf(
-        RecordData("2023.02.14", stringResource(id = R.string.function_question), "백승민"),
-        RecordData("2023.02.14", stringResource(id = R.string.product_feedback), "백승민"),
-        RecordData("2023.02.14", stringResource(id = R.string.bug_report), "백승민"),
-        RecordData("2023.02.14", stringResource(id = R.string.function_suggest), "백승민"),
+        RecordData("2023.04.14", stringResource(id = R.string.function_question), "백승민"),
+        RecordData("2023.02.17", stringResource(id = R.string.product_feedback), "백승민"),
+        RecordData("2023.02.16", stringResource(id = R.string.bug_report), "백승민"),
+        RecordData("2023.02.15", stringResource(id = R.string.function_suggest), "백승민"),
         RecordData("2023.02.14", stringResource(id = R.string.alliance_inquiry), "백승민"),
         RecordData("2023.02.14", stringResource(id = R.string.etc), "백승민"),
-        RecordData("2023.02.14", stringResource(id = R.string.consulting_record), "백승민"),
+        RecordData("2021.02.14", stringResource(id = R.string.consulting_record), "백승민"),
     )
 
     Column {
@@ -58,6 +61,19 @@ private fun returnIcon(index: Int): Int =
         2 -> MitalkIcon.Two_Circle_Icon.drawableId
         else -> MitalkIcon.Empty_Circle_Icon.drawableId
     }
+
+private fun dateToInt(date: String): Int =
+    try {
+        val year = date.substring(0..3)
+        val month = date.substring(5..6)
+        val day = date.substring(8..9)
+
+        (year + month + day).toInt()
+    } catch (e: StringIndexOutOfBoundsException) { 0 }
+private fun returnLastDate(list: List<RecordData>, index: Int): Int =
+    if (index == 0) 0
+    else dateToInt(list[index-1].date)
+
 @Composable
 private fun RecordList(
     list: List<RecordData>,
@@ -68,7 +84,8 @@ private fun RecordList(
                 date = it.date,
                 icon = painterResource(id = returnIcon(index)),
                 title = it.title,
-                counselor = it.counselor
+                counselor = it.counselor,
+                lastDate = returnLastDate(list, index),
             ) {
 
             }
@@ -108,8 +125,15 @@ private fun RecordItem(
     icon: Painter,
     title: String,
     counselor: String,
+    lastDate: Int,
     onClicked: () -> Unit
 ) {
+    val thisDateInt = dateToInt(date)
+    val dividerHeight =
+        if (lastDate - thisDateInt > 1000) 100.dp
+        else if(lastDate - thisDateInt > 100) 50.dp
+        else if (lastDate > thisDateInt) 25.dp
+        else 10.dp
     val type = when (title) {
         stringResource(id = R.string.function_question) -> RecordItemType.QUESTION
         stringResource(id = R.string.product_feedback) -> RecordItemType.FEEDBACK
@@ -119,44 +143,54 @@ private fun RecordItem(
         stringResource(id = R.string.etc) -> RecordItemType.ETC
         else -> RecordItemType.ElSE
     }
-    Row(
-        modifier = Modifier
-            .padding(vertical = 5.dp)
-            .miClickable(rippleEnabled = false) { onClicked() },
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Spacer(modifier = Modifier.width(30.dp))
-
-        Medium10GM(
-            text = date,
-            modifier = Modifier.width(83.dp)
-        )
-
-        Icon(
-            painter = icon,
-            contentDescription = "record item",
-            modifier = Modifier.size(11.dp)
-        )
-        
-        Spacer(modifier = Modifier.width(10.dp))
-
-        Medium15GM(
-            text = title,
-            color = type.textColor,
-            modifier = Modifier.width(88.dp)
-        )
-
-        Medium10GM(text = counselor)
-
-        Icon(
-            painter = painterResource(id = MitalkIcon.Record_Icon.drawableId),
-            contentDescription = MitalkIcon.Record_Icon.contentDescription,
+    Column {
+        Divider(
+            color = MitalkColor.Black,
             modifier = Modifier
-                .padding(end = 30.dp)
-                .fillMaxWidth()
-                .wrapContentWidth(Alignment.End)
+                .padding(start = 118.dp)
+                .width(1.dp)
+                .height(dividerHeight)
         )
+        Row(
+            modifier = Modifier
+                .padding(vertical = 1.dp)
+                .miClickable(rippleEnabled = false) { onClicked() },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Spacer(modifier = Modifier.width(30.dp))
+
+            Medium10GM(
+                text = date,
+                modifier = Modifier.width(83.dp)
+            )
+
+            Icon(
+                painter = icon,
+                contentDescription = "record item",
+                modifier = Modifier.size(11.dp)
+            )
+
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Medium15GM(
+                text = title,
+                color = type.textColor,
+                modifier = Modifier.width(88.dp)
+            )
+
+            Medium10GM(text = counselor)
+
+            Icon(
+                painter = painterResource(id = MitalkIcon.Record_Icon.drawableId),
+                contentDescription = MitalkIcon.Record_Icon.contentDescription,
+                modifier = Modifier
+                    .padding(end = 30.dp)
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.End)
+            )
+        }
     }
+
 }
 
 @Composable
