@@ -24,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.R
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
@@ -42,9 +41,6 @@ private val CounselorChat =
 @Stable
 private val ClientChat =
     RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, bottomEnd = 0.dp, bottomStart = 5.dp)
-
-@Stable
-private val ChatEditText = RoundedCornerShape(13.dp)
 
 const val EmptyTime = 300
 
@@ -200,8 +196,8 @@ fun ChatEditText(value: String, onValueChange: (String) -> Unit, modifier: Modif
     Row(
         modifier = modifier
             .fillMaxHeight()
-            .background(color = MitalkColor.White, shape = ChatEditText)
-            .border(width = 1.dp, color = Color(0xD2D2D2), shape = ChatEditText),
+            .background(color = MitalkColor.White, shape = RoundedCornerShape(13.dp))
+            .border(width = 1.dp, color = Color(0xD2D2D2), shape = RoundedCornerShape(13.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         BasicTextField(
