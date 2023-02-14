@@ -112,7 +112,7 @@ fun ChatRoomScreen(
 }
 
 @Composable
-fun ChatList(chatList: List<ChatData>, chatListState: LazyListState) {
+fun ChatList(chatList: List<ChatData>, chatListState: LazyListState = rememberLazyListState()) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth(),
