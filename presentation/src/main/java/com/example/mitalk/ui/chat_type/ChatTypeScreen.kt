@@ -32,8 +32,10 @@ fun ChatTypeScreen(
 ) {
     Column {
         MiHeader(
-            navController = navController,
-            text = stringResource(id = R.string.consulting_connect)
+            text = stringResource(id = R.string.consulting_connect),
+            backPressed = {
+                navController.popBackStack()
+            }
         )
         Spacer(modifier = Modifier.height(20.dp))
         Row(modifier = Modifier.weight(1f)) {

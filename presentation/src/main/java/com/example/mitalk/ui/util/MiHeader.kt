@@ -10,8 +10,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.MitalkIcon
 import com.example.mitalk.util.theme.Regular14NO
@@ -19,9 +17,9 @@ import com.example.mitalk.R
 
 @Composable
 fun MiHeader(
-    navController: NavController,
     modifier: Modifier = Modifier,
-    backPressed: Boolean = true,
+    backBtn: Boolean = true,
+    backPressed: () -> Unit = {},
     btnText: String = stringResource(id = R.string.main),
     text: String? = null,
     content: (@Composable () -> Unit)? = null,
@@ -36,13 +34,13 @@ fun MiHeader(
             ),
         contentAlignment = Alignment.Center,
     ) {
-        if (backPressed) {
+        if (backBtn) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentWidth(align = Alignment.Start)
                     .miClickable(rippleEnabled = false) {
-                        navController.popBackStack()
+                        backPressed()
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -51,7 +49,7 @@ fun MiHeader(
                 Icon(
                     painter = painterResource(id = MitalkIcon.Back.drawableId),
                     contentDescription = MitalkIcon.Back.contentDescription,
-                    modifier = Modifier.miClickable(rippleEnabled = false) { navController.popBackStack() }
+                    modifier = Modifier.miClickable(rippleEnabled = false) { backPressed() }
                 )
 
                 Spacer(modifier = Modifier.width(4.dp))
@@ -73,11 +71,7 @@ fun MiHeader(
 @Composable
 @Preview(showBackground = true)
 fun ShowHeader() {
-
-    val navController = rememberNavController()
-
     MiHeader(
-        navController = navController,
         text = "상담 연결"
     )
 }

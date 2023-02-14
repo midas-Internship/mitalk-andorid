@@ -24,12 +24,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.R
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.*
 import com.example.mitalk.util.theme.base.MitalkTheme
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 
@@ -44,6 +46,8 @@ private val ClientChat =
 @Stable
 private val ChatEditText = RoundedCornerShape(13.dp)
 
+const val EmptyTime = 300
+
 data class ChatData(
     val text: String,
     val isMe: Boolean,
@@ -56,6 +60,9 @@ fun ChatRoomScreen(
 ) {
     var chatList = remember { mutableStateListOf<ChatData>() }
     var chatListState = rememberLazyListState()
+    var exitChatDialogVisible by remember { mutableStateOf(false) }
+    var emptyDialogVisible by remember { mutableStateOf(false) }
+    var emptyTime by remember { mutableStateOf(EmptyTime) }
     val socketClient = ChatClient {
         chatList.add(ChatData(text = it, isMe = false, time = LocalTime.now().toString()))
         MainScope().launch {
@@ -63,12 +70,26 @@ fun ChatRoomScreen(
         }
     }
 
+    LaunchedEffect(emptyTime, exitChatDialogVisible) {
+        if (!exitChatDialogVisible) {
+            if (emptyTime > 0) {
+                delay(1_000L)
+                emptyTime--
+            } else {
+                emptyDialogVisible = true
+            }
+        }
+    }
+
     Column {
-        MiHeader(navController = navController, modifier = Modifier.background(Color(0xFFF2F2F2)))
+        MiHeader(
+            modifier = Modifier.background(Color(0xFFF2F2F2)),
+            backPressed = { exitChatDialogVisible = true })
         Box(modifier = Modifier.weight(1f)) {
             ChatList(chatList = chatList, chatListState = chatListState)
         }
         ChatInput(sendAction = {
+            emptyTime = EmptyTime
             socketClient.send(it)
             chatList.add(ChatData(text = it, isMe = true, time = LocalTime.now().toString()))
             MainScope().launch {
@@ -76,6 +97,17 @@ fun ChatRoomScreen(
             }
         })
         Spacer(modifier = Modifier.height(18.dp))
+        ExitChatDialog(
+            visible = exitChatDialogVisible,
+            onDismissRequest = { exitChatDialogVisible = false },
+            onBtnPressed = { navController.popBackStack() })
+        EmptyDialog(visible = emptyDialogVisible, onDismissRequest = {
+            emptyDialogVisible = false
+            emptyTime = EmptyTime
+        }, onTimeOut = {
+            emptyDialogVisible = false
+            navController.popBackStack()
+        })
     }
 }
 
