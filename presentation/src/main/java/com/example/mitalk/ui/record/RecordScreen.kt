@@ -19,6 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.mitalk.AppNavigationItem
+import com.example.mitalk.DeepLinkKey
 import com.example.mitalk.R
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
@@ -44,7 +46,10 @@ fun RecordScreen(
             backPressed = { navController.popBackStack() },
             text = stringResource(id = R.string.consulting_record),
         )
-        RecordList(list = recordList)
+        RecordList(
+            navController = navController,
+            list = recordList
+        )
     }
 }
 
@@ -76,6 +81,7 @@ private fun returnLastDate(list: List<RecordData>, index: Int): Int =
 
 @Composable
 private fun RecordList(
+    navController: NavController,
     list: List<RecordData>,
 ) {
     LazyColumn {
@@ -87,7 +93,10 @@ private fun RecordList(
                 counselor = it.counselor,
                 lastDate = returnLastDate(list, index),
             ) {
-
+                navController.navigate(
+                    route = AppNavigationItem.RecordDetail.route
+                            + DeepLinkKey.HEADER + it.title
+                )
             }
         }
     }

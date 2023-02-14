@@ -17,22 +17,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuestionViewModel @Inject constructor(
-    private val questionUseCase: QuestionUseCase,
+    //private val questionUseCase: QuestionUseCase,
 ) : ContainerHost<QuestionState, QuestionSideEffect>, ViewModel() {
 
     override val container = container<QuestionState, QuestionSideEffect>(QuestionState())
 
     fun getQuestionList() = intent {
-        viewModelScope.launch {
-            questionUseCase()
-                .onSuccess {
-                    reduce { state.copy(questionList = it.toState().questionList) }
-                }.onFailure {
-                    when (it) {
-                        else -> QuestionSideEffect.UnknownException
-                    }
-                }
-        }
+//        viewModelScope.launch {
+//            questionUseCase()
+//                .onSuccess {
+//                    reduce { state.copy(questionList = it.toState().questionList) }
+//                }.onFailure {
+//                    when (it) {
+//                        else -> QuestionSideEffect.UnknownException
+//                    }
+//                }
+//        }
 
     }
 
