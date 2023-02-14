@@ -178,5 +178,11 @@ class MitalkIcon private constructor(
             drawableId = R.drawable.icon_fill_circle,
             contentDescription = "fill circle"
         )
+
+        @Stable
+        val Record_Icon = MitalkIcon(
+            drawableId = R.drawable.icon_record,
+            contentDescription = "icon record"
+        )
     }
 }
