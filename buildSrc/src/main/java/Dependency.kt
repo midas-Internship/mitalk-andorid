@@ -20,6 +20,8 @@ object Dependency {
         const val LIFECYCLE_VIEWMODEL_KTX =
             "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
         const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:${Version.LIFECYCLE_KTX}"
+        const val APP_COMPAT = "androidx.appcompat:appcompat:${Version.APP_COMPAT}"
+        const val PREFERENCE_KTX = "androidx.preference:preference-ktx:${Version.PREFERENCE_KTX}"
 }
 
     object Compose {
@@ -74,5 +76,9 @@ object Dependency {
 
     object Google {
         const val OAUTH = "com.google.android.gms:play-services-auth:${Version.OAUTH}"
+    }
+
+    object JavaX {
+        const val INJECT = "javax.inject:javax.inject:${Version.INJECT}"
     }
 }

@@ -20,8 +20,8 @@ android {
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
         }
     }
@@ -38,13 +38,12 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":domain"))
 
-    implementation ("androidx.core:core-ktx:1.9.0")
-    implementation ("androidx.appcompat:appcompat:1.6.0")
+    implementation(Dependency.AndroidX.CORE_KTX)
+    implementation(Dependency.AndroidX.APP_COMPAT)
+    implementation(Dependency.AndroidX.PREFERENCE_KTX)
 
     implementation(Dependency.Hilt.HILT_ANDROID)
     kapt(Dependency.Hilt.HILT_ANDROID_COMPILER)
-
-    implementation("androidx.preference:preference-ktx:1.2.0")
 
     implementation(Dependency.Room.ROOM)
     kapt(Dependency.Room.ROOM_COMPILER)
