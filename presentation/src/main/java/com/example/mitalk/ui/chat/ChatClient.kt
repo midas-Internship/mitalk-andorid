@@ -1,5 +1,6 @@
 package com.example.mitalk.ui.chat
 
+import com.example.mitalk.BuildConfig
 import okhttp3.*
 
 class ChatClient(receiveAction: (String) -> Unit) {
@@ -8,7 +9,7 @@ class ChatClient(receiveAction: (String) -> Unit) {
 
     init {
         val request = Request.Builder()
-            .url("ws://port-0-mitalk-backend-108dypx2aldtri5ke.sel3.cloudtype.app/ws/messages")
+            .url(BuildConfig.SOCKET_URL)
             .build()
         val listener = object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
