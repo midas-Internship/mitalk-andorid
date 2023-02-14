@@ -51,6 +51,11 @@ dependencies {
 
     testImplementation(Dependency.UnitTest.JUNIT)
 
+    implementation(Dependency.Retrofit.RETROFIT)
+    implementation(Dependency.Retrofit.RETROFIT_CONVERTER_GSON)
+    implementation(Dependency.Retrofit.OKHTTP)
+    implementation(Dependency.Retrofit.OKHTTP_LOGGING_INTERCEPTOR)
+
     androidTestImplementation(Dependency.AndroidTest.ANDROID_JUNIT)
     androidTestImplementation(Dependency.AndroidTest.ESPRESSO_CORE)
 }
