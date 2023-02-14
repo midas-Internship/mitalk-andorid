@@ -2,6 +2,7 @@
     <string name="app_name">mitalk</string>
     <string name="main">메인</string>
     <string name="find_comment_hit">찾고싶은 문구를 입력해주세요</string>
+    <string name="consulting_record">상담 기록</string>
 
     <!--main screen-->
     <string name="new_counselor_answer">고객센터의 답장이 왔어요!</string>
@@ -71,4 +72,6 @@
     <string name="waiting_service_prev_comment">고객님 앞에</string>
     <string name="waiting_service_next_comment">명의 대기자가 있습니다.</string>
     <string name="waiting_service_comment">잠시만 기다리시면 상담원과 연결시켜드리겠습니다.</string>
+
+
 </resources>

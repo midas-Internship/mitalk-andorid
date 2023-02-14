@@ -57,4 +57,5 @@
     <string name="waiting_service_prev_comment">"There are "</string>
     <string name="waiting_service_next_comment">" people waiting in front of you."</string>
     <string name="waiting_service_comment">Please wait for a moment and we will connect you with an agent.</string>
+    <string name="consulting_record">"consultation record "</string>
 </resources>
