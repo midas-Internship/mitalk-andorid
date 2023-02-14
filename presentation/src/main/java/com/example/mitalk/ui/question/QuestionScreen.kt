@@ -32,7 +32,10 @@ data class QuestionDataSample(
 
 private val questionListSample = listOf(
     QuestionDataSample("질문", "답변"),
-    QuestionDataSample("ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ", "ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ"),
+    QuestionDataSample(
+        "ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
+        "ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ"
+    ),
     QuestionDataSample("질문", "답변"),
 )
 
@@ -42,10 +45,12 @@ fun QuestionScreen(
 ) {
     Column {
         MiHeader(
-            navController = navController,
-            text = stringResource(id = R.string.question_many)
+            text = stringResource(id = R.string.question_many),
+            backPressed = {
+                navController.popBackStack()
+            }
         )
-        
+
         Spacer(modifier = Modifier.height(19.dp))
 
         LazyColumn(
@@ -110,13 +115,13 @@ private fun QuestionContent(
             )
 
             Spacer(modifier = Modifier.width(6.dp))
-            
+
             Medium13NO(
                 text = question,
                 modifier = Modifier.width(280.dp)
             )
 
-           SeeAnswerIcon(rotateValue = rotateValue)
+            SeeAnswerIcon(rotateValue = rotateValue)
         }
 
         if (open) {

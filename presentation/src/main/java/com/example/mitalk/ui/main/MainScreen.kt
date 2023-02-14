@@ -40,17 +40,16 @@ fun MainScreen(
 
     Column {
         MiHeader(
-            navController = navController,
-            backPressed = false,
+            backBtn = false,
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-               Image(
-                   painter = painterResource(id = MitalkIcon.Logo.drawableId),
-                   contentDescription = MitalkIcon.Google_Icon.contentDescription,
-                   modifier = Modifier.size(36.dp)
-               )
+                Image(
+                    painter = painterResource(id = MitalkIcon.Logo.drawableId),
+                    contentDescription = MitalkIcon.Google_Icon.contentDescription,
+                    modifier = Modifier.size(36.dp)
+                )
                 Spacer(modifier = Modifier.width(4.dp))
 
                 Bold20NO(
@@ -75,7 +74,7 @@ fun MainScreen(
                     contentDescription = MitalkIcon.Bulb_Img.contentDescription,
                     modifier = Modifier.size(20.dp)
                 )
-                
+
                 Spacer(modifier = Modifier.width(2.dp))
 
                 Bold11NO(
@@ -114,11 +113,11 @@ fun MainScreen(
             onDismissRequest = {
                 dialogVisible = !dialogVisible
             },
-            onBtnPressed = { _,_,_ -> }
+            onBtnPressed = { _, _, _ -> }
         )
 
         Spacer(modifier = Modifier.height(12.dp))
-        
+
         MainContent(
             text = stringResource(id = R.string.question_many),
             comment = stringResource(id = R.string.question_many_comment),
