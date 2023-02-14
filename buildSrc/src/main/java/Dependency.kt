@@ -57,6 +57,7 @@ object Dependency {
     object UnitTest {
         const val JUNIT = "junit:junit:${Version.JUNIT}"
         const val MOCKITO_KOTLIN = "org.mockito.kotlin:mockito-kotlin:${Version.MOCKITO_KOTLIN}"
+        const val MOCKITO_INLINE = "org.mockito:mockito-inline:${Version.MOCKITO_INLINE}"
     }
 
     object AndroidTest {
