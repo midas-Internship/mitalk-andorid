@@ -35,6 +35,16 @@ jobs:
             BASE_URL: ${{ secrets.BASE_URL }}
         run: echo BASE_URL=\"$BASE_URL\" >> ./local.properties
 
+      - name: Access CLIENT_ID
+          env:
+            BASE_URL: ${{ secrets.CLIENT_ID }}
+          run: echo CLIENT_ID=\"CLIENT_ID\" >> ./local.properties
+
+      - name: Access SOCKET_URL
+          env:
+            BASE_URL: ${{ secrets.SOCKET_URL }}
+          run: echo SOCKET_URL=\"SOCKET_URL\" >> ./local.properties
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
