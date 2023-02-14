@@ -2,6 +2,7 @@ package com.example.di
 
 import android.content.Context
 import android.util.Log
+import com.example.data.remote.api.AuthApi
 import com.example.data.remote.api.QuestionApi
 import dagger.Module
 import dagger.Provides
@@ -47,4 +48,10 @@ object NetworkModule {
         retrofit: Retrofit
     ): QuestionApi =
         retrofit.create(QuestionApi::class.java)
+
+    @Provides
+    fun provideAuthApi(
+        retrofit: Retrofit
+    ): AuthApi =
+        retrofit.create(AuthApi::class.java)
 }
