@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.R
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
@@ -56,6 +57,7 @@ fun ChatRoomScreen(
 ) {
     var chatList = remember { mutableStateListOf<ChatData>() }
     var chatListState = rememberLazyListState()
+    var exitChatDialogVisible by remember { mutableStateOf(false) }
     val socketClient = ChatClient {
         chatList.add(ChatData(text = it, isMe = false, time = LocalTime.now().toString()))
         MainScope().launch {
@@ -64,7 +66,9 @@ fun ChatRoomScreen(
     }
 
     Column {
-        MiHeader(navController = navController, modifier = Modifier.background(Color(0xFFF2F2F2)))
+        MiHeader(
+            modifier = Modifier.background(Color(0xFFF2F2F2)),
+            backPressed = { exitChatDialogVisible = true })
         Box(modifier = Modifier.weight(1f)) {
             ChatList(chatList = chatList, chatListState = chatListState)
         }
@@ -76,6 +80,10 @@ fun ChatRoomScreen(
             }
         })
         Spacer(modifier = Modifier.height(18.dp))
+        ExitChatDialog(
+            visible = exitChatDialogVisible,
+            onDismissRequest = { exitChatDialogVisible = false },
+            onBtnPressed = { navController.popBackStack() })
     }
 }
 
