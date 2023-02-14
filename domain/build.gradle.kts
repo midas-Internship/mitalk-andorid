@@ -35,7 +35,7 @@ android {
 
 dependencies {
 
-    implementation("javax.inject:javax.inject:1")
+    implementation(Dependency.JavaX.INJECT)
 
     testImplementation(Dependency.UnitTest.JUNIT)
     testImplementation(Dependency.UnitTest.MOCKITO_KOTLIN)
