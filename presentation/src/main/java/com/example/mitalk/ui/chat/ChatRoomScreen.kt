@@ -31,6 +31,7 @@ import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.*
 import com.example.mitalk.util.theme.base.MitalkTheme
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 
@@ -45,6 +46,8 @@ private val ClientChat =
 @Stable
 private val ChatEditText = RoundedCornerShape(13.dp)
 
+const val EmptyTime = 300
+
 data class ChatData(
     val text: String,
     val isMe: Boolean,
@@ -58,10 +61,23 @@ fun ChatRoomScreen(
     var chatList = remember { mutableStateListOf<ChatData>() }
     var chatListState = rememberLazyListState()
     var exitChatDialogVisible by remember { mutableStateOf(false) }
+    var emptyDialogVisible by remember { mutableStateOf(false) }
+    var emptyTime by remember { mutableStateOf(EmptyTime) }
     val socketClient = ChatClient {
         chatList.add(ChatData(text = it, isMe = false, time = LocalTime.now().toString()))
         MainScope().launch {
             chatListState.scrollToItem(chatList.size - 1)
+        }
+    }
+
+    LaunchedEffect(emptyTime, exitChatDialogVisible) {
+        if (!exitChatDialogVisible) {
+            if (emptyTime > 0) {
+                delay(1_000L)
+                emptyTime--
+            } else {
+                emptyDialogVisible = true
+            }
         }
     }
 
@@ -73,6 +89,7 @@ fun ChatRoomScreen(
             ChatList(chatList = chatList, chatListState = chatListState)
         }
         ChatInput(sendAction = {
+            emptyTime = EmptyTime
             socketClient.send(it)
             chatList.add(ChatData(text = it, isMe = true, time = LocalTime.now().toString()))
             MainScope().launch {
@@ -84,6 +101,13 @@ fun ChatRoomScreen(
             visible = exitChatDialogVisible,
             onDismissRequest = { exitChatDialogVisible = false },
             onBtnPressed = { navController.popBackStack() })
+        EmptyDialog(visible = emptyDialogVisible, onDismissRequest = {
+            emptyDialogVisible = false
+            emptyTime = EmptyTime
+        }, onTimeOut = {
+            emptyDialogVisible = false
+            navController.popBackStack()
+        })
     }
 }
 
