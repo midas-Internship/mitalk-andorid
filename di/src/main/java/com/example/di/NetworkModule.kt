@@ -3,6 +3,7 @@ package com.example.di
 import android.util.Log
 import com.example.data.remote.api.AuthApi
 import com.example.data.remote.api.QuestionApi
+import com.example.data.remote.api.RecordApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,4 +48,10 @@ object NetworkModule {
         retrofit: Retrofit
     ): AuthApi =
         retrofit.create(AuthApi::class.java)
+
+    @Provides
+    fun provideRecordApi(
+        retrofit: Retrofit
+    ): RecordApi =
+        retrofit.create(RecordApi::class.java)
 }
