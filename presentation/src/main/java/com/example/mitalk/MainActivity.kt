@@ -4,9 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.mitalk.ui.chat.ChatRoomScreen
 import com.example.mitalk.ui.chat_type.ChatTypeScreen
 import com.example.mitalk.ui.main.MainScreen
@@ -59,8 +61,22 @@ fun BaseApp() {
             RecordScreen(navController = navController)
         }
 
-        composable(AppNavigationItem.RecordDetail.route) {
-            RecordDetailScreen(navController = navController)
+        composable(
+            route = AppNavigationItem.RecordDetail.route
+                    + DeepLinkKey.HEADER + "{${DeepLinkKey.HEADER}}",
+            arguments = listOf(
+                navArgument(DeepLinkKey.HEADER) {
+                    type = NavType.StringType
+                    defaultValue = ""
+                }
+            )
+        ) {
+            val header = it.arguments?.getString(DeepLinkKey.HEADER) ?: ""
+
+            RecordDetailScreen(
+                navController = navController,
+                header = header
+            )
         }
     }
 }
@@ -79,4 +95,8 @@ sealed class AppNavigationItem(val route: String) {
     object Record : AppNavigationItem("Record")
 
     object RecordDetail : AppNavigationItem("RecordDetail")
+}
+
+object DeepLinkKey {
+    const val HEADER = "header"
 }

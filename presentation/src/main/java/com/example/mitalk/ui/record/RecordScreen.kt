@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.AppNavigationItem
+import com.example.mitalk.DeepLinkKey
 import com.example.mitalk.R
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
@@ -94,6 +95,7 @@ private fun RecordList(
             ) {
                 navController.navigate(
                     route = AppNavigationItem.RecordDetail.route
+                            + DeepLinkKey.HEADER + it.title
                 )
             }
         }
