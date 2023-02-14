@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.R
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
@@ -49,7 +50,11 @@ fun ChatTypeScreen(
                         .weight(7f)
                         .background(color = Color(0xFF62A3A7), shape = ChatTypeBoxShape),
                     imgModifier = Modifier.padding(bottom = 16.dp, start = 12.dp)
-                )
+                ) {
+                    navController.navigate(
+                        route = AppNavigationItem.ChatRoom.route
+                    )
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
                     title = stringResource(id = R.string.function_question),
@@ -59,7 +64,11 @@ fun ChatTypeScreen(
                         .weight(5f)
                         .background(color = Color(0xFF81A578), shape = ChatTypeBoxShape),
                     imgModifier = Modifier
-                )
+                ) {
+                    navController.navigate(
+                        route = AppNavigationItem.ChatRoom.route
+                    )
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
                     title = stringResource(id = R.string.alliance_inquiry),
@@ -69,7 +78,11 @@ fun ChatTypeScreen(
                         .weight(6f)
                         .background(color = Color(0xFF959FC3), shape = ChatTypeBoxShape),
                     imgModifier = Modifier
-                )
+                ) {
+                    navController.navigate(
+                        route = AppNavigationItem.ChatRoom.route
+                    )
+                }
             }
             Spacer(modifier = Modifier.width(20.dp))
             Column(modifier = Modifier.weight(1f)) {
@@ -81,7 +94,11 @@ fun ChatTypeScreen(
                         .weight(5f)
                         .background(color = Color(0xFFA96A6A), shape = ChatTypeBoxShape),
                     imgModifier = Modifier.padding(top = 12.dp)
-                )
+                ) {
+                    navController.navigate(
+                        route = AppNavigationItem.ChatRoom.route
+                    )
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
                     title = stringResource(id = R.string.product_feedback),
@@ -91,7 +108,11 @@ fun ChatTypeScreen(
                         .weight(7f)
                         .background(color = Color(0xFFB49C79), shape = ChatTypeBoxShape),
                     imgModifier = Modifier.padding(start = 12.dp)
-                )
+                ) {
+                    navController.navigate(
+                        route = AppNavigationItem.ChatRoom.route
+                    )
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
                     title = stringResource(id = R.string.etc),
@@ -100,7 +121,11 @@ fun ChatTypeScreen(
                         .weight(6f)
                         .background(color = Color(0xFF698EAF), shape = ChatTypeBoxShape),
                     imgModifier = Modifier.padding(start = 20.dp, top = 20.dp, end = 5.dp)
-                )
+                ) {
+                    navController.navigate(
+                        route = AppNavigationItem.ChatRoom.route
+                    )
+                }
             }
             Spacer(modifier = Modifier.width(20.dp))
         }
@@ -114,7 +139,8 @@ fun ChatTypeBox(
     comment: String? = null,
     img: MitalkIcon,
     modifier: Modifier,
-    imgModifier: Modifier
+    imgModifier: Modifier,
+    onPressed: () -> Unit,
 ) {
     Box(
         modifier = modifier

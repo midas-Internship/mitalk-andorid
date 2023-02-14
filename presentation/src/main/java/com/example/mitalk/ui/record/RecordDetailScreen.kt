@@ -24,7 +24,7 @@ import com.example.mitalk.util.theme.*
 
 @Composable
 fun RecordDetailScreen(
-    navController: NavController
+    navController: NavController,
 ) {
     var chatList = remember { mutableStateListOf<ChatData>() }
     chatList.add(ChatData("asasf", true, ""))
@@ -33,9 +33,11 @@ fun RecordDetailScreen(
     chatList.add(ChatData("asfasf", true, ""))
     chatList.add(ChatData("asfasfasf", false, ""))
     Column {
-        MiHeader(backPressed = {
-            navController.popBackStack()
-        })
+        MiHeader(
+            backPressed = {
+                navController.popBackStack()
+            },
+        )
         Spacer(modifier = Modifier.height(10.dp))
         FindInput {
         }

@@ -94,7 +94,9 @@ fun MainScreen(
             icon = painterResource(id = MitalkIcon.Counselor_Img.drawableId),
             callCheck = callCheck,
         ) {
-
+            navController.navigate(
+                route = AppNavigationItem.ChatType.route
+            )
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -105,7 +107,9 @@ fun MainScreen(
             backgroundColor = MitalkColor.MainBlue,
             icon = painterResource(id = MitalkIcon.Record_Img.drawableId)
         ) {
-
+            navController.navigate(
+                route = AppNavigationItem.Record.route
+            )
         }
 
         EvaluationDialog(
