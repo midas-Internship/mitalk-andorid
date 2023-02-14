@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +37,10 @@ fun RecordScreen(
     val container = vm.container
     val state = container.stateFlow.collectAsState().value
     val sideEffect = container.sideEffectFlow
+
+    LaunchedEffect(Unit) {
+        vm.getRecordList()
+    }
 
     Column {
         MiHeader(
