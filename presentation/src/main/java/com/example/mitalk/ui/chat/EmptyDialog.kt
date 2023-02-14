@@ -20,22 +20,28 @@ import com.example.mitalk.util.theme.Regular12NO
 import com.example.mitalk.util.theme.Regular14NO
 import kotlinx.coroutines.delay
 
+const val RemainTime = 30
+
 @Composable
 fun EmptyDialog(
     visible: Boolean,
     onDismissRequest: () -> Unit,
     onTimeOut: () -> Unit
 ) {
-    var remainTime by remember { mutableStateOf(30) }
-    LaunchedEffect(Unit) {
-        while (remainTime != 0) {
-            delay(1_000L)
-            remainTime--
-        }
-        onTimeOut()
-    }
+    var remainTime by remember { mutableStateOf(RemainTime) }
     if (visible) {
-        Dialog(onDismissRequest = onDismissRequest) {
+        LaunchedEffect(remainTime) {
+            if (remainTime > 0) {
+                delay(1_000L)
+                remainTime--
+            } else {
+                onTimeOut()
+            }
+        }
+        Dialog(onDismissRequest = {
+            remainTime = RemainTime
+            onDismissRequest()
+        }) {
             Column(
                 modifier = Modifier
                     .width(280.dp)
@@ -58,7 +64,10 @@ fun EmptyDialog(
                     color = Color(0xFF4C4C4C)
                 )
                 Spacer(modifier = Modifier.weight(1F))
-                EmptyBtn(remainTime = remainTime, onDismissRequest = onDismissRequest)
+                EmptyBtn(remainTime = remainTime, onDismissRequest = {
+                    remainTime = RemainTime
+                    onDismissRequest()
+                })
             }
         }
     }
@@ -86,7 +95,10 @@ fun EmptyBtn(
         ) {
             Row {
                 Regular14NO(text = stringResource(id = R.string.remain_time))
-                Regular14NO(text = remainTime.toString(), color = if (remainTime > 5) MitalkColor.Black else Color(0xFFFC2F2F))
+                Regular14NO(
+                    text = remainTime.toString(),
+                    color = if (remainTime > 5) MitalkColor.Black else Color(0xFFFC2F2F)
+                )
                 Regular14NO(text = stringResource(id = R.string.remain_tim_sec))
             }
         }
@@ -99,7 +111,7 @@ fun EmptyBtn(
                     color = Color(0xFF4C53FF),
                     shape = RoundedCornerShape(bottomEnd = 5.dp)
                 )
-                .miClickable { onDismissRequest }
+                .miClickable { onDismissRequest() }
         ) {
             Regular14NO(text = stringResource(id = R.string.okay), color = MitalkColor.White)
         }
