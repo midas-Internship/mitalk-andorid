@@ -13,6 +13,11 @@ android {
         targetSdk = Version.TARGET_SDK_VERSION
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            com.android.build.gradle.internal.cxx.configure.gradleLocalProperties(rootDir).getProperty("BASE_URL")
+        )
     }
 
     buildTypes {
@@ -23,7 +28,7 @@ android {
                 "proguard-rules.pro"
             )
         }
-    }
+}
     compileOptions {
         sourceCompatibility = Version.JAVA_VERSION
         targetCompatibility = Version.JAVA_VERSION

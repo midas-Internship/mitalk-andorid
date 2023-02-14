@@ -28,8 +28,8 @@ object Version {
 
     const val ORBIT = "4.5.0"
 
-    const val RETROFIT = "2.7.1"
-    const val OKHTTP = "3.14.9"
+    const val RETROFIT = "2.9.0"
+    const val OKHTTP = "4.9.3"
 
     const val JUNIT = "4.13.2"
     const val MOCKITO_KOTLIN = "4.1.0"
