@@ -6,6 +6,7 @@ import com.example.domain.param.LoginParam
 import com.example.domain.usecase.auth.LoginUseCase
 import com.example.mitalk.mvi.LoginSideEffect
 import com.example.mitalk.mvi.LoginState
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
@@ -25,12 +26,6 @@ class SplashViewModel @Inject constructor(
         viewModelScope.launch {
             loginUseCase(loginParam)
                 .onSuccess {
-                    reduce { state.copy(
-                        accessToken = it.accessToken,
-                        refreshToken = it.refreshToken,
-                        accessExp = it.accessExp,
-                        refreshExp = it.refreshExp)
-                    }
                     postSideEffect(LoginSideEffect.LoginSuccess)
                 }.onFailure {
                     when(it) {
@@ -38,5 +33,9 @@ class SplashViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    fun inPutResult(result: GoogleSignInAccount?) = intent {
+        reduce { state.copy(result = result) }
     }
 }
