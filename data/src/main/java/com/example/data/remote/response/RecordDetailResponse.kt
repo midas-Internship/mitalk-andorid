@@ -10,7 +10,7 @@ data class RecordDetailResponse(
     val customerName: String,
     @SerializedName("counsellor_name")
     val counsellorName: String,
-    @SerializedName("messageRecords")
+    @SerializedName("message_records")
     val messageRecords: List<MessageRecord>,
 ) {
     data class MessageRecord(

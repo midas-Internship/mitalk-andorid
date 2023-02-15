@@ -4,13 +4,13 @@ import com.example.domain.entity.LoginEntity
 import com.google.gson.annotations.SerializedName
 
 data class LoginResponse(
-    @SerializedName("accessToken")
+    @SerializedName("access_token")
     val accessToken: String,
-    @SerializedName("refreshToken")
+    @SerializedName("refresh_token")
     val refreshToken: String,
-    @SerializedName("accessExp")
+    @SerializedName("access_exp")
     val accessExp: String,
-    @SerializedName("refreshExp")
+    @SerializedName("refresh_exp")
     val refreshExp: String,
 )
 
