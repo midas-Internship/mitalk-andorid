@@ -28,13 +28,11 @@ class AuthPreferenceImpl @Inject constructor(
     override suspend fun clearRefreshToken() =
         clearPreference(REFRESH_TOKEN)
 
-    override suspend fun saveExpirationAt(expiredAt: LocalDateTime) =
-        saveLongPreference(EXPIRED_AT, expiredAt.atZone(ZoneId.systemDefault()).toEpochSecond())
-
-    override suspend fun fetchExpirationAt(): LocalDateTime =
+    override suspend fun saveRefreshExp(refreshExp: LocalDateTime) =
+        saveLongPreference(EXPIRED_AT, refreshExp.atZone(ZoneId.systemDefault()).toEpochSecond())
+    override suspend fun fetchRefreshExp(): LocalDateTime =
         Instant.ofEpochSecond(fetchLongPreference(EXPIRED_AT)).atZone(ZoneId.systemDefault()).toLocalDateTime()
-
-    override suspend fun clearExpirationAt() =
+    override suspend fun clearRefreshExp() =
         clearPreference(EXPIRED_AT)
 
     private fun fetchStringPreference(key: String): String =

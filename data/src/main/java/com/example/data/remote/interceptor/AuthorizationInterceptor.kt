@@ -23,11 +23,12 @@ class AuthorizationInterceptor @Inject constructor(
         val request = chain.request()
         val path = request.url.encodedPath
         val ignorePath = listOf(
-            "/customer/signin"
+            "/auth",
+            "/customer/signin",
         )
         if (ignorePath.contains(path)) return chain.proceed(request)
 
-        val expiredAt = runBlocking { authPreference.fetchExpirationAt() }
+        val expiredAt = runBlocking { authPreference.fetchRefreshExp() }
         val currentTime = LocalDateTime.now(ZoneId.systemDefault())
 
         if (expiredAt.isBefore(currentTime)) {
@@ -49,7 +50,7 @@ class AuthorizationInterceptor @Inject constructor(
                 runBlocking {
                     authPreference.saveAccessToken(token.accessToken)
                     authPreference.saveRefreshToken(token.refreshToken)
-                    authPreference.saveExpirationAt(LocalDateTime.parse(token.expirationAt))
+                    authPreference.saveRefreshExp(LocalDateTime.parse(token.refreshExp))
                 }
             } else throw NeedLoginException()
         }

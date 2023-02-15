@@ -12,8 +12,6 @@ data class LoginResponse(
     val accessExp: String,
     @SerializedName("refreshExp")
     val refreshExp: String,
-    @SerializedName("expirationAt")
-    val expirationAt: String,
 )
 
 fun LoginResponse.toEntity() = LoginEntity(
