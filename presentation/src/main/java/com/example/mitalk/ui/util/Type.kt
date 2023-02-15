@@ -45,3 +45,57 @@ enum class RecordItemType(
         titleId = R.string.function_question
     ),
 }
+
+enum class EvaluateItemType(
+    val typeId: Int,
+    val type: String
+) {
+    KINDNESS(
+        typeId = R.string.is_kind,
+        type = "KINDNESS"
+    ),
+    USEFUL(
+        typeId = R.string.is_useful,
+        type = "USEFUL"
+    ),
+    LISTEN(
+        typeId = R.string.listen_well,
+        type = "LISTEN"
+    ),
+    EXPLANATION(
+        typeId = R.string.is_good_explanation,
+        type = "EXPLANATION"
+    ),
+    COMFORT(
+        typeId = R.string.is_comfortable,
+        type = "COMFORT"
+    ),
+    FASTANSWER(
+        typeId = R.string.is_fast_reply,
+        type = "FASTANSWER"
+    ),
+    UNKINDNESS(
+        typeId = R.string.is_unkind,
+        type = "UNKINDNESS"
+    ),
+    USELESS(
+        typeId = R.string.is_not_useful,
+        type = "USELESS"
+    ),
+    NOT_APPROPRIATE_ANSWER(
+        typeId = R.string.inappropriate_answer,
+        type = "NOT_APPROPRIATE_ANSWER"
+    ),
+    DIFFICULT_EXPLANATION(
+        typeId = R.string.is_bad_explanation,
+        type = "DIFFICULT_EXPLANATION"
+    ),
+    SLANG(
+        typeId = R.string.abuse_slang,
+        type = "SLANG"
+    ),
+    SLOW_ANSWER(
+        typeId = R.string.is_slow_reply,
+        type = "SLOW_ANSWER"
+    )
+}
