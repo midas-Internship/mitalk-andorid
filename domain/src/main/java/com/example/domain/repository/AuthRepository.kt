@@ -8,5 +8,7 @@ interface AuthRepository {
 
     suspend fun autoLogin()
 
+    suspend fun getAccessToken(): String
+
     suspend fun logout()
 }
