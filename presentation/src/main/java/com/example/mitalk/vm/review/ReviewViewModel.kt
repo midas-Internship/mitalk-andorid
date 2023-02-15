@@ -18,7 +18,6 @@ class ReviewViewModel @Inject constructor(
     override val container = container<Unit, ReviewSideEffect>(Unit)
 
     fun postReview(reviewParam: ReviewParam) = intent {
-        println("안녕 ${reviewParam.reviewItem}")
         kotlin.runCatching {
             postReviewUseCase(reviewParam = reviewParam)
         }.onSuccess {
