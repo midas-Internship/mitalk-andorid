@@ -1,5 +1,6 @@
 package com.example.data.remote.datasource
 
+import android.util.Log
 import com.example.data.remote.api.ReviewApi
 import com.example.data.remote.request.toRequest
 import com.example.data.remote.util.miTalkApiCall

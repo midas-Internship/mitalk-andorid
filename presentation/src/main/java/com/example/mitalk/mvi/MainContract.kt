@@ -8,4 +8,7 @@ data class MainState(
 
 sealed class MainSideEffect {
     object Logout : MainSideEffect()
+
+    object ReviewSuccess : MainSideEffect()
+
 }

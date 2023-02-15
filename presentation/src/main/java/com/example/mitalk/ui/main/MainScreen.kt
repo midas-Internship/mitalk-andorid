@@ -1,5 +1,6 @@
 package com.example.mitalk.ui.main
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.scrollable
@@ -21,11 +22,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.domain.param.ReviewParam
 import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.R
 import com.example.mitalk.mvi.MainSideEffect
+import com.example.mitalk.mvi.MainState
 import com.example.mitalk.ui.chat.ExitChatDialog
 import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.*
@@ -57,6 +60,9 @@ fun MainScreen(
                 ) {
                     popUpTo(0)
                 }
+            }
+            MainSideEffect.ReviewSuccess -> {
+                mainViewModel.clearCounsellorId()
             }
         }
     }
@@ -154,10 +160,11 @@ fun MainScreen(
 
         EvaluationDialog(
             name = "백승민",
-            visible = (state.counsellorId.toString().isNotEmpty()),
+            visible = (state.counsellorId != null),
             onDismissRequest = {
-                //mainViewModel.clearCounsellorId()
-            }
+                mainViewModel.postReview(ReviewParam(null,null, listOf(), null))
+            },
+            onBtnPressed = {}
         )
 
         ExitChatDialog(

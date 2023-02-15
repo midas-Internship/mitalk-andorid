@@ -22,20 +22,18 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.param.ReviewParam
 import com.example.mitalk.R
 import com.example.mitalk.ui.util.EvaluateItemType
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.*
-import com.example.mitalk.vm.review.ReviewViewModel
 
 @Composable
 fun EvaluationDialog(
     name: String,
     visible: Boolean,
     onDismissRequest: () -> Unit,
-    vm: ReviewViewModel = hiltViewModel()
+    onBtnPressed: () -> Unit,
 ) {
     var starCount by remember { mutableStateOf(1) }
     var goodEvaluationSelected1 by remember { mutableStateOf<EvaluateItemType?>(null) }
@@ -59,16 +57,7 @@ fun EvaluationDialog(
                     )
             ) {
                 Spacer(modifier = Modifier.height(18.dp))
-                DialogClose(onDismissRequest = {
-                    vm.postReview(
-                        ReviewParam(
-                            null,
-                            null,
-                            listOf()
-                        )
-                    )
-                    onDismissRequest()
-                })
+                DialogClose(onDismissRequest = onDismissRequest)
                 Spacer(modifier = Modifier.height(15.dp))
                 DialogNameTag(name = name)
                 Spacer(modifier = Modifier.height(8.dp))
@@ -127,19 +116,19 @@ fun EvaluationDialog(
                 )
                 Spacer(modifier = Modifier.height(5.dp))
                 DialogBtn {
-                    vm.postReview(
-                        ReviewParam(
-                            starCount,
-                            evaluationComment,
-                            if ((5 - starCount) < 2) listOfNotNull(
-                                badEvaluationSelected1?.type,
-                                badEvaluationSelected2?.type
-                            ) else listOfNotNull(
-                                goodEvaluationSelected1?.type,
-                                goodEvaluationSelected2?.type
-                            )
-                        )
-                    )
+//                    vm.postReview(
+//                        ReviewParam(
+//                            starCount,
+//                            evaluationComment,
+//                            if ((5 - starCount) < 2) listOfNotNull(
+//                                badEvaluationSelected1?.type,
+//                                badEvaluationSelected2?.type
+//                            ) else listOfNotNull(
+//                                goodEvaluationSelected1?.type,
+//                                goodEvaluationSelected2?.type
+//                            )
+//                        )
+//                    )
                 }
             }
         }
