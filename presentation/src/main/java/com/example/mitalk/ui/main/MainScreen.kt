@@ -67,6 +67,8 @@ fun MainScreen(
         }
     }
 
+
+
     val newAnswer = true
 
     val callCheck = false
@@ -161,10 +163,26 @@ fun MainScreen(
         EvaluationDialog(
             name = "백승민",
             visible = (state.counsellorId != null),
+            mainViewModel = mainViewModel,
             onDismissRequest = {
                 mainViewModel.postReview(ReviewParam(null,null, listOf(), null))
             },
-            onBtnPressed = {}
+            onBtnPressed = {
+                mainViewModel.postReview(
+                    ReviewParam(
+                        star = state.starCount,
+                        message = state.evaluateComment,
+                        reviewItem = if ((5 - state.starCount) < 2) listOfNotNull(
+                            state.badEvaluationSelected1?.type,
+                            state.badEvaluationSelected2?.type
+                        ) else listOfNotNull(
+                            state.goodEvaluationSelected1?.type,
+                            state.goodEvaluationSelected2?.type
+                        ),
+                        counsellorId = state.counsellorId,
+                    )
+                )
+            }
         )
 
         ExitChatDialog(

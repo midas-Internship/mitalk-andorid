@@ -27,21 +27,20 @@ import com.example.mitalk.R
 import com.example.mitalk.ui.util.EvaluateItemType
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.*
+import com.example.mitalk.vm.main.MainViewModel
 
 @Composable
 fun EvaluationDialog(
     name: String,
+    mainViewModel: MainViewModel,
     visible: Boolean,
     onDismissRequest: () -> Unit,
     onBtnPressed: () -> Unit,
 ) {
-    var starCount by remember { mutableStateOf(1) }
-    var goodEvaluationSelected1 by remember { mutableStateOf<EvaluateItemType?>(null) }
-    var goodEvaluationSelected2 by remember { mutableStateOf<EvaluateItemType?>(null) }
-    var badEvaluationSelected1 by remember { mutableStateOf<EvaluateItemType?>(null) }
-    var badEvaluationSelected2 by remember { mutableStateOf<EvaluateItemType?>(null) }
-    var evaluationComment by remember { mutableStateOf<String>("") }
 
+    val container = mainViewModel.container
+    val state = container.stateFlow.collectAsState().value
+    val sideEffect = container.sideEffectFlow
 
     if (visible) {
         Dialog(
@@ -61,75 +60,61 @@ fun EvaluationDialog(
                 Spacer(modifier = Modifier.height(15.dp))
                 DialogNameTag(name = name)
                 Spacer(modifier = Modifier.height(8.dp))
-                DialogStar(starCount = starCount, onStarPressed = { starCount = it })
+                DialogStar(starCount = state.starCount, onStarPressed = { mainViewModel.inputStarCount(it) })
                 Spacer(modifier = Modifier.height(8.dp))
-                DialogWhatLike(starCount = starCount)
+                DialogWhatLike(starCount = state.starCount)
                 Spacer(modifier = Modifier.height(9.dp))
                 EvaluateList(
-                    starCount = starCount,
+                    starCount = state.starCount,
                     onPressed = {
-                        if ((5 - starCount) < 2) {
+                        if ((5 - state.starCount) < 2) {
                             when (it.type) {
-                                badEvaluationSelected1?.type -> {
-                                    badEvaluationSelected1 = null
+                                state.badEvaluationSelected1?.type -> {
+                                    mainViewModel.inputBadEvaluationSelected1(null)
                                 }
-                                badEvaluationSelected2?.type -> {
-                                    val swap = badEvaluationSelected1
-                                    badEvaluationSelected1 = null
-                                    badEvaluationSelected2 = swap
+                                state.badEvaluationSelected2?.type -> {
+                                    val swap = state.badEvaluationSelected1
+                                    mainViewModel.inputBadEvaluationSelected1(null)
+                                    mainViewModel.inputBadEvaluationSelected2(swap)
                                 }
                                 else -> {
-                                    val swap = badEvaluationSelected2
-                                    badEvaluationSelected2 = it
-                                    badEvaluationSelected1 = swap
+                                    val swap = state.badEvaluationSelected2
+                                    mainViewModel.inputBadEvaluationSelected2(it)
+                                    mainViewModel.inputBadEvaluationSelected1(swap)
                                 }
                             }
                         } else {
                             when (it.type) {
-                                goodEvaluationSelected1?.type -> {
-                                    goodEvaluationSelected1 = null
+                                state.goodEvaluationSelected1?.type -> {
+                                    mainViewModel.inputGoodEvaluationSelected1(null)
                                 }
-                                goodEvaluationSelected2?.type -> {
-                                    val swap = goodEvaluationSelected1
-                                    goodEvaluationSelected1 = null
-                                    goodEvaluationSelected2 = swap
+                                state.goodEvaluationSelected2?.type -> {
+                                    val swap = state.goodEvaluationSelected1
+                                    mainViewModel.inputGoodEvaluationSelected1(null)
+                                    mainViewModel.inputGoodEvaluationSelected2(swap)
                                 }
                                 else -> {
-                                    val swap = goodEvaluationSelected2
-                                    goodEvaluationSelected2 = it
-                                    goodEvaluationSelected1 = swap
+                                    val swap = state.goodEvaluationSelected2
+                                    mainViewModel.inputGoodEvaluationSelected2(it)
+                                    mainViewModel.inputGoodEvaluationSelected1(swap)
                                 }
                             }
                         }
                     },
                     evaluationAnswerList =
-                    if ((5 - starCount) < 2) listOf(
-                        badEvaluationSelected1?.type,
-                        badEvaluationSelected2?.type
+                    if ((5 - state.starCount) < 2) listOf(
+                        state.badEvaluationSelected1?.type,
+                        state.badEvaluationSelected2?.type
                     )
-                    else listOf(goodEvaluationSelected1?.type, goodEvaluationSelected2?.type)
+                    else listOf(state.goodEvaluationSelected1?.type, state.goodEvaluationSelected2?.type)
                 )
                 Spacer(modifier = Modifier.height(36.dp))
                 DialogEditText(
-                    value = evaluationComment,
-                    onValueChanged = { evaluationComment = it }
+                    value = state.evaluateComment,
+                    onValueChanged = { mainViewModel.inputEvaluateComment(it) }
                 )
                 Spacer(modifier = Modifier.height(5.dp))
-                DialogBtn {
-//                    vm.postReview(
-//                        ReviewParam(
-//                            starCount,
-//                            evaluationComment,
-//                            if ((5 - starCount) < 2) listOfNotNull(
-//                                badEvaluationSelected1?.type,
-//                                badEvaluationSelected2?.type
-//                            ) else listOfNotNull(
-//                                goodEvaluationSelected1?.type,
-//                                goodEvaluationSelected2?.type
-//                            )
-//                        )
-//                    )
-                }
+                DialogBtn { onBtnPressed() }
             }
         }
     }

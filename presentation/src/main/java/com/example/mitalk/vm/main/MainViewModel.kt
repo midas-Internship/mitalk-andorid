@@ -10,6 +10,7 @@ import com.example.domain.usecase.review.PostReviewUseCase
 import com.example.mitalk.mvi.MainSideEffect
 import com.example.mitalk.mvi.MainState
 import com.example.mitalk.mvi.ReviewSideEffect
+import com.example.mitalk.ui.util.EvaluateItemType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.Container
@@ -63,5 +64,29 @@ class MainViewModel @Inject constructor(
 
                 }
         }
+    }
+
+    fun inputStarCount(starCount: Int) = intent {
+        reduce { state.copy(starCount = starCount) }
+    }
+
+    fun inputEvaluateComment(evaluateComment: String) = intent {
+        reduce { state.copy(evaluateComment = evaluateComment) }
+    }
+
+    fun inputGoodEvaluationSelected1(evaluation: EvaluateItemType?) = intent {
+        reduce { state.copy(goodEvaluationSelected1 = evaluation) }
+    }
+
+    fun inputGoodEvaluationSelected2(evaluation: EvaluateItemType?) = intent {
+        reduce { state.copy(goodEvaluationSelected2 = evaluation) }
+    }
+
+    fun inputBadEvaluationSelected1(evaluation: EvaluateItemType?) = intent {
+        reduce { state.copy(badEvaluationSelected1 = evaluation) }
+    }
+
+    fun inputBadEvaluationSelected2(evaluation: EvaluateItemType?) = intent {
+        reduce { state.copy(badEvaluationSelected2 = evaluation) }
     }
 }
