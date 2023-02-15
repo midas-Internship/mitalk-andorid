@@ -1,7 +1,9 @@
 package com.example.mitalk.mvi
 
+import java.util.UUID
+
 data class MainState(
-    val evaluateText: String = ""
+    val counsellorId: UUID? = null,
 )
 
 sealed class MainSideEffect {

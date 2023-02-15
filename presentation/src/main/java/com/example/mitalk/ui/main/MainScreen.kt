@@ -45,6 +45,10 @@ fun MainScreen(
     val state = container.stateFlow.collectAsState().value
     val sideEffect = container.sideEffectFlow
 
+    LaunchedEffect(Unit) {
+        mainViewModel.checkReviewState()
+    }
+
     sideEffect.observeWithLifecycle {
         when (it) {
             MainSideEffect.Logout -> {
@@ -68,7 +72,6 @@ fun MainScreen(
         if (callCheck) stringResource(id = R.string.counselor_connect_again_comment)
         else stringResource(id = R.string.counselor_connect_comment)
 
-    var evaluationDialogVisible by remember { mutableStateOf(true) }
     var exitDialogVisible by remember { mutableStateOf(false) }
 
     val scroller = rememberScrollState()
@@ -151,9 +154,9 @@ fun MainScreen(
 
         EvaluationDialog(
             name = "백승민",
-            visible = evaluationDialogVisible,
+            visible = (state.counsellorId.toString().isNotEmpty()),
             onDismissRequest = {
-                evaluationDialogVisible = false
+                //mainViewModel.clearCounsellorId()
             }
         )
 
