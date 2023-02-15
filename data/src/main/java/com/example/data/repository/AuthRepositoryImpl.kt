@@ -23,4 +23,8 @@ class AuthRepositoryImpl @Inject constructor(
         val token = remoteAuthDataSource.tokenRefresh("Bearer $refreshToken")
         localAuthDataSource.saveToken(token)
     }
+
+    override suspend fun logout() =
+        localAuthDataSource.clearToken()
+
 }

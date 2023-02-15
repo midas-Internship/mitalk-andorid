@@ -7,4 +7,6 @@ interface AuthRepository {
     suspend fun login(loginParam: LoginParam)
 
     suspend fun autoLogin()
+
+    suspend fun logout()
 }

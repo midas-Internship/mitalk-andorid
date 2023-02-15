@@ -18,21 +18,45 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.R
+import com.example.mitalk.mvi.MainSideEffect
 import com.example.mitalk.ui.chat.ExitChatDialog
+import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.*
+import com.example.mitalk.vm.main.MainViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import kotlinx.coroutines.InternalCoroutinesApi
 
+@OptIn(InternalCoroutinesApi::class)
 @Composable
 fun MainScreen(
     navController: NavController,
+    mainViewModel: MainViewModel = hiltViewModel(),
 ) {
+
+    val container = mainViewModel.container
+    val state = container.stateFlow.collectAsState().value
+    val sideEffect = container.sideEffectFlow
+
+    sideEffect.observeWithLifecycle {
+        when (it) {
+            MainSideEffect.Logout -> {
+                navController.navigate(
+                    route = AppNavigationItem.Splash.route
+                ) {
+                    popUpTo(0)
+                }
+            }
+        }
+    }
+
     val newAnswer = true
 
     val callCheck = false
@@ -140,7 +164,7 @@ fun MainScreen(
             content = stringResource(id = R.string.logout_real),
             onDismissRequest = { exitDialogVisible = false }
         ) {
-
+            mainViewModel.logout()
         }
 
         Spacer(modifier = Modifier.height(12.dp))
