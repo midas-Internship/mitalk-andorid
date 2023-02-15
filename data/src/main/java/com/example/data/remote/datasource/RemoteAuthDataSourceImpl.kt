@@ -15,4 +15,8 @@ class RemoteAuthDataSourceImpl @Inject constructor(
     override suspend fun login(loginParam: LoginParam): LoginEntity = miTalkApiCall {
         authApi.login(loginParam.toRequest()).toEntity()
     }
+
+    override suspend fun tokenRefresh(refreshToken: String): LoginEntity = miTalkApiCall {
+        authApi.tokenRefresh(refreshToken).toEntity()
+    }
 }

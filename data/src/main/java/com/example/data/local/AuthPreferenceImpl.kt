@@ -1,9 +1,11 @@
 package com.example.data.local
 
 import android.content.SharedPreferences
+import android.util.Log
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 class AuthPreferenceImpl @Inject constructor(
@@ -25,13 +27,14 @@ class AuthPreferenceImpl @Inject constructor(
     override suspend fun fetchRefreshToken(): String =
         fetchStringPreference(REFRESH_TOKEN)
 
+
     override suspend fun clearRefreshToken() =
         clearPreference(REFRESH_TOKEN)
 
-    override suspend fun saveRefreshExp(refreshExp: LocalDateTime) =
-        saveLongPreference(EXPIRED_AT, refreshExp.atZone(ZoneId.systemDefault()).toEpochSecond())
-    override suspend fun fetchRefreshExp(): LocalDateTime =
-        Instant.ofEpochSecond(fetchLongPreference(EXPIRED_AT)).atZone(ZoneId.systemDefault()).toLocalDateTime()
+    override suspend fun saveRefreshExp(refreshExp: ZonedDateTime) =
+        saveLongPreference(EXPIRED_AT, refreshExp.toEpochSecond())
+    override suspend fun fetchRefreshExp(): ZonedDateTime =
+        Instant.ofEpochSecond(fetchLongPreference(EXPIRED_AT)).atZone(ZoneId.systemDefault())
     override suspend fun clearRefreshExp() =
         clearPreference(EXPIRED_AT)
 

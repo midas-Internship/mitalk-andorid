@@ -1,8 +1,10 @@
 package com.example.mitalk.vm.splash
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.param.LoginParam
+import com.example.domain.usecase.auth.AutoLoginUseCase
 import com.example.domain.usecase.auth.LoginUseCase
 import com.example.mitalk.mvi.LoginSideEffect
 import com.example.mitalk.mvi.LoginState
@@ -18,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val autoLoginUseCase: AutoLoginUseCase,
 ): ContainerHost<LoginState, LoginSideEffect>, ViewModel() {
     override val container = container<LoginState, LoginSideEffect>(LoginState())
 
@@ -29,8 +32,18 @@ class SplashViewModel @Inject constructor(
                     postSideEffect(LoginSideEffect.LoginSuccess)
                 }.onFailure {
                     when(it) {
-
                     }
+                }
+        }
+    }
+
+    fun autoLogin() = intent {
+        viewModelScope.launch {
+            autoLoginUseCase()
+                .onSuccess {
+                    postSideEffect(LoginSideEffect.LoginSuccess)
+                }
+                .onFailure {
                 }
         }
     }
