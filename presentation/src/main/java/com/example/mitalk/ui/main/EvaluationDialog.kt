@@ -59,7 +59,16 @@ fun EvaluationDialog(
                     )
             ) {
                 Spacer(modifier = Modifier.height(18.dp))
-                DialogClose(onDismissRequest = onDismissRequest)
+                DialogClose(onDismissRequest = {
+                    vm.postReview(
+                        ReviewParam(
+                            null,
+                            null,
+                            listOf()
+                        )
+                    )
+                    onDismissRequest()
+                })
                 Spacer(modifier = Modifier.height(15.dp))
                 DialogNameTag(name = name)
                 Spacer(modifier = Modifier.height(8.dp))
