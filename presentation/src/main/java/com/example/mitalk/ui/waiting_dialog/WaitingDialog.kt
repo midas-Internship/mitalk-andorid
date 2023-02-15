@@ -20,6 +20,7 @@ import com.example.mitalk.util.theme.MitalkColor
 @Composable
 fun WaitingDialog(
     visible: Boolean,
+    remainPeople: String,
     onDismissRequest: () -> Unit
 ) {
     if (visible) {
@@ -42,7 +43,7 @@ fun WaitingDialog(
                 ) {
                     Bold13NO(text = stringResource(id = R.string.waiting_service_prev_comment))
                     Bold13NO(
-                        text = "12",
+                        text = " $remainPeople",
                         color = Color(0xA829C18B),
                         modifier = Modifier
                             .bottomBorder(
@@ -68,5 +69,5 @@ fun WaitingDialog(
 @Composable
 @Preview(showBackground = true)
 fun ShowMainScreen() {
-    WaitingDialog(visible = true, onDismissRequest = { })
+    WaitingDialog(remainPeople = "", visible = true, onDismissRequest = { })
 }
