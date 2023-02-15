@@ -54,13 +54,14 @@ fun SplashScreen(
     val client = GoogleSignIn.getClient(LocalContext.current, gso)
     val googleLoginLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            vm.inPutResult(result = GoogleSignIn.getSignedInAccountFromIntent(it.data).result)
-            if (state.result != null) {
+            val result = GoogleSignIn.getSignedInAccountFromIntent(it.data).result
+            vm.inPutResult(result = result)
+            if (result != null) {
                 vm.login(
                     LoginParam(
-                        email = state.result.email ?: "",
-                        name = "${state.result.familyName}${state.result.givenName}",
-                        profileImg = state.result.photoUrl.toString()
+                        email = result.email ?: "",
+                        name = "${result.familyName}${result.givenName}",
+                        profileImg = result.photoUrl.toString()
                     )
                 )
             }
