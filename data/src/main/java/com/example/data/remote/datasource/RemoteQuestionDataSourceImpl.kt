@@ -9,7 +9,7 @@ import javax.inject.Inject
 class RemoteQuestionDataSourceImpl @Inject constructor(
     private val questionApi: QuestionApi,
 ): RemoteQuestionDataSource {
-    override suspend fun getQuestionList(): QuestionEntity = miTalkApiCall {
-        questionApi.getQuestionList().toEntity()
+    override suspend fun getQuestionList(): List<QuestionEntity> = miTalkApiCall {
+        questionApi.getQuestionList().map {  it.toEntity() }
     }
 }

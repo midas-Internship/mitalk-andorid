@@ -5,6 +5,6 @@ import retrofit2.http.GET
 
 interface QuestionApi {
 
-    @GET("question")
-    fun getQuestionList(): QuestionResponse
+    @GET("/customer/question")
+    suspend fun getQuestionList(): List<QuestionResponse>
 }

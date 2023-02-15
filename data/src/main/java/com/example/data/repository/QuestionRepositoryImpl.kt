@@ -8,7 +8,7 @@ import javax.inject.Inject
 class QuestionRepositoryImpl @Inject constructor(
     private val remoteQuestionDataSource: RemoteQuestionDataSource,
 ): QuestionRepository {
-    override suspend fun getQuestionList(): QuestionEntity =
+    override suspend fun getQuestionList(): List<QuestionEntity> =
         remoteQuestionDataSource.getQuestionList()
 
 }

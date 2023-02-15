@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.usecase.QuestionUseCase
 import com.example.mitalk.mvi.QuestionSideEffect
 import com.example.mitalk.mvi.QuestionState
-import com.example.mitalk.mvi.toState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
@@ -17,22 +16,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuestionViewModel @Inject constructor(
-    //private val questionUseCase: QuestionUseCase,
+    private val questionUseCase: QuestionUseCase,
 ) : ContainerHost<QuestionState, QuestionSideEffect>, ViewModel() {
 
     override val container = container<QuestionState, QuestionSideEffect>(QuestionState())
 
     fun getQuestionList() = intent {
-//        viewModelScope.launch {
-//            questionUseCase()
-//                .onSuccess {
-//                    reduce { state.copy(questionList = it.toState().questionList) }
-//                }.onFailure {
-//                    when (it) {
-//                        else -> QuestionSideEffect.UnknownException
-//                    }
-//                }
-//        }
+        viewModelScope.launch {
+            questionUseCase()
+                .onSuccess {
+                    reduce { state.copy(questionList = it) }
+                }.onFailure {
+                    when (it) {
+                        else -> QuestionSideEffect.UnknownException
+                    }
+                }
+        }
 
     }
 
