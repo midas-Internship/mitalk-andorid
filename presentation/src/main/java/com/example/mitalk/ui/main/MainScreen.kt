@@ -154,8 +154,7 @@ fun MainScreen(
             visible = evaluationDialogVisible,
             onDismissRequest = {
                 evaluationDialogVisible = false
-            },
-            onBtnPressed = { _, _, _ -> }
+            }
         )
 
         ExitChatDialog(

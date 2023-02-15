@@ -28,4 +28,10 @@ abstract class RemoteDataSourceModule {
     abstract fun provideRemoteRecordDataSource(
         remoteRecordDataSourceImpl: RemoteRecordDataSourceImpl
     ): RemoteRecordDataSource
+
+    @Singleton
+    @Binds
+    abstract fun provideRemoteReviewDataSource(
+        remoteReviewDataSourceImpl: RemoteReviewDataSourceImpl
+    ): RemoteReviewDataSource
 }
