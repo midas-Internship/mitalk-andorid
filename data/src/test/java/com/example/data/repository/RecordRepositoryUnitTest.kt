@@ -1,6 +1,7 @@
 package com.example.data.repository
 
 import com.example.data.remote.datasource.RemoteRecordDataSource
+import com.example.domain.entity.RecordDetailEntity
 import com.example.domain.entity.RecordEntity
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -20,6 +21,17 @@ class RecordRepositoryUnitTest {
         runBlocking {
             whenever(remoteRecordDataSource.getRecordList()).thenReturn(entity)
             val result = recordRepository.getRecordList()
+            assertEquals(entity, result)
+        }
+    }
+
+    @Test
+    fun testGetRecordDetail() {
+        val recordId = "1"
+        val entity = mock<RecordDetailEntity>()
+        runBlocking {
+            whenever(remoteRecordDataSource.getRecordDetail(recordId = recordId)).thenReturn(entity)
+            val result = recordRepository.getRecordDetail(recordId = recordId)
             assertEquals(entity, result)
         }
     }

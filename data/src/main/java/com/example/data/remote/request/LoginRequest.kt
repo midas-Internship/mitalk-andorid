@@ -8,7 +8,7 @@ data class LoginRequest(
     val email: String,
     @SerializedName("name")
     val name: String,
-    @SerializedName("profileImg")
+    @SerializedName("profile_img")
     val profileImg: String,
 )
 
