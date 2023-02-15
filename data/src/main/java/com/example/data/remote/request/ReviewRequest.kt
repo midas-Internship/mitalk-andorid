@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ReviewRequest(
     @SerializedName("star")
-    val star: Int,
+    val star: Int?,
     @SerializedName("message")
     val message: String?,
     @SerializedName("review_item")
