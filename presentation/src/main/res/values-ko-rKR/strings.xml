@@ -13,6 +13,7 @@
     <string name="question_many">자주 묻는 질문</string>
     <string name="question_many_comment">사람들이 자주 묻는 질문입니다.</string>
     <string name="call_out">연결 끊기</string>
+    <string name="setting">설정</string>
     <string name="consulting_connect">상담 연결</string>
     <string name="function_suggest">기능 제안</string>
     <string name="function_suggest_comment">새로운 기능을 제안해요</string>
@@ -58,4 +59,6 @@
     <string name="waiting_service_next_comment">명의 대기자가 있습니다.</string>
     <string name="waiting_service_comment">잠시만 기다리시면 상담원과 연결시켜드리겠습니다.</string>
     <string name="consulting_record">상담 기록</string>
+    <string name="logout">로그아웃</string>
+    <string name="logout_real">정말 로그아웃 하시겠습니까?</string>
 </resources>

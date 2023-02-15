@@ -114,6 +114,18 @@ class MitalkIcon private constructor(
         )
 
         @Stable
+        val Setting_Img = MitalkIcon(
+            drawableId = R.drawable.img_setting,
+            contentDescription = "setting"
+        )
+
+        @Stable
+        val Logout_Img = MitalkIcon(
+            drawableId = R.drawable.img_logout,
+            contentDescription = "log out"
+        )
+
+        @Stable
         val Bulb_Img = MitalkIcon(
             drawableId = R.drawable.img_bulb,
             contentDescription = "bulb"

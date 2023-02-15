@@ -2,8 +2,11 @@ package com.example.mitalk.ui.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,20 +18,45 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.R
+import com.example.mitalk.mvi.MainSideEffect
+import com.example.mitalk.ui.chat.ExitChatDialog
+import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.*
+import com.example.mitalk.vm.main.MainViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import kotlinx.coroutines.InternalCoroutinesApi
 
+@OptIn(InternalCoroutinesApi::class)
 @Composable
 fun MainScreen(
-    navController: NavController
+    navController: NavController,
+    mainViewModel: MainViewModel = hiltViewModel(),
 ) {
+
+    val container = mainViewModel.container
+    val state = container.stateFlow.collectAsState().value
+    val sideEffect = container.sideEffectFlow
+
+    sideEffect.observeWithLifecycle {
+        when (it) {
+            MainSideEffect.Logout -> {
+                navController.navigate(
+                    route = AppNavigationItem.Splash.route
+                ) {
+                    popUpTo(0)
+                }
+            }
+        }
+    }
+
     val newAnswer = true
 
     val callCheck = false
@@ -40,9 +68,15 @@ fun MainScreen(
         if (callCheck) stringResource(id = R.string.counselor_connect_again_comment)
         else stringResource(id = R.string.counselor_connect_comment)
 
-    var dialogVisible by remember { mutableStateOf(true) }
+    var evaluationDialogVisible by remember { mutableStateOf(true) }
+    var exitDialogVisible by remember { mutableStateOf(false) }
 
-    Column {
+    val scroller = rememberScrollState()
+
+    Column(
+        modifier = Modifier
+            .verticalScroll(state = scroller)
+    ) {
         MiHeader(
             backBtn = false,
         ) {
@@ -117,11 +151,20 @@ fun MainScreen(
 
         EvaluationDialog(
             name = "백승민",
-            visible = dialogVisible,
+            visible = evaluationDialogVisible,
             onDismissRequest = {
-                dialogVisible = !dialogVisible
+                evaluationDialogVisible = false
             }
         )
+
+        ExitChatDialog(
+            visible = exitDialogVisible,
+            title = stringResource(id = R.string.logout),
+            content = stringResource(id = R.string.logout_real),
+            onDismissRequest = { exitDialogVisible = false }
+        ) {
+            mainViewModel.logout()
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -134,6 +177,28 @@ fun MainScreen(
             navController.navigate(
                 route = AppNavigationItem.Question.route
             )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        MainContent(
+            text = stringResource(id = R.string.setting),
+            comment = "",
+            backgroundColor = Color(0xFF646464),
+            icon = painterResource(id = MitalkIcon.Setting_Img.drawableId)
+        ) {
+
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        MainContent(
+            text = stringResource(id = R.string.logout),
+            comment = "",
+            backgroundColor = Color(0xFF58EBD0),
+            icon = painterResource(id = MitalkIcon.Logout_Img.drawableId)
+        ) {
+            exitDialogVisible = true
         }
     }
 }
@@ -148,7 +213,7 @@ private fun MainContent(
     backgroundColor: Color,
     icon: Painter,
     callCheck: Boolean = false,
-    onPressed: () -> Unit = {},
+    onPressed: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -166,32 +231,42 @@ private fun MainContent(
         Spacer(modifier = Modifier.width(17.dp))
 
         Column {
-            Spacer(modifier = Modifier.height(16.dp))
+            if(comment.isEmpty()) {
+                Bold26NO(
+                    text = text,
+                    color = MitalkColor.White,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .wrapContentHeight(align = Alignment.CenterVertically)
+                )
+            } else {
+                Spacer(modifier = Modifier.height(20.dp))
 
-            if (callCheck) {
-                Row {
+                if (callCheck) {
+                    Row {
+                        Bold20NO(
+                            text = text,
+                            color = MitalkColor.White,
+                        )
+                        Bold20NO(
+                            text = stringResource(id = R.string.call_out),
+                            color = Color(0xFFF1EBB4),
+                        )
+                    }
+                } else {
                     Bold20NO(
                         text = text,
                         color = MitalkColor.White,
                     )
-                    Bold20NO(
-                        text = stringResource(id = R.string.call_out),
-                        color = Color(0xFFF1EBB4),
-                    )
                 }
-            } else {
-                Bold20NO(
-                    text = text,
+
+                Spacer(modifier = Modifier.height(7.dp))
+
+                Regular12NO(
+                    text = comment,
                     color = MitalkColor.White,
                 )
             }
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Regular12NO(
-                text = comment,
-                color = MitalkColor.White,
-            )
         }
 
         Image(
