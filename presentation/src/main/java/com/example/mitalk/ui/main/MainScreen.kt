@@ -24,6 +24,7 @@ import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.R
+import com.example.mitalk.ui.chat.ExitChatDialog
 import com.example.mitalk.util.theme.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -43,7 +44,8 @@ fun MainScreen(
         if (callCheck) stringResource(id = R.string.counselor_connect_again_comment)
         else stringResource(id = R.string.counselor_connect_comment)
 
-    var dialogVisible by remember { mutableStateOf(true) }
+    var evaluationDialogVisible by remember { mutableStateOf(true) }
+    var exitDialogVisible by remember { mutableStateOf(false) }
 
     val scroller = rememberScrollState()
 
@@ -125,12 +127,21 @@ fun MainScreen(
 
         EvaluationDialog(
             name = "백승민",
-            visible = dialogVisible,
+            visible = evaluationDialogVisible,
             onDismissRequest = {
-                dialogVisible = !dialogVisible
+                evaluationDialogVisible = false
             },
             onBtnPressed = { _, _, _ -> }
         )
+
+        ExitChatDialog(
+            visible = exitDialogVisible,
+            title = stringResource(id = R.string.logout),
+            content = stringResource(id = R.string.logout_real),
+            onDismissRequest = { exitDialogVisible = false }
+        ) {
+
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -164,7 +175,7 @@ fun MainScreen(
             backgroundColor = Color(0xFF58EBD0),
             icon = painterResource(id = MitalkIcon.Logout_Img.drawableId)
         ) {
-            
+            exitDialogVisible = true
         }
     }
 }

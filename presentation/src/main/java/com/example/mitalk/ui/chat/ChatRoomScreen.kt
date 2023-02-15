@@ -95,6 +95,8 @@ fun ChatRoomScreen(
         Spacer(modifier = Modifier.height(18.dp))
         ExitChatDialog(
             visible = exitChatDialogVisible,
+            title = stringResource(id = R.string.main_screen),
+            content = stringResource(id = R.string.main_screen_comment),
             onDismissRequest = { exitChatDialogVisible = false },
             onBtnPressed = { navController.popBackStack() })
         EmptyDialog(visible = emptyDialogVisible, onDismissRequest = {

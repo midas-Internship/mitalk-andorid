@@ -62,6 +62,7 @@
     <string name="main_screen_comment">메인화면으로 이동하시겠습니까?</string>
     <string name="cancel">취소</string>
     <string name="okay">확인</string>
+    <string name="logout_real">정말 로그아웃 하시겠습니까?</string>
 
     <!--empty dialog    -->
     <string name="empty">자리비움</string>

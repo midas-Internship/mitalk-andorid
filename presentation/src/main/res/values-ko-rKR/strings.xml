@@ -60,4 +60,5 @@
     <string name="waiting_service_comment">잠시만 기다리시면 상담원과 연결시켜드리겠습니다.</string>
     <string name="consulting_record">상담 기록</string>
     <string name="logout">로그아웃</string>
+    <string name="logout_real">정말 로그아웃 하시겠습니까?</string>
 </resources>
