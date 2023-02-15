@@ -44,7 +44,12 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             checkReviewStateUseCase()
                 .onSuccess {
-                    reduce { state.copy(counsellorId = it) }
+                    reduce {
+                        state.copy(
+                            counsellorId = it.counsellorId,
+                            counsellorName = it.name
+                        )
+                    }
                 }
                 .onFailure {
                 }

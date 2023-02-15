@@ -161,7 +161,7 @@ fun MainScreen(
         }
 
         EvaluationDialog(
-            name = "백승민",
+            name = state.counsellorName ?: "",
             visible = (state.counsellorId != null),
             mainViewModel = mainViewModel,
             onDismissRequest = {

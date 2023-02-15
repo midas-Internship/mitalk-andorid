@@ -1,6 +1,7 @@
 package com.example.data.repository
 
 import com.example.data.remote.datasource.RemoteReviewDataSource
+import com.example.domain.entity.CheckReviewStateEntity
 import com.example.domain.param.ReviewParam
 import com.example.domain.repository.ReviewRepository
 import java.util.*
@@ -12,6 +13,6 @@ class ReviewRepositoryImpl @Inject constructor(
     override suspend fun postReview(reviewParam: ReviewParam) =
         remoteReviewDataSource.postReview(reviewParam = reviewParam)
 
-    override suspend fun checkReviewState(): UUID? =
+    override suspend fun checkReviewState(): CheckReviewStateEntity =
         remoteReviewDataSource.checkReviewState()
 }

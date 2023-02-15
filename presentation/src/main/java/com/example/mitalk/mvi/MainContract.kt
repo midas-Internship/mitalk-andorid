@@ -5,6 +5,7 @@ import java.util.UUID
 
 data class MainState(
     val counsellorId: UUID? = null,
+    val counsellorName: String? = null,
     val starCount: Int = 1,
     val evaluateComment: String = "",
     val goodEvaluationSelected1: EvaluateItemType? = null,
