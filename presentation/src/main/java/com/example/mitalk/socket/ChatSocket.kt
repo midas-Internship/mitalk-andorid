@@ -1,11 +1,11 @@
-package com.example.mitalk.ui.chat_type
+package com.example.mitalk.socket
 
 import com.example.mitalk.BuildConfig
 import com.google.gson.Gson
 import okhttp3.*
 
 data class SocketType(
-    val type: String
+    val type: String?
 )
 
 data class FailWaitingRoom(
@@ -22,9 +22,10 @@ data class SuccessRoom(
 )
 
 class ChatTypeSocket(
-    failAction: () -> Unit,
-    waitingAction: (String) -> Unit,
-    successAction: (String) -> Unit
+    failAction: () -> Unit = {},
+    waitingAction: (String) -> Unit = {},
+    successAction: (String) -> Unit = {},
+    receiveAction: (String) -> Unit = {}
 ) {
     private lateinit var webSocket: WebSocket
     private lateinit var request: Request
@@ -33,11 +34,6 @@ class ChatTypeSocket(
 
     init {
         listener = object : WebSocketListener() {
-            override fun onOpen(webSocket: WebSocket, response: Response) {
-                super.onOpen(webSocket, response)
-                println("안녕 열림")
-            }
-
             override fun onMessage(webSocket: WebSocket, text: String) {
                 super.onMessage(webSocket, text)
                 val gson = Gson()
@@ -54,19 +50,20 @@ class ChatTypeSocket(
                         val result = gson.fromJson(text, SuccessRoom::class.java)
                         successAction(result.roomId)
                     }
+                    null -> {
+                        receiveAction(text)
+                    }
                 }
             }
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)
-                println("안녕 $t")
-            }
-
-            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                super.onClosed(webSocket, code, reason)
-                println("안녕 닫힘")
             }
         }
+    }
+
+    fun send(text: String) {
+        webSocket.send(text)
     }
 
     fun startSocket(chatType: String, accessToken: String) {
