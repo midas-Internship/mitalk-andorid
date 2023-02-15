@@ -1,5 +1,6 @@
 package com.example.mitalk.ui.main
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.scrollable
@@ -21,11 +22,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.domain.param.ReviewParam
 import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.R
 import com.example.mitalk.mvi.MainSideEffect
+import com.example.mitalk.mvi.MainState
 import com.example.mitalk.ui.chat.ExitChatDialog
 import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.*
@@ -45,6 +48,10 @@ fun MainScreen(
     val state = container.stateFlow.collectAsState().value
     val sideEffect = container.sideEffectFlow
 
+    LaunchedEffect(Unit) {
+        mainViewModel.checkReviewState()
+    }
+
     sideEffect.observeWithLifecycle {
         when (it) {
             MainSideEffect.Logout -> {
@@ -54,8 +61,13 @@ fun MainScreen(
                     popUpTo(0)
                 }
             }
+            MainSideEffect.ReviewSuccess -> {
+                mainViewModel.clearCounsellorId()
+            }
         }
     }
+
+
 
     val newAnswer = true
 
@@ -68,7 +80,6 @@ fun MainScreen(
         if (callCheck) stringResource(id = R.string.counselor_connect_again_comment)
         else stringResource(id = R.string.counselor_connect_comment)
 
-    var evaluationDialogVisible by remember { mutableStateOf(true) }
     var exitDialogVisible by remember { mutableStateOf(false) }
 
     val scroller = rememberScrollState()
@@ -150,10 +161,27 @@ fun MainScreen(
         }
 
         EvaluationDialog(
-            name = "백승민",
-            visible = evaluationDialogVisible,
+            name = state.counsellorName ?: "",
+            visible = (state.counsellorId != null),
+            mainViewModel = mainViewModel,
             onDismissRequest = {
-                evaluationDialogVisible = false
+                mainViewModel.postReview(ReviewParam(null,null, listOf(), null))
+            },
+            onBtnPressed = {
+                mainViewModel.postReview(
+                    ReviewParam(
+                        star = state.starCount,
+                        message = state.evaluateComment,
+                        reviewItem = if ((5 - state.starCount) < 2) listOfNotNull(
+                            state.badEvaluationSelected1?.type,
+                            state.badEvaluationSelected2?.type
+                        ) else listOfNotNull(
+                            state.goodEvaluationSelected1?.type,
+                            state.goodEvaluationSelected2?.type
+                        ),
+                        counsellorId = state.counsellorId,
+                    )
+                )
             }
         )
 
