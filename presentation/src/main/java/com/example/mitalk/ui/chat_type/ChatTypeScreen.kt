@@ -17,18 +17,23 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.R
+import com.example.mitalk.mvi.ChatSideEffect
+import com.example.mitalk.socket.ChatTypeSocket
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.ui.waiting_dialog.WaitingDialog
 import com.example.mitalk.util.miClickable
+import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.MitalkColor
 import com.example.mitalk.util.theme.MitalkIcon
 import com.example.mitalk.util.theme.Regular14NO
 import com.example.mitalk.util.theme.Regular7NO
 import com.example.mitalk.vm.chat.ChatViewModel
+import kotlinx.coroutines.InternalCoroutinesApi
 
 @Stable
 private val ChatTypeBoxShape = RoundedCornerShape(8.dp)
 
+@OptIn(InternalCoroutinesApi::class)
 @Composable
 fun ChatTypeScreen(
     navController: NavController,
@@ -38,20 +43,30 @@ fun ChatTypeScreen(
     val state = container.stateFlow.collectAsState().value
     val sideEffect = container.sideEffectFlow
     var waitingDialogVisible by remember { mutableStateOf(false) }
-    println("안녕")
-    val socketClient = ChatTypeSocket(
-        failAction = {
-
-        }, waitingAction = {
-            vm.setRemainPeople(it)
-        }, successAction = {
-            navController.navigate(
-                route = AppNavigationItem.ChatRoom.route
-            )
-        })
 
     LaunchedEffect(Unit) {
         vm.getAccessToken()
+        vm.setChatTypeSocket(
+            ChatTypeSocket(
+                failAction = {
+
+                }, waitingAction = {
+                    vm.setRemainPeople(it)
+                }, successAction = {
+                    waitingDialogVisible = false
+                    vm.successRoom()
+                })
+        )
+    }
+
+    sideEffect.observeWithLifecycle {
+        when (it) {
+            ChatSideEffect.SuccessRoom -> {
+                navController.navigate(
+                    route = AppNavigationItem.ChatRoom.route
+                )
+            }
+        }
     }
 
     Column {
@@ -75,7 +90,7 @@ fun ChatTypeScreen(
                     imgModifier = Modifier.padding(bottom = 16.dp, start = 12.dp)
                 ) {
                     waitingDialogVisible = true
-                    socketClient.startSocket("FEATURE_QUESTION", state.accessToken)
+                    state.chatTypeSocket.startSocket("FEATURE_PROPOSAL", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
@@ -87,9 +102,8 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFF81A578), shape = ChatTypeBoxShape),
                     imgModifier = Modifier
                 ) {
-                    navController.navigate(
-                        route = AppNavigationItem.ChatRoom.route
-                    )
+                    waitingDialogVisible = true
+                    state.chatTypeSocket.startSocket("FEATURE_QUESTION", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
@@ -101,9 +115,8 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFF959FC3), shape = ChatTypeBoxShape),
                     imgModifier = Modifier
                 ) {
-                    navController.navigate(
-                        route = AppNavigationItem.ChatRoom.route
-                    )
+                    waitingDialogVisible = true
+                    state.chatTypeSocket.startSocket("PURCHASE", state.accessToken)
                 }
             }
             Spacer(modifier = Modifier.width(20.dp))
@@ -117,9 +130,8 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFFA96A6A), shape = ChatTypeBoxShape),
                     imgModifier = Modifier.padding(top = 12.dp)
                 ) {
-                    navController.navigate(
-                        route = AppNavigationItem.ChatRoom.route
-                    )
+                    waitingDialogVisible = true
+                    state.chatTypeSocket.startSocket("BUG", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
@@ -131,9 +143,8 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFFB49C79), shape = ChatTypeBoxShape),
                     imgModifier = Modifier.padding(start = 12.dp)
                 ) {
-                    navController.navigate(
-                        route = AppNavigationItem.ChatRoom.route
-                    )
+                    waitingDialogVisible = true
+                    state.chatTypeSocket.startSocket("FEEDBACK", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
@@ -144,16 +155,15 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFF698EAF), shape = ChatTypeBoxShape),
                     imgModifier = Modifier.padding(start = 20.dp, top = 20.dp, end = 5.dp)
                 ) {
-                    navController.navigate(
-                        route = AppNavigationItem.ChatRoom.route
-                    )
+                    waitingDialogVisible = true
+                    state.chatTypeSocket.startSocket("ETC", state.accessToken)
                 }
             }
             Spacer(modifier = Modifier.width(20.dp))
         }
         Spacer(modifier = Modifier.height(25.dp))
         WaitingDialog(visible = waitingDialogVisible, remainPeople = state.remainPeople) {
-            socketClient.close()
+            state.chatTypeSocket.close()
             waitingDialogVisible = false
         }
     }
