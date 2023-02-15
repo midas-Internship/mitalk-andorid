@@ -5,6 +5,7 @@ import com.example.data.remote.api.AuthApi
 import com.example.data.remote.api.QuestionApi
 import com.example.data.remote.api.RecordApi
 import com.example.data.remote.interceptor.AuthorizationInterceptor
+import com.example.data.remote.api.ReviewApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -58,4 +59,10 @@ object NetworkModule {
         retrofit: Retrofit
     ): RecordApi =
         retrofit.create(RecordApi::class.java)
+
+    @Provides
+    fun provideReviewApi(
+        retrofit: Retrofit
+    ): ReviewApi =
+        retrofit.create(ReviewApi::class.java)
 }
