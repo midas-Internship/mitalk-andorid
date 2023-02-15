@@ -27,7 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 @Composable
 fun MainScreen(
-    navController: NavController,
+    navController: NavController
 ) {
     val newAnswer = true
 
@@ -120,8 +120,7 @@ fun MainScreen(
             visible = dialogVisible,
             onDismissRequest = {
                 dialogVisible = !dialogVisible
-            },
-            onBtnPressed = { _, _, _ -> }
+            }
         )
 
         Spacer(modifier = Modifier.height(12.dp))

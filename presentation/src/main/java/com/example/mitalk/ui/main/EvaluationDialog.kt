@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
@@ -23,22 +22,26 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.domain.param.ReviewParam
 import com.example.mitalk.R
+import com.example.mitalk.ui.util.EvaluateItemType
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.*
+import com.example.mitalk.vm.review.ReviewViewModel
 
 @Composable
 fun EvaluationDialog(
     name: String,
     visible: Boolean,
     onDismissRequest: () -> Unit,
-    onBtnPressed: (Int, String?, String?) -> Unit,
+    vm: ReviewViewModel = hiltViewModel()
 ) {
     var starCount by remember { mutableStateOf(1) }
-    var goodEvaluationSelected1 by remember { mutableStateOf<String?>(null) }
-    var goodEvaluationSelected2 by remember { mutableStateOf<String?>(null) }
-    var badEvaluationSelected1 by remember { mutableStateOf<String?>(null) }
-    var badEvaluationSelected2 by remember { mutableStateOf<String?>(null) }
+    var goodEvaluationSelected1 by remember { mutableStateOf<EvaluateItemType?>(null) }
+    var goodEvaluationSelected2 by remember { mutableStateOf<EvaluateItemType?>(null) }
+    var badEvaluationSelected1 by remember { mutableStateOf<EvaluateItemType?>(null) }
+    var badEvaluationSelected2 by remember { mutableStateOf<EvaluateItemType?>(null) }
     var evaluationComment by remember { mutableStateOf<String>("") }
 
 
@@ -68,11 +71,11 @@ fun EvaluationDialog(
                     starCount = starCount,
                     onPressed = {
                         if ((5 - starCount) < 2) {
-                            when (it) {
-                                badEvaluationSelected1 -> {
+                            when (it.type) {
+                                badEvaluationSelected1?.type -> {
                                     badEvaluationSelected1 = null
                                 }
-                                badEvaluationSelected2 -> {
+                                badEvaluationSelected2?.type -> {
                                     val swap = badEvaluationSelected1
                                     badEvaluationSelected1 = null
                                     badEvaluationSelected2 = swap
@@ -84,11 +87,11 @@ fun EvaluationDialog(
                                 }
                             }
                         } else {
-                            when (it) {
-                                goodEvaluationSelected1 -> {
+                            when (it.type) {
+                                goodEvaluationSelected1?.type -> {
                                     goodEvaluationSelected1 = null
                                 }
-                                goodEvaluationSelected2 -> {
+                                goodEvaluationSelected2?.type -> {
                                     val swap = goodEvaluationSelected1
                                     goodEvaluationSelected1 = null
                                     goodEvaluationSelected2 = swap
@@ -102,8 +105,11 @@ fun EvaluationDialog(
                         }
                     },
                     evaluationAnswerList =
-                    if ((5-starCount)<2) listOf(badEvaluationSelected1, badEvaluationSelected2)
-                    else listOf(goodEvaluationSelected1, goodEvaluationSelected2)
+                    if ((5 - starCount) < 2) listOf(
+                        badEvaluationSelected1?.type,
+                        badEvaluationSelected2?.type
+                    )
+                    else listOf(goodEvaluationSelected1?.type, goodEvaluationSelected2?.type)
                 )
                 Spacer(modifier = Modifier.height(36.dp))
                 DialogEditText(
@@ -111,7 +117,21 @@ fun EvaluationDialog(
                     onValueChanged = { evaluationComment = it }
                 )
                 Spacer(modifier = Modifier.height(5.dp))
-                DialogBtn(starCount = starCount, onBtnPressed = onBtnPressed)
+                DialogBtn {
+                    vm.postReview(
+                        ReviewParam(
+                            starCount,
+                            evaluationComment,
+                            if ((5 - starCount) < 2) listOfNotNull(
+                                badEvaluationSelected1?.type,
+                                badEvaluationSelected2?.type
+                            ) else listOfNotNull(
+                                goodEvaluationSelected1?.type,
+                                goodEvaluationSelected2?.type
+                            )
+                        )
+                    )
+                }
             }
         }
     }
@@ -213,28 +233,28 @@ fun DialogWhatLike(
 @Composable
 fun EvaluateList(
     starCount: Int,
-    onPressed: (String) -> Unit,
+    onPressed: (EvaluateItemType) -> Unit,
     evaluationAnswerList: List<String?>,
 ) {
     val list1 =
         if ((5 - starCount) < 2) listOf(
-            stringResource(id = R.string.is_unkind),
-            stringResource(id = R.string.is_not_useful),
-            stringResource(id = R.string.inappropriate_answer)
+            EvaluateItemType.UNKINDNESS,
+            EvaluateItemType.USELESS,
+            EvaluateItemType.NOT_APPROPRIATE_ANSWER,
         ) else listOf(
-            stringResource(id = R.string.is_kind),
-            stringResource(id = R.string.is_useful),
-            stringResource(id = R.string.listen_well),
+            EvaluateItemType.KINDNESS,
+            EvaluateItemType.USEFUL,
+            EvaluateItemType.LISTEN
         )
     val list2 =
         if ((5 - starCount < 2)) listOf(
-            stringResource(id = R.string.is_bad_explanation),
-            stringResource(id = R.string.abuse_slang),
-            stringResource(id = R.string.is_slow_reply),
+            EvaluateItemType.DIFFICULT_EXPLANATION,
+            EvaluateItemType.SLANG,
+            EvaluateItemType.SLOW_ANSWER
         ) else listOf(
-            stringResource(id = R.string.is_good_explanation),
-            stringResource(id = R.string.is_comfortable),
-            stringResource(id = R.string.is_fast_reply),
+            EvaluateItemType.EXPLANATION,
+            EvaluateItemType.COMFORT,
+            EvaluateItemType.FASTANSWER
         )
 
     Row(
@@ -249,7 +269,7 @@ fun EvaluateList(
         ) {
             items(list1) {
                 EvaluateItem(
-                    text = it,
+                    item = it,
                     onPressed = onPressed,
                     evaluationAnswerList = evaluationAnswerList,
                     modifier = Modifier.padding(end = 6.dp)
@@ -261,7 +281,7 @@ fun EvaluateList(
         ) {
             items(list2) {
                 EvaluateItem(
-                    text = it,
+                    item = it,
                     onPressed = onPressed,
                     evaluationAnswerList = evaluationAnswerList,
                     modifier = Modifier.padding(start = 6.dp)
@@ -276,12 +296,12 @@ private val EvaluateItemShape = RoundedCornerShape(5.dp)
 
 @Composable
 fun EvaluateItem(
+    item: EvaluateItemType,
     modifier: Modifier = Modifier,
-    text: String,
-    onPressed: (String) -> Unit,
+    onPressed: (EvaluateItemType) -> Unit,
     evaluationAnswerList: List<String?>
 ) {
-    val containState = evaluationAnswerList.contains(text)
+    val containState = evaluationAnswerList.contains(item.type)
     val backgroundColor =
         if (containState) Color(0xFFBEBEBE)
         else Color(0xFFE9EBE9)
@@ -294,12 +314,12 @@ fun EvaluateItem(
             )
             .clip(shape = EvaluateItemShape)
             .miClickable(rippleEnabled = false) {
-                onPressed(text)
+                onPressed(item)
             },
         contentAlignment = Alignment.Center,
     ) {
         Medium10NO(
-            text = text,
+            text = stringResource(id = item.typeId),
             modifier = Modifier
                 .padding(horizontal = 14.dp)
                 .padding(vertical = 6.dp)
@@ -354,8 +374,7 @@ private val BtnShape = RoundedCornerShape(2.dp)
 
 @Composable
 fun DialogBtn(
-    starCount: Int,
-    onBtnPressed: (Int, String?, String?) -> Unit,
+    onBtnPressed: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -369,7 +388,7 @@ fun DialogBtn(
             )
             .clip(shape = BtnShape)
             .miClickable {
-                onBtnPressed((5 - starCount) * 25, null, null)
+                onBtnPressed()
             },
         contentAlignment = Alignment.Center,
     ) {
