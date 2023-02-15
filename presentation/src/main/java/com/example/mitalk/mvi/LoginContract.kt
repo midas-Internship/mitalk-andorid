@@ -1,10 +1,9 @@
 package com.example.mitalk.mvi
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+
 data class LoginState(
-    val accessToken: String = "",
-    val refreshToken: String = "",
-    val accessExp: String = "",
-    val refreshExp: String = "",
+    val result: GoogleSignInAccount? = null
 )
 
 sealed class LoginSideEffect {

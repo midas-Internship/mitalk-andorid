@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.data.remote.api.AuthApi
 import com.example.data.remote.api.QuestionApi
 import com.example.data.remote.api.RecordApi
+import com.example.data.remote.interceptor.AuthorizationInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,6 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+
     @Provides
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
         HttpLoggingInterceptor { message -> Log.v("HTTP", message) }
@@ -24,7 +26,9 @@ object NetworkModule {
     @Provides
     fun provideOkHttpclient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
+        authorizationInterceptor: AuthorizationInterceptor,
     ): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(authorizationInterceptor)
         .addInterceptor(httpLoggingInterceptor)
         .build()
 

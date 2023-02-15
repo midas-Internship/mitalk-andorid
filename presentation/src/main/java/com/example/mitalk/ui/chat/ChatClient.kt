@@ -30,7 +30,7 @@ class ChatClient(receiveAction: (String) -> Unit) {
 
     fun close() {
         webSocket.close(1000, "Close")
-        client.dispatcher().executorService().shutdown()
+        client.dispatcher.executorService.shutdown()
     }
 
     fun send(text: String) {

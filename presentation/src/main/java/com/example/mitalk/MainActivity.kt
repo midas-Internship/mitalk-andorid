@@ -36,9 +36,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BaseApp() {
     val navController = rememberNavController()
-    val startDestination =
-        if (GoogleSignIn.getLastSignedInAccount(LocalContext.current) != null) AppNavigationItem.Main.route else AppNavigationItem.Splash.route
-    NavHost(navController = navController, startDestination = startDestination) {
+
+    NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
         composable(AppNavigationItem.Splash.route) {
             SplashScreen(navController = navController)
         }

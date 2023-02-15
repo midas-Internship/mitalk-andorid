@@ -4,5 +4,7 @@ import com.example.domain.entity.LoginEntity
 import com.example.domain.param.LoginParam
 
 interface AuthRepository {
-    suspend fun login(loginParam: LoginParam): LoginEntity
+    suspend fun login(loginParam: LoginParam)
+
+    suspend fun autoLogin()
 }

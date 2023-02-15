@@ -1,5 +1,7 @@
 package com.example.di
 
+import com.example.data.local.auth.LocalAuthDataSource
+import com.example.data.local.auth.LocalAuthDataSourceImpl
 import com.example.data.sample.SampleDataSource
 import com.example.data.sample.SampleDataSourceImpl
 import dagger.Binds
@@ -18,4 +20,9 @@ abstract class LocalDataSourceModule {
         sampleDataSourceImpl: SampleDataSourceImpl
     ): SampleDataSource
 
+    @Singleton
+    @Binds
+    abstract fun provideAuthDataSource(
+        localAuthDataSourceImpl: LocalAuthDataSourceImpl
+    ): LocalAuthDataSource
 }

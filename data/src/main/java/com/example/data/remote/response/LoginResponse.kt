@@ -1,7 +1,11 @@
 package com.example.data.remote.response
 
+import android.util.Log
 import com.example.domain.entity.LoginEntity
 import com.google.gson.annotations.SerializedName
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 data class LoginResponse(
     @SerializedName("access_token")
@@ -14,9 +18,10 @@ data class LoginResponse(
     val refreshExp: String,
 )
 
-fun LoginResponse.toEntity() = LoginEntity(
-    accessToken = accessToken,
-    refreshToken = refreshToken,
-    accessExp = accessExp,
-    refreshExp = refreshExp
-)
+fun LoginResponse.toEntity(): LoginEntity =
+    LoginEntity(
+        accessToken = accessToken,
+        refreshToken = refreshToken,
+        accessExp = ZonedDateTime.parse(accessExp),
+        refreshExp = ZonedDateTime.parse(accessExp),
+    )

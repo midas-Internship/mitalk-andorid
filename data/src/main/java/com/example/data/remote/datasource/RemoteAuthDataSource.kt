@@ -5,4 +5,6 @@ import com.example.domain.param.LoginParam
 
 interface RemoteAuthDataSource {
     suspend fun login(loginParam: LoginParam): LoginEntity
+
+    suspend fun tokenRefresh(refreshToken: String): LoginEntity
 }
