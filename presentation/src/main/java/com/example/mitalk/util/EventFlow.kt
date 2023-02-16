@@ -3,10 +3,8 @@ package com.example.mitalk.util
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -37,7 +35,7 @@ private class EventFlowImpl<T>(
     replay: Int
 ) : MutableEventFlow<T> {
 
-    private val flow: MutableSharedFlow<EventFlowSlot<T>> = MutableSharedFlow(replay)
+    private val flow: MutableSharedFlow<EventFlowSlot<T>> = MutableSharedFlow(replay = replay)
 
     override suspend fun collect(collector: FlowCollector<T>) = flow
         .collect { slot ->
@@ -58,6 +56,11 @@ private class EventFlowSlot<T>(val value: T) {
     fun markConsumed(): Boolean = consumed.getAndSet(true)
 }
 
+fun LifecycleOwner.repeatOnStarted(block: suspend CoroutineScope.() -> Unit) {
+    lifecycleScope.launch {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED, block)
+    }
+}
 @InternalCoroutinesApi
 @Composable
 inline fun <reified T> Flow<T>.observeWithLifecycle(

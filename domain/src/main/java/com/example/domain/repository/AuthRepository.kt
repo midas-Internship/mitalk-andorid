@@ -11,4 +11,6 @@ interface AuthRepository {
     suspend fun getAccessToken(): String
 
     suspend fun logout()
+
+    suspend fun tokenRefresh()
 }

@@ -3,8 +3,11 @@ package com.example.mitalk
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,25 +20,39 @@ import com.example.mitalk.ui.question.QuestionScreen
 import com.example.mitalk.ui.record.RecordDetailScreen
 import com.example.mitalk.ui.record.RecordScreen
 import com.example.mitalk.ui.splash.SplashScreen
+import com.example.mitalk.util.MiTalkExceptionHandler
+import com.example.mitalk.util.repeatOnStarted
 import com.example.mitalk.util.theme.base.MitalkTheme
+import com.example.mitalk.vm.TokenRefreshViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val tokenRefreshViewModel: TokenRefreshViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController()
+
             MitalkTheme {
-                BaseApp()
+                BaseApp(navController = navController)
+
+                Thread.setDefaultUncaughtExceptionHandler(
+                    MiTalkExceptionHandler(
+                        mainActivity = this,
+                        navController = navController,
+                        tokenRefreshViewModel = tokenRefreshViewModel
+                    )
+                )
             }
         }
     }
 }
 
 @Composable
-fun BaseApp() {
-    val navController = rememberNavController()
+fun BaseApp(navController: NavHostController) {
 
     NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
         composable(AppNavigationItem.Splash.route) {
