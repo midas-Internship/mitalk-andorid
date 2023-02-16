@@ -9,4 +9,6 @@ interface AuthRepository {
     suspend fun autoLogin()
 
     suspend fun logout()
+
+    suspend fun tokenRefresh()
 }
