@@ -21,7 +21,8 @@ class RemoteReviewDataSourceUnitTest {
         val param = ReviewParam(
             star = 2,
             message = null,
-            reviewItem = listOf()
+            reviewItem = listOf(),
+            counsellorId = null
         )
         runBlocking {
             whenever(reviewApi.postReview(param.toRequest())).thenReturn(Unit)

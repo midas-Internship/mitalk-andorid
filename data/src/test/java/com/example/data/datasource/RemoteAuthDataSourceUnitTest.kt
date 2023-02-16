@@ -13,6 +13,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import java.time.ZonedDateTime
 import java.util.*
 
 class RemoteAuthDataSourceUnitTest {
@@ -29,8 +30,8 @@ class RemoteAuthDataSourceUnitTest {
         val response = LoginResponse(
             accessToken = "",
             refreshToken = "",
-            accessExp = "",
-            refreshExp = ""
+            accessExp = ZonedDateTime.now().toString(),
+            refreshExp = ZonedDateTime.now().toString()
         )
         runBlocking {
             whenever(authApi.login(param.toRequest())).thenReturn(response)
