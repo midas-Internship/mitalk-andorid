@@ -9,7 +9,7 @@ import retrofit2.http.Part
 interface FileApi {
     @Multipart
     @POST("/file")
-    fun postFile(
+    suspend fun postFile(
         @Part file: MultipartBody.Part
     ): FileResponse
 }
