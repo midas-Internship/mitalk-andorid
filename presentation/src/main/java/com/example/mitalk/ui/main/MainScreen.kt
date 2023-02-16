@@ -1,6 +1,9 @@
 package com.example.mitalk.ui.main
 
+import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.scrollable
@@ -19,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -32,21 +36,34 @@ import com.example.mitalk.mvi.MainState
 import com.example.mitalk.ui.chat.ExitChatDialog
 import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.*
+import com.example.mitalk.util.toFile
+import com.example.mitalk.vm.chat.ChatViewModel
 import com.example.mitalk.vm.main.MainViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import kotlinx.coroutines.InternalCoroutinesApi
+import java.io.File
 
 @OptIn(InternalCoroutinesApi::class)
 @Composable
 fun MainScreen(
     navController: NavController,
     mainViewModel: MainViewModel = hiltViewModel(),
+    chatViewModel: ChatViewModel = hiltViewModel()
 ) {
 
     val container = mainViewModel.container
     val state = container.stateFlow.collectAsState().value
     val sideEffect = container.sideEffectFlow
+    val context = LocalContext.current
+
+    val launcherGallery = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+        if (it != null) {
+            chatViewModel.postFile(it.toFile(context))
+        }
+    }
+
+
 
     LaunchedEffect(Unit) {
         mainViewModel.checkReviewState()
@@ -66,7 +83,6 @@ fun MainScreen(
             }
         }
     }
-
 
 
     val newAnswer = true
@@ -142,9 +158,10 @@ fun MainScreen(
             icon = painterResource(id = MitalkIcon.Counselor_Img.drawableId),
             callCheck = callCheck,
         ) {
-            navController.navigate(
-                route = AppNavigationItem.ChatType.route
-            )
+            launcherGallery.launch("*/*")
+//            navController.navigate(
+//                route = AppNavigationItem.ChatType.route
+//            )
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -165,7 +182,7 @@ fun MainScreen(
             visible = (state.counsellorId != null),
             mainViewModel = mainViewModel,
             onDismissRequest = {
-                mainViewModel.postReview(ReviewParam(null,null, listOf(), null))
+                mainViewModel.postReview(ReviewParam(null, null, listOf(), null))
             },
             onBtnPressed = {
                 mainViewModel.postReview(
@@ -259,7 +276,7 @@ private fun MainContent(
         Spacer(modifier = Modifier.width(17.dp))
 
         Column {
-            if(comment.isEmpty()) {
+            if (comment.isEmpty()) {
                 Bold26NO(
                     text = text,
                     color = MitalkColor.White,
