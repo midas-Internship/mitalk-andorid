@@ -33,11 +33,11 @@ class ChatTypeSocket(
     failAction: () -> Unit = {},
     waitingAction: (String) -> Unit = {},
     successAction: (String) -> Unit = {},
-    receiveAction: (String) -> Unit = {}
+    receiveAction: (String) -> Unit = {},
 ) {
     private lateinit var webSocket: WebSocket
     private lateinit var request: Request
-    private val client by lazy { OkHttpClient() }
+    private lateinit var client: OkHttpClient
     private val listener: WebSocketListener
 
     init {
@@ -66,6 +66,11 @@ class ChatTypeSocket(
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)
+                println("소켓 연결 안됨 $t")
+            }
+
+            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                super.onClosed(webSocket, code, reason)
             }
         }
     }
@@ -81,6 +86,7 @@ class ChatTypeSocket(
     }
 
     fun startSocket(chatType: String, accessToken: String) {
+        client = OkHttpClient()
         request = Request.Builder()
             .addHeader("Authorization", "Bearer $accessToken")
             .addHeader("ChatType", chatType)
