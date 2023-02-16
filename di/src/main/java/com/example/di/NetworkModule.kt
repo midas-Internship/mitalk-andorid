@@ -1,11 +1,8 @@
 package com.example.di
 
 import android.util.Log
-import com.example.data.remote.api.AuthApi
-import com.example.data.remote.api.QuestionApi
-import com.example.data.remote.api.RecordApi
+import com.example.data.remote.api.*
 import com.example.data.remote.interceptor.AuthorizationInterceptor
-import com.example.data.remote.api.ReviewApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -65,4 +62,10 @@ object NetworkModule {
         retrofit: Retrofit
     ): ReviewApi =
         retrofit.create(ReviewApi::class.java)
+
+    @Provides
+    fun provideFileApi(
+        retrofit: Retrofit
+    ): FileApi =
+        retrofit.create(FileApi::class.java)
 }

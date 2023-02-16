@@ -42,4 +42,9 @@ abstract class RepositoryModule {
     abstract fun provideChatRepository(
         chatRepositoryImpl: ChatRepositoryImpl
     ): ChatRepository
+
+    @Binds
+    abstract fun provideFileRepository(
+        fileRepositoryImpl: FileRepositoryImpl
+    ): FileRepository
 }
