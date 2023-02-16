@@ -22,13 +22,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.R
+import com.example.mitalk.socket.ChatTypeSocket
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.*
 import com.example.mitalk.util.theme.base.MitalkTheme
+import com.example.mitalk.vm.chat.ChatViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -52,18 +55,31 @@ data class ChatData(
 
 @Composable
 fun ChatRoomScreen(
-    navController: NavController
+    navController: NavController,
+    type: String,
+    roomId: String,
+    vm: ChatViewModel = hiltViewModel()
 ) {
+    println("안녕 ${type} ${roomId}")
     var chatList = remember { mutableStateListOf<ChatData>() }
     var chatListState = rememberLazyListState()
     var exitChatDialogVisible by remember { mutableStateOf(false) }
     var emptyDialogVisible by remember { mutableStateOf(false) }
     var emptyTime by remember { mutableStateOf(EmptyTime) }
-    val socketClient = ChatClient {
-        chatList.add(ChatData(text = it, isMe = false, time = LocalTime.now().toString()))
-        MainScope().launch {
-            chatListState.scrollToItem(chatList.size - 1)
-        }
+
+    val container = vm.container
+    val state = container.stateFlow.collectAsState().value
+    val sideEffect = container.sideEffectFlow
+
+    LaunchedEffect(Unit) {
+        vm.getAccessToken()
+        vm.setChatTypeSocket(ChatTypeSocket(receiveAction = {
+            chatList.add(ChatData(text = it, isMe = false, time = LocalTime.now().toString()))
+            MainScope().launch {
+                chatListState.scrollToItem(chatList.size - 1)
+            }
+        }))
+        state.chatTypeSocket.startSocket(type, state.accessToken)
     }
 
     LaunchedEffect(emptyTime, exitChatDialogVisible) {
@@ -86,7 +102,7 @@ fun ChatRoomScreen(
         }
         ChatInput(sendAction = {
             emptyTime = EmptyTime
-            socketClient.send(it)
+            state.chatTypeSocket.send(roomId, it)
             chatList.add(ChatData(text = it, isMe = true, time = LocalTime.now().toString()))
             MainScope().launch {
                 chatListState.scrollToItem(chatList.size - 1)
@@ -302,6 +318,6 @@ fun IconButton(
 fun showChatRoomScreen() {
     MitalkTheme() {
         val navController = rememberNavController()
-        ChatRoomScreen(navController)
+        ChatRoomScreen(navController, "", "")
     }
 }

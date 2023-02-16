@@ -1,6 +1,5 @@
 package com.example.usecase.auth
 
-import com.example.domain.entity.LoginEntity
 import com.example.domain.param.LoginParam
 import com.example.domain.repository.AuthRepository
 import com.example.domain.usecase.auth.LoginUseCase
@@ -17,11 +16,10 @@ class LoginUseCaseUnitTest {
     @Test
     fun testLogin() {
         val param = mock<LoginParam>()
-        val entity = mock<LoginEntity>()
         runBlocking {
-            whenever(authRepository.login(param)).thenReturn(entity)
+            whenever(authRepository.login(param)).thenReturn(Unit)
             loginUseCase(param).onSuccess { result ->
-                assertEquals(result, entity)
+                assertEquals(result, Unit)
             }
         }
     }

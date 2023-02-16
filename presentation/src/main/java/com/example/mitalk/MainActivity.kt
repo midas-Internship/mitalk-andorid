@@ -54,8 +54,29 @@ fun BaseApp() {
             ChatTypeScreen(navController = navController)
         }
 
-        composable(AppNavigationItem.ChatRoom.route) {
-            ChatRoomScreen(navController = navController)
+        composable(
+            route = AppNavigationItem.ChatRoom.route
+                    + DeepLinkKey.CHAT_TYPE + "{${DeepLinkKey.CHAT_TYPE}}"
+                    + DeepLinkKey.ROOM_ID + "{${DeepLinkKey.ROOM_ID}}",
+            arguments = listOf(
+                navArgument(DeepLinkKey.CHAT_TYPE) {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+                navArgument(DeepLinkKey.ROOM_ID) {
+                    type = NavType.StringType
+                    defaultValue = ""
+                }
+            )
+        ) {
+            val type = it.arguments?.getString(DeepLinkKey.CHAT_TYPE) ?: ""
+            val roomId = it.arguments?.getString(DeepLinkKey.ROOM_ID) ?: ""
+
+            ChatRoomScreen(
+                navController = navController,
+                type = type,
+                roomId = roomId
+            )
         }
 
         composable(AppNavigationItem.Record.route) {
@@ -100,4 +121,6 @@ sealed class AppNavigationItem(val route: String) {
 
 object DeepLinkKey {
     const val HEADER = "header"
+    const val CHAT_TYPE = "chatType"
+    const val ROOM_ID = "roomId"
 }
