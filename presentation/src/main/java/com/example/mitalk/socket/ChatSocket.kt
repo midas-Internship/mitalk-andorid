@@ -26,6 +26,7 @@ data class ChatData(
     val roomId: String,
     val messageId: String,
     val role: String,
+    val chatMessageType: String,
     val message: String,
 )
 
@@ -68,10 +69,6 @@ class ChatTypeSocket(
                 super.onFailure(webSocket, t, response)
                 println("소켓 연결 안됨 $t")
             }
-
-            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                super.onClosed(webSocket, code, reason)
-            }
         }
     }
 
@@ -79,6 +76,7 @@ class ChatTypeSocket(
         val data = ChatData(
             roomId = roomId,
             messageId = UUID.randomUUID().toString(),
+            chatMessageType = "SEND",
             role = "CUSTOMER",
             message = text
         )
