@@ -2,7 +2,11 @@ package com.example.mitalk.vm.chat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.entity.ChatInfoEntity
 import com.example.domain.usecase.auth.GetAccessTokenUseCase
+import com.example.domain.usecase.chat.ClearChatInfoUseCase
+import com.example.domain.usecase.chat.FetchChatInfoUseCase
+import com.example.domain.usecase.chat.SaveChatInfoUseCase
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.mvi.ChatState
 import com.example.mitalk.socket.ChatTypeSocket
@@ -17,7 +21,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    private val getAccessTokenUseCase: GetAccessTokenUseCase
+    private val getAccessTokenUseCase: GetAccessTokenUseCase,
+    private val saveChatInfoUseCase: SaveChatInfoUseCase,
+    private val fetchChatInfoUseCase: FetchChatInfoUseCase,
+    private val clearChatInfoUseCase: ClearChatInfoUseCase
 ) : ContainerHost<ChatState, ChatSideEffect>, ViewModel() {
     override val container = container<ChatState, ChatSideEffect>(ChatState())
 
@@ -27,6 +34,27 @@ class ChatViewModel @Inject constructor(
                 .onSuccess {
                     reduce { state.copy(accessToken = it) }
                 }
+        }
+    }
+
+    fun saveChatInfo(chatInfoEntity: ChatInfoEntity) = intent {
+        viewModelScope.launch {
+            saveChatInfoUseCase(chatInfoEntity = chatInfoEntity)
+        }
+    }
+
+    fun fetchChatInfo() = intent {
+        viewModelScope.launch {
+            fetchChatInfoUseCase()
+                .onSuccess {
+                    postSideEffect(ChatSideEffect.ChatInfo(it))
+                }
+        }
+    }
+
+    fun clearChatInfo() = intent {
+        viewModelScope.launch {
+            clearChatInfoUseCase()
         }
     }
 
