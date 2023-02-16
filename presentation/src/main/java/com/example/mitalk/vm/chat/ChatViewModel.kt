@@ -34,8 +34,8 @@ class ChatViewModel @Inject constructor(
         reduce { state.copy(remainPeople = remainPeople) }
     }
 
-    fun successRoom() = intent {
-        postSideEffect(ChatSideEffect.SuccessRoom)
+    fun successRoom(roomId: String) = intent {
+        postSideEffect(ChatSideEffect.SuccessRoom(roomId))
     }
 
     fun setChatTypeSocket(

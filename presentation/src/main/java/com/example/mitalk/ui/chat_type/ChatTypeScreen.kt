@@ -16,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.AppNavigationItem
+import com.example.mitalk.DeepLinkKey
 import com.example.mitalk.R
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.socket.ChatTypeSocket
@@ -42,6 +43,7 @@ fun ChatTypeScreen(
     val container = vm.container
     val state = container.stateFlow.collectAsState().value
     val sideEffect = container.sideEffectFlow
+    var chatType by remember { mutableStateOf("") }
     var waitingDialogVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -54,16 +56,18 @@ fun ChatTypeScreen(
                     vm.setRemainPeople(it)
                 }, successAction = {
                     waitingDialogVisible = false
-                    vm.successRoom()
+                    vm.successRoom(it)
                 })
         )
     }
 
     sideEffect.observeWithLifecycle {
         when (it) {
-            ChatSideEffect.SuccessRoom -> {
+            is ChatSideEffect.SuccessRoom -> {
                 navController.navigate(
                     route = AppNavigationItem.ChatRoom.route
+                            + DeepLinkKey.CHAT_TYPE + chatType
+                            + DeepLinkKey.ROOM_ID + it.roomId
                 )
             }
         }
@@ -90,7 +94,8 @@ fun ChatTypeScreen(
                     imgModifier = Modifier.padding(bottom = 16.dp, start = 12.dp)
                 ) {
                     waitingDialogVisible = true
-                    state.chatTypeSocket.startSocket("FEATURE_PROPOSAL", state.accessToken)
+                    chatType = "FEATURE_PROPOSAL"
+                    state.chatTypeSocket.startSocket(chatType, state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
@@ -103,7 +108,8 @@ fun ChatTypeScreen(
                     imgModifier = Modifier
                 ) {
                     waitingDialogVisible = true
-                    state.chatTypeSocket.startSocket("FEATURE_QUESTION", state.accessToken)
+                    chatType = "FEATURE_QUESTION"
+                    state.chatTypeSocket.startSocket(chatType, state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
@@ -116,7 +122,8 @@ fun ChatTypeScreen(
                     imgModifier = Modifier
                 ) {
                     waitingDialogVisible = true
-                    state.chatTypeSocket.startSocket("PURCHASE", state.accessToken)
+                    chatType = "PURCHASE"
+                    state.chatTypeSocket.startSocket(chatType, state.accessToken)
                 }
             }
             Spacer(modifier = Modifier.width(20.dp))
@@ -131,7 +138,8 @@ fun ChatTypeScreen(
                     imgModifier = Modifier.padding(top = 12.dp)
                 ) {
                     waitingDialogVisible = true
-                    state.chatTypeSocket.startSocket("BUG", state.accessToken)
+                    chatType = "BUG"
+                    state.chatTypeSocket.startSocket(chatType, state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
@@ -144,7 +152,8 @@ fun ChatTypeScreen(
                     imgModifier = Modifier.padding(start = 12.dp)
                 ) {
                     waitingDialogVisible = true
-                    state.chatTypeSocket.startSocket("FEEDBACK", state.accessToken)
+                    chatType = "FEEDBACK"
+                    state.chatTypeSocket.startSocket(chatType, state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
@@ -156,7 +165,8 @@ fun ChatTypeScreen(
                     imgModifier = Modifier.padding(start = 20.dp, top = 20.dp, end = 5.dp)
                 ) {
                     waitingDialogVisible = true
-                    state.chatTypeSocket.startSocket("ETC", state.accessToken)
+                    chatType = "ETC"
+                    state.chatTypeSocket.startSocket(chatType, state.accessToken)
                 }
             }
             Spacer(modifier = Modifier.width(20.dp))

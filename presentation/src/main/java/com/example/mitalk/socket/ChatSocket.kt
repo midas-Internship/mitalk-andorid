@@ -3,6 +3,7 @@ package com.example.mitalk.socket
 import com.example.mitalk.BuildConfig
 import com.google.gson.Gson
 import okhttp3.*
+import java.util.UUID
 
 data class SocketType(
     val type: String?
@@ -19,6 +20,13 @@ data class WaitingRoom(
 
 data class SuccessRoom(
     val roomId: String,
+)
+
+data class ChatData(
+    val roomId: String,
+    val messageId: String,
+    val role: String,
+    val message: String,
 )
 
 class ChatTypeSocket(
@@ -62,8 +70,14 @@ class ChatTypeSocket(
         }
     }
 
-    fun send(text: String) {
-        webSocket.send(text)
+    fun send(roomId: String, text: String) {
+        val data = ChatData(
+            roomId = roomId,
+            messageId = UUID.randomUUID().toString(),
+            role = "CUSTOMER",
+            message = text
+        )
+        webSocket.send(data.toString())
     }
 
     fun startSocket(chatType: String, accessToken: String) {
