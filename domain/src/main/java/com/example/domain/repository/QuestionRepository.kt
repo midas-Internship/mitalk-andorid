@@ -4,5 +4,5 @@ import com.example.domain.entity.QuestionEntity
 
 interface QuestionRepository {
 
-    suspend fun getQuestionList(): QuestionEntity
+    suspend fun getQuestionList(): List<QuestionEntity>
 }
