@@ -4,6 +4,7 @@ import com.example.mitalk.BuildConfig
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import okhttp3.*
+import org.json.JSONObject
 import java.util.UUID
 
 data class SocketType(
@@ -84,13 +85,14 @@ class ChatTypeSocket(
     }
 
     fun send(roomId: String, text: String) {
-        val data = ChatData(
-            roomId = roomId,
-            messageId = UUID.randomUUID().toString(),
-            chatMessageType = "SEND",
-            role = "CUSTOMER",
-            message = text
-        )
+        val data = JSONObject().apply {
+            put("room_id", roomId)
+            put("message_id", UUID.randomUUID())
+            put("chat_message_type", "SEND")
+            put("role", "CUSTOMER")
+            put("message", text)
+        }
+
         webSocket.send(data.toString())
     }
 
