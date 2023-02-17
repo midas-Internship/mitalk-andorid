@@ -2,31 +2,42 @@ package com.example.mitalk.socket
 
 import com.example.mitalk.BuildConfig
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import okhttp3.*
 import java.util.UUID
 
 data class SocketType(
+    @SerializedName("type")
     val type: String?
 )
 
 data class FailWaitingRoom(
+    @SerializedName("message")
     val message: String
 )
 
 data class WaitingRoom(
+    @SerializedName("order")
     val order: String,
+    @SerializedName("message")
     val message: String
 )
 
 data class SuccessRoom(
+    @SerializedName("room_id")
     val roomId: String,
 )
 
 data class ChatData(
+    @SerializedName("room_id")
     val roomId: String,
+    @SerializedName("message_id")
     val messageId: String,
+    @SerializedName("role")
     val role: String,
+    @SerializedName("chat_message_type")
     val chatMessageType: String,
+    @SerializedName("message")
     val message: String,
 )
 
