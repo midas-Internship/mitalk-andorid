@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -25,6 +26,7 @@ import com.example.mitalk.util.MiTalkExceptionHandler
 import com.example.mitalk.util.repeatOnStarted
 import com.example.mitalk.util.theme.base.MitalkTheme
 import com.example.mitalk.vm.TokenRefreshViewModel
+import com.example.mitalk.vm.chat.ChatViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -54,6 +56,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BaseApp(navController: NavHostController) {
+    val viewModel = viewModel<ChatViewModel>()
 
     NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
         composable(AppNavigationItem.Splash.route) {
@@ -69,7 +72,7 @@ fun BaseApp(navController: NavHostController) {
         }
 
         composable(AppNavigationItem.ChatType.route) {
-            ChatTypeScreen(navController = navController)
+            ChatTypeScreen(navController = navController, vm = viewModel)
         }
 
         composable(
@@ -92,6 +95,7 @@ fun BaseApp(navController: NavHostController) {
 
             ChatRoomScreen(
                 navController = navController,
+                vm = viewModel,
                 type = type,
                 roomId = roomId
             )
