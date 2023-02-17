@@ -11,6 +11,9 @@ data class ChatState(
 )
 
 sealed class ChatSideEffect {
+    data class AccessToken(val accessToken: String) : ChatSideEffect()
+
+    data class ReceiveChat(val chat: String): ChatSideEffect()
     data class SuccessRoom(val roomId: String) : ChatSideEffect()
     data class ChatInfo(val chatInfoEntity: ChatInfoEntity) : ChatSideEffect()
 }
