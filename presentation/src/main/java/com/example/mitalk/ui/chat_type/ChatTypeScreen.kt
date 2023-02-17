@@ -38,7 +38,7 @@ private val ChatTypeBoxShape = RoundedCornerShape(8.dp)
 @Composable
 fun ChatTypeScreen(
     navController: NavController,
-    vm: ChatViewModel = hiltViewModel()
+    vm: ChatViewModel = hiltViewModel(),
 ) {
     val container = vm.container
     val state = container.stateFlow.collectAsState().value
@@ -58,6 +58,10 @@ fun ChatTypeScreen(
                     vm.successRoom(it)
                 }, receiveAction = {
                     vm.receiveChat(it)
+                }, receiveActionUpdate = {
+                    vm.receiveChatUpdate(it)
+                }, receiveActionDelete = {
+                    vm.receiveChatDelete(it)
                 })
         )
     }

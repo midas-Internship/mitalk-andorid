@@ -12,8 +12,8 @@ class ChatTypeSocket(
     waitingAction: (String) -> Unit = {},
     successAction: (String) -> Unit = {},
     receiveAction: (com.example.mitalk.ui.chat.ChatData) -> Unit = {},
-    receiveActionDelete: (String) -> Unit = {},
-    receiveActionUpdate: (String) -> Unit = {},
+    receiveActionUpdate: (com.example.mitalk.ui.chat.ChatData) -> Unit = {},
+    receiveActionDelete: (String) -> Unit = {}
 ) {
     private lateinit var webSocket: WebSocket
     private lateinit var request: Request
@@ -45,7 +45,7 @@ class ChatTypeSocket(
                                 receiveAction(result.toUseData())
                             }
                             "UPDATE" -> {
-                                receiveActionUpdate(result.message)
+                                receiveActionUpdate(result.toUseData())
                             }
                             "DELETE" -> {
                                 receiveActionDelete(result.message)
