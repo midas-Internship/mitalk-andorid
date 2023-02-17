@@ -7,46 +7,13 @@ import okhttp3.*
 import org.json.JSONObject
 import java.util.UUID
 
-data class SocketType(
-    @SerializedName("type")
-    val type: String?
-)
-
-data class FailWaitingRoom(
-    @SerializedName("message")
-    val message: String
-)
-
-data class WaitingRoom(
-    @SerializedName("order")
-    val order: String,
-    @SerializedName("message")
-    val message: String
-)
-
-data class SuccessRoom(
-    @SerializedName("room_id")
-    val roomId: String,
-)
-
-data class ChatData(
-    @SerializedName("room_id")
-    val roomId: String,
-    @SerializedName("message_id")
-    val messageId: String,
-    @SerializedName("role")
-    val role: String,
-    @SerializedName("chat_message_type")
-    val chatMessageType: String,
-    @SerializedName("message")
-    val message: String,
-)
-
 class ChatTypeSocket(
     failAction: () -> Unit = {},
     waitingAction: (String) -> Unit = {},
     successAction: (String) -> Unit = {},
-    receiveAction: (String) -> Unit = {},
+    receiveAction: (com.example.mitalk.ui.chat.ChatData) -> Unit = {},
+    receiveActionDelete: (String) -> Unit = {},
+    receiveActionUpdate: (String) -> Unit = {},
 ) {
     private lateinit var webSocket: WebSocket
     private lateinit var request: Request
@@ -72,7 +39,18 @@ class ChatTypeSocket(
                         successAction(result.roomId)
                     }
                     null -> {
-                        receiveAction(text)
+                        val result = gson.fromJson(text, ChatData::class.java)
+                        when(result.chatMessageType) {
+                            "SEND" -> {
+                                receiveAction(result.toUseData())
+                            }
+                            "UPDATE" -> {
+                                receiveActionUpdate(result.message)
+                            }
+                            "DELETE" -> {
+                                receiveActionDelete(result.message)
+                            }
+                        }
                     }
                 }
             }
