@@ -36,7 +36,6 @@ class ChatViewModel @Inject constructor(
             getAccessTokenUseCase()
                 .onSuccess {
                     reduce { state.copy(accessToken = it) }
-                    postSideEffect(ChatSideEffect.AccessToken(it))
                 }
         }
     }
