@@ -208,7 +208,9 @@ fun MainScreen(
             backgroundColor = Color(0xFF646464),
             icon = painterResource(id = MitalkIcon.Setting_Img.drawableId)
         ) {
-
+            navController.navigate(
+                route = AppNavigationItem.Setting.route
+            )
         }
 
         Spacer(modifier = Modifier.height(12.dp))

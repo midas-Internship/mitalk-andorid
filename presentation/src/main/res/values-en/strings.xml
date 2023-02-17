@@ -61,4 +61,7 @@
     <string name="consulting_record">"consultation record "</string>
     <string name="logout">Log out</string>
     <string name="logout_real">Are you sure you want to log out?</string>
+    <string name="english">English</string>
+    <string name="korean">Korean</string>
+    <string name="setting_language">Language</string>
 </resources>

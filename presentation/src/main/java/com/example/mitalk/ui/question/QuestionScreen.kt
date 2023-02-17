@@ -27,20 +27,6 @@ import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.*
 import com.example.mitalk.vm.question.QuestionViewModel
 
-data class QuestionDataSample(
-    val question: String,
-    val answer: String,
-)
-
-private val questionListSample = listOf(
-    QuestionDataSample("질문", "답변"),
-    QuestionDataSample(
-        "ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
-        "ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ"
-    ),
-    QuestionDataSample("질문", "답변"),
-)
-
 @Composable
 fun QuestionScreen(
     navController: NavController,

@@ -4,6 +4,8 @@ import com.example.data.local.auth.LocalAuthDataSource
 import com.example.data.local.auth.LocalAuthDataSourceImpl
 import com.example.data.local.chat.LocalChatDataSource
 import com.example.data.local.chat.LocalChatDataSourceImpl
+import com.example.data.local.system.LocalSystemDataSource
+import com.example.data.local.system.LocalSystemDataSourceImpl
 import com.example.data.sample.SampleDataSource
 import com.example.data.sample.SampleDataSourceImpl
 import dagger.Binds
@@ -33,4 +35,10 @@ abstract class LocalDataSourceModule {
     abstract fun provideChatDataSource(
         localChatDataSourceImpl: LocalChatDataSourceImpl
     ): LocalChatDataSource
+
+    @Singleton
+    @Binds
+    abstract fun provideSystemDataSource(
+        localSystemDataSourceImpl: LocalSystemDataSourceImpl
+    ): LocalSystemDataSource
 }

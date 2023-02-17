@@ -1,4 +1,4 @@
-package com.example.domain.usecase
+package com.example.domain.usecase.question
 
 import com.example.domain.repository.QuestionRepository
 import javax.inject.Inject

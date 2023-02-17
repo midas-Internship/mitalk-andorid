@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.domain.param.LoginParam
 import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.mvi.LoginSideEffect
+import com.example.mitalk.util.changeLanguage
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.Medium21GM
@@ -49,9 +50,10 @@ fun SplashScreen(
     val container = vm.container
     val state = container.stateFlow.collectAsState().value
     val sideEffect = container.sideEffectFlow
+    val context = LocalContext.current
 
     LaunchedEffect(vm) {
-        vm.autoLogin()
+        vm.fetchLanguage()
     }
 
     val gso = GoogleSignInOptions.Builder()
@@ -80,6 +82,10 @@ fun SplashScreen(
                         inclusive = true
                     }
                 }
+            }
+            is LoginSideEffect.SystemLanguage -> {
+                it.language.changeLanguage(context)
+                vm.autoLogin()
             }
         }
     }

@@ -47,4 +47,9 @@ abstract class RepositoryModule {
     abstract fun provideFileRepository(
         fileRepositoryImpl: FileRepositoryImpl
     ): FileRepository
+
+    @Binds
+    abstract fun provideSystemRepository(
+        systemRepositoryImpl: SystemRepositoryImpl
+    ): SystemRepository
 }
