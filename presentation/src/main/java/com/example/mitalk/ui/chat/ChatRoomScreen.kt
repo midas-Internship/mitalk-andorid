@@ -55,9 +55,10 @@ private val ClientChat =
 const val EmptyTime = 300
 
 data class ChatData(
+    val id: String,
     val text: String,
     val isMe: Boolean,
-    val time: String
+    val time: String,
 )
 
 @OptIn(InternalCoroutinesApi::class)
@@ -65,7 +66,7 @@ data class ChatData(
 fun ChatRoomScreen(
     navController: NavController,
     roomId: String,
-    vm: ChatViewModel = hiltViewModel()
+    vm: ChatViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     var chatList = remember { mutableStateListOf<ChatData>() }
@@ -92,13 +93,7 @@ fun ChatRoomScreen(
     sideEffect.observeWithLifecycle {
         when (it) {
             is ChatSideEffect.ReceiveChat -> {
-                chatList.add(
-                    ChatData(
-                        text = it.chat,
-                        isMe = false,
-                        time = LocalTime.now().toString()
-                    )
-                )
+                chatList.add(it.chat)
                 MainScope().launch {
                     chatListState.scrollToItem(chatList.size - 1)
                 }
@@ -115,7 +110,6 @@ fun ChatRoomScreen(
         }
         ChatInput(sendAction = {
             emptyTime = EmptyTime
-            chatList.add(ChatData(text = it, isMe = true, time = LocalTime.now().toString()))
             state.chatTypeSocket.send(roomId, it)
             MainScope().launch {
                 chatListState.scrollToItem(chatList.size - 1)
@@ -178,7 +172,7 @@ fun ChatList(chatList: List<ChatData>, chatListState: LazyListState = rememberLa
 @Composable
 fun ChatInput(
     sendAction: (String) -> Unit,
-    fileSendAction: (Uri) -> Unit
+    fileSendAction: (Uri) -> Unit,
 ) {
     var isExpand by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("") }
@@ -262,7 +256,7 @@ fun ChatEditText(value: String, onValueChange: (String) -> Unit, modifier: Modif
 
 @Composable
 fun CounselorChat(
-    item: ChatData
+    item: ChatData,
 ) {
     Row(
         verticalAlignment = Alignment.Bottom
@@ -296,7 +290,7 @@ fun CounselorChat(
 
 @Composable
 fun ClientChat(
-    item: ChatData
+    item: ChatData,
 ) {
     Row(
         verticalAlignment = Alignment.Bottom
@@ -320,7 +314,7 @@ fun ClientChat(
 fun IconButton(
     icon: MitalkIcon,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(modifier = Modifier
         .width(20.dp)
