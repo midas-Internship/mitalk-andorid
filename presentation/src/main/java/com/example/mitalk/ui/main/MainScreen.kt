@@ -1,12 +1,7 @@
 package com.example.mitalk.ui.main
 
-import android.provider.MediaStore
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,12 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -32,38 +25,22 @@ import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.R
 import com.example.mitalk.mvi.MainSideEffect
-import com.example.mitalk.mvi.MainState
 import com.example.mitalk.ui.chat.ExitChatDialog
 import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.*
-import com.example.mitalk.util.toFile
-import com.example.mitalk.vm.chat.ChatViewModel
 import com.example.mitalk.vm.main.MainViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import kotlinx.coroutines.InternalCoroutinesApi
-import java.io.File
 
 @OptIn(InternalCoroutinesApi::class)
 @Composable
 fun MainScreen(
     navController: NavController,
-    mainViewModel: MainViewModel = hiltViewModel(),
-    chatViewModel: ChatViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel()
 ) {
 
     val container = mainViewModel.container
     val state = container.stateFlow.collectAsState().value
     val sideEffect = container.sideEffectFlow
-    val context = LocalContext.current
-
-    val launcherGallery = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
-        if (it != null) {
-            chatViewModel.postFile(it.toFile(context))
-        }
-    }
-
-
 
     LaunchedEffect(Unit) {
         mainViewModel.checkReviewState()
@@ -158,10 +135,9 @@ fun MainScreen(
             icon = painterResource(id = MitalkIcon.Counselor_Img.drawableId),
             callCheck = callCheck,
         ) {
-            launcherGallery.launch("*/*")
-//            navController.navigate(
-//                route = AppNavigationItem.ChatType.route
-//            )
+            navController.navigate(
+                route = AppNavigationItem.ChatType.route
+            )
         }
 
         Spacer(modifier = Modifier.height(12.dp))

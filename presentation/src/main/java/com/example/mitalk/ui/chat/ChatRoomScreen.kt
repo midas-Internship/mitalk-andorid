@@ -1,5 +1,8 @@
 package com.example.mitalk.ui.chat
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -18,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +35,7 @@ import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.*
 import com.example.mitalk.util.theme.base.MitalkTheme
+import com.example.mitalk.util.toFile
 import com.example.mitalk.vm.chat.ChatViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -60,7 +65,7 @@ fun ChatRoomScreen(
     roomId: String,
     vm: ChatViewModel = hiltViewModel()
 ) {
-    println("안녕 ${type} ${roomId}")
+    val context = LocalContext.current
     var chatList = remember { mutableStateListOf<ChatData>() }
     var chatListState = rememberLazyListState()
     var exitChatDialogVisible by remember { mutableStateOf(false) }
@@ -107,6 +112,8 @@ fun ChatRoomScreen(
             MainScope().launch {
                 chatListState.scrollToItem(chatList.size - 1)
             }
+        }, fileSendAction = {
+            vm.postFile(it.toFile(context))
         })
         Spacer(modifier = Modifier.height(18.dp))
         ExitChatDialog(
@@ -159,11 +166,17 @@ fun ChatList(chatList: List<ChatData>, chatListState: LazyListState = rememberLa
 
 @Composable
 fun ChatInput(
-    sendAction: (String) -> Unit
+    sendAction: (String) -> Unit,
+    fileSendAction: (Uri) -> Unit
 ) {
     var isExpand by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("") }
     var targetValue by remember { mutableStateOf(0F) }
+    val launcherFile = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+        if (it != null) {
+            fileSendAction(it)
+        }
+    }
     val rotateValue: Float by animateFloatAsState(
         targetValue = targetValue,
         tween(300)
@@ -185,15 +198,15 @@ fun ChatInput(
         if (isExpand) {
             Spacer(modifier = Modifier.width(5.dp))
             IconButton(icon = MitalkIcon.Picture, onClick = {
-
+                launcherFile.launch("image/*")
             })
             Spacer(modifier = Modifier.width(5.dp))
             IconButton(icon = MitalkIcon.Video, onClick = {
-
+                launcherFile.launch("video/*")
             })
             Spacer(modifier = Modifier.width(5.dp))
             IconButton(icon = MitalkIcon.Document, onClick = {
-
+                launcherFile.launch("application/*")
             })
         }
         Spacer(modifier = Modifier.width(5.dp))
