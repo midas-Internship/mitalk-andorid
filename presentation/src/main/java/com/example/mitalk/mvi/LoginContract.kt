@@ -7,5 +7,7 @@ data class LoginState(
 )
 
 sealed class LoginSideEffect {
+
+    data class SystemLanguage(val language: String) : LoginSideEffect()
     object LoginSuccess : LoginSideEffect()
 }
