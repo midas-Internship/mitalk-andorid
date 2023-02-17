@@ -43,7 +43,6 @@ fun ChatTypeScreen(
     val container = vm.container
     val state = container.stateFlow.collectAsState().value
     val sideEffect = container.sideEffectFlow
-    var chatType by remember { mutableStateOf("") }
     var waitingDialogVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -68,7 +67,6 @@ fun ChatTypeScreen(
             is ChatSideEffect.SuccessRoom -> {
                 navController.navigate(
                     route = AppNavigationItem.ChatRoom.route
-                            + DeepLinkKey.CHAT_TYPE + chatType
                             + DeepLinkKey.ROOM_ID + it.roomId
                 )
             }
@@ -96,8 +94,7 @@ fun ChatTypeScreen(
                     imgModifier = Modifier.padding(bottom = 16.dp, start = 12.dp)
                 ) {
                     waitingDialogVisible = true
-                    chatType = "FEATURE_PROPOSAL"
-                    state.chatTypeSocket.startSocket(chatType, state.accessToken)
+                    state.chatTypeSocket.startSocket("FEATURE_PROPOSAL", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
@@ -110,8 +107,7 @@ fun ChatTypeScreen(
                     imgModifier = Modifier
                 ) {
                     waitingDialogVisible = true
-                    chatType = "FEATURE_QUESTION"
-                    state.chatTypeSocket.startSocket(chatType, state.accessToken)
+                    state.chatTypeSocket.startSocket("FEATURE_QUESTION", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
@@ -124,8 +120,7 @@ fun ChatTypeScreen(
                     imgModifier = Modifier
                 ) {
                     waitingDialogVisible = true
-                    chatType = "PURCHASE"
-                    state.chatTypeSocket.startSocket(chatType, state.accessToken)
+                    state.chatTypeSocket.startSocket("PURCHASE", state.accessToken)
                 }
             }
             Spacer(modifier = Modifier.width(20.dp))
@@ -140,8 +135,7 @@ fun ChatTypeScreen(
                     imgModifier = Modifier.padding(top = 12.dp)
                 ) {
                     waitingDialogVisible = true
-                    chatType = "BUG"
-                    state.chatTypeSocket.startSocket(chatType, state.accessToken)
+                    state.chatTypeSocket.startSocket("BUG", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
@@ -154,8 +148,7 @@ fun ChatTypeScreen(
                     imgModifier = Modifier.padding(start = 12.dp)
                 ) {
                     waitingDialogVisible = true
-                    chatType = "FEEDBACK"
-                    state.chatTypeSocket.startSocket(chatType, state.accessToken)
+                    state.chatTypeSocket.startSocket("FEEDBACK", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 ChatTypeBox(
@@ -167,8 +160,7 @@ fun ChatTypeScreen(
                     imgModifier = Modifier.padding(start = 20.dp, top = 20.dp, end = 5.dp)
                 ) {
                     waitingDialogVisible = true
-                    chatType = "ETC"
-                    state.chatTypeSocket.startSocket(chatType, state.accessToken)
+                    state.chatTypeSocket.startSocket("ETC", state.accessToken)
                 }
             }
             Spacer(modifier = Modifier.width(20.dp))

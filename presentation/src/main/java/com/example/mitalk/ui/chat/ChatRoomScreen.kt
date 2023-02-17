@@ -31,7 +31,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.R
 import com.example.mitalk.mvi.ChatSideEffect
-import com.example.mitalk.socket.ChatTypeSocket
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.observeWithLifecycle
@@ -65,7 +64,6 @@ data class ChatData(
 @Composable
 fun ChatRoomScreen(
     navController: NavController,
-    type: String,
     roomId: String,
     vm: ChatViewModel = hiltViewModel()
 ) {
@@ -344,6 +342,6 @@ fun IconButton(
 fun showChatRoomScreen() {
     MitalkTheme() {
         val navController = rememberNavController()
-        ChatRoomScreen(navController, "", "")
+        ChatRoomScreen(navController, "")
     }
 }
