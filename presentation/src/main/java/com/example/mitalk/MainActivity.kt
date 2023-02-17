@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BaseApp(navController: NavHostController) {
-    val viewModel = viewModel<ChatViewModel>()
+    val chatViewModel = viewModel<ChatViewModel>()
 
     NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
         composable(AppNavigationItem.Splash.route) {
@@ -72,31 +72,24 @@ fun BaseApp(navController: NavHostController) {
         }
 
         composable(AppNavigationItem.ChatType.route) {
-            ChatTypeScreen(navController = navController, vm = viewModel)
+            ChatTypeScreen(navController = navController, vm = chatViewModel)
         }
 
         composable(
             route = AppNavigationItem.ChatRoom.route
-                    + DeepLinkKey.CHAT_TYPE + "{${DeepLinkKey.CHAT_TYPE}}"
                     + DeepLinkKey.ROOM_ID + "{${DeepLinkKey.ROOM_ID}}",
             arguments = listOf(
-                navArgument(DeepLinkKey.CHAT_TYPE) {
-                    type = NavType.StringType
-                    defaultValue = ""
-                },
                 navArgument(DeepLinkKey.ROOM_ID) {
                     type = NavType.StringType
                     defaultValue = ""
                 }
             )
         ) {
-            val type = it.arguments?.getString(DeepLinkKey.CHAT_TYPE) ?: ""
             val roomId = it.arguments?.getString(DeepLinkKey.ROOM_ID) ?: ""
 
             ChatRoomScreen(
                 navController = navController,
-                vm = viewModel,
-                type = type,
+                vm = chatViewModel,
                 roomId = roomId
             )
         }
@@ -149,6 +142,5 @@ sealed class AppNavigationItem(val route: String) {
 
 object DeepLinkKey {
     const val HEADER = "header"
-    const val CHAT_TYPE = "chatType"
     const val ROOM_ID = "roomId"
 }
