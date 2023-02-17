@@ -10,11 +10,10 @@ import java.io.FileOutputStream
 @SuppressLint("Range")
 fun Uri.toFile(context: Context): File {
     val fileName = getFileName(context)
-
     val file = createTempFile(context, fileName)
     copyToFile(context, this, file)
 
-    return File(file.absolutePath)
+    return File(file.absolutePath.replace(".x-hwp", ""))
 }
 
 private fun Uri.getFileName(context: Context): String {
