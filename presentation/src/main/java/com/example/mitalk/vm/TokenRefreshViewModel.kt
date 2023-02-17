@@ -1,13 +1,11 @@
 package com.example.mitalk.vm
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.usecase.TokenRefreshUseCase
+import com.example.domain.usecase.auth.TokenRefreshUseCase
 import com.example.mitalk.util.MutableEventFlow
 import com.example.mitalk.util.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

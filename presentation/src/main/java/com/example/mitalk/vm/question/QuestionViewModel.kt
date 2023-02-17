@@ -1,9 +1,8 @@
 package com.example.mitalk.vm.question
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.usecase.QuestionUseCase
+import com.example.domain.usecase.question.QuestionUseCase
 import com.example.mitalk.mvi.QuestionSideEffect
 import com.example.mitalk.mvi.QuestionState
 import dagger.hilt.android.lifecycle.HiltViewModel
