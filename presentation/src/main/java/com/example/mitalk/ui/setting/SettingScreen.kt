@@ -32,6 +32,10 @@ fun SettingScreen(
 
     var settingLanguageVisible by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        vm.fetchLanguage()
+    }
+
     Column {
         MiHeader(backPressed = {
             navController.popBackStack()
