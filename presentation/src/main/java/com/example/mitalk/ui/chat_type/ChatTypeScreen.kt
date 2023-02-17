@@ -57,6 +57,8 @@ fun ChatTypeScreen(
                 }, successAction = {
                     waitingDialogVisible = false
                     vm.successRoom(it)
+                }, receiveAction = {
+                    vm.receiveChat(it)
                 })
         )
     }

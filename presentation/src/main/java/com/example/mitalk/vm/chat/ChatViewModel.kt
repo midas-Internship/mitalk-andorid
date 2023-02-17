@@ -36,6 +36,7 @@ class ChatViewModel @Inject constructor(
             getAccessTokenUseCase()
                 .onSuccess {
                     reduce { state.copy(accessToken = it) }
+                    postSideEffect(ChatSideEffect.AccessToken(it))
                 }
         }
     }
@@ -78,6 +79,10 @@ class ChatViewModel @Inject constructor(
 
     fun successRoom(roomId: String) = intent {
         postSideEffect(ChatSideEffect.SuccessRoom(roomId))
+    }
+
+    fun receiveChat(text: String) = intent {
+        postSideEffect(ChatSideEffect.ReceiveChat(text))
     }
 
     fun setChatTypeSocket(
