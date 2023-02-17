@@ -19,6 +19,7 @@ import com.example.mitalk.ui.main.MainScreen
 import com.example.mitalk.ui.question.QuestionScreen
 import com.example.mitalk.ui.record.RecordDetailScreen
 import com.example.mitalk.ui.record.RecordScreen
+import com.example.mitalk.ui.setting.SettingScreen
 import com.example.mitalk.ui.splash.SplashScreen
 import com.example.mitalk.util.MiTalkExceptionHandler
 import com.example.mitalk.util.repeatOnStarted
@@ -117,6 +118,10 @@ fun BaseApp(navController: NavHostController) {
                 header = header
             )
         }
+
+        composable(AppNavigationItem.Setting.route) {
+            SettingScreen(navController = navController)
+        }
     }
 }
 
@@ -134,6 +139,8 @@ sealed class AppNavigationItem(val route: String) {
     object Record : AppNavigationItem("Record")
 
     object RecordDetail : AppNavigationItem("RecordDetail")
+
+    object Setting : AppNavigationItem("Setting")
 }
 
 object DeepLinkKey {
