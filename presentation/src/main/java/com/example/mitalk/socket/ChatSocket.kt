@@ -7,7 +7,7 @@ import okhttp3.*
 import org.json.JSONObject
 import java.util.UUID
 
-class ChatTypeSocket(
+class ChatSocket(
     failAction: () -> Unit = {},
     waitingAction: (String) -> Unit = {},
     successAction: (String) -> Unit = {},

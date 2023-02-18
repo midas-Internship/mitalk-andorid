@@ -90,13 +90,17 @@ fun ChatRoomScreen(
         }
     }
 
-    sideEffect.observeWithLifecycle {
-        when (it) {
+    sideEffect.observeWithLifecycle { effect ->
+        when (effect) {
             is ChatSideEffect.ReceiveChat -> {
-                chatList.add(it.chat)
+                chatList.add(effect.chat)
                 MainScope().launch {
                     chatListState.scrollToItem(chatList.size - 1)
                 }
+            }
+            is ChatSideEffect.ReceiveChatUpdate -> {
+                chatList = chatList.map { if (it.id == effect.chat.id) effect.chat else it }
+                    .toMutableStateList()
             }
         }
     }
@@ -106,11 +110,12 @@ fun ChatRoomScreen(
             modifier = Modifier.background(Color(0xFFF2F2F2)),
             backPressed = { exitChatDialogVisible = true })
         Box(modifier = Modifier.weight(1f)) {
-            ChatList(chatList = chatList, chatListState = chatListState)
+            ChatList(chatList = chatList, chatListState = chatListState, clickAction = {
+            })
         }
         ChatInput(sendAction = {
             emptyTime = EmptyTime
-            state.chatTypeSocket.send(roomId, it)
+            state.chatSocket.send(roomId, it)
             MainScope().launch {
                 chatListState.scrollToItem(chatList.size - 1)
             }
@@ -124,7 +129,7 @@ fun ChatRoomScreen(
             content = stringResource(id = R.string.main_screen_comment),
             onDismissRequest = { exitChatDialogVisible = false },
             onBtnPressed = {
-                state.chatTypeSocket.close()
+                state.chatSocket.close()
                 navController.popBackStack()
             })
         EmptyDialog(visible = emptyDialogVisible, onDismissRequest = {
@@ -138,7 +143,11 @@ fun ChatRoomScreen(
 }
 
 @Composable
-fun ChatList(chatList: List<ChatData>, chatListState: LazyListState = rememberLazyListState()) {
+fun ChatList(
+    chatList: List<ChatData>,
+    chatListState: LazyListState = rememberLazyListState(),
+    clickAction: () -> Unit,
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth(),
@@ -157,7 +166,7 @@ fun ChatList(chatList: List<ChatData>, chatListState: LazyListState = rememberLa
                 horizontalArrangement = if (item.isMe) Arrangement.End else Arrangement.Start
             ) {
                 if (item.isMe) {
-                    ClientChat(item = item)
+                    ClientChat(item = item, clickAction = clickAction)
                 } else {
                     CounselorChat(item = item)
                 }
@@ -291,6 +300,7 @@ fun CounselorChat(
 @Composable
 fun ClientChat(
     item: ChatData,
+    clickAction: () -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.Bottom
@@ -306,6 +316,9 @@ fun ClientChat(
                 )
                 .widthIn(min = 0.dp, max = 200.dp)
                 .padding(horizontal = 7.dp, vertical = 5.dp)
+                .miClickable {
+                    clickAction()
+                }
         )
     }
 }

@@ -10,7 +10,7 @@ import com.example.domain.usecase.chat.SaveChatInfoUseCase
 import com.example.domain.usecase.file.PostFileUseCase
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.mvi.ChatState
-import com.example.mitalk.socket.ChatTypeSocket
+import com.example.mitalk.socket.ChatSocket
 import com.example.mitalk.ui.chat.ChatData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -92,8 +92,8 @@ class ChatViewModel @Inject constructor(
     }
 
     fun setChatTypeSocket(
-        chatTypeSocket: ChatTypeSocket,
+        chatSocket: ChatSocket,
     ) = intent {
-        reduce { state.copy(chatTypeSocket = chatTypeSocket) }
+        reduce { state.copy(chatSocket = chatSocket) }
     }
 }

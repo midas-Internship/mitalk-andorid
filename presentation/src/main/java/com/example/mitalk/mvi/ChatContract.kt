@@ -1,14 +1,14 @@
 package com.example.mitalk.mvi
 
 import com.example.domain.entity.ChatInfoEntity
-import com.example.mitalk.socket.ChatTypeSocket
+import com.example.mitalk.socket.ChatSocket
 import com.example.mitalk.ui.chat.ChatData
 
 
 data class ChatState(
     val accessToken: String = "",
     val remainPeople: String = "",
-    val chatTypeSocket: ChatTypeSocket = ChatTypeSocket()
+    val chatSocket: ChatSocket = ChatSocket()
 )
 
 sealed class ChatSideEffect {
