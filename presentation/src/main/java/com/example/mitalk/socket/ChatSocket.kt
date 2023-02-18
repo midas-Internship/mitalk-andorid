@@ -49,7 +49,7 @@ class ChatSocket(
                                 receiveActionUpdate(result.toUseData())
                             }
                             "DELETE" -> {
-                                receiveActionDelete(result.message)
+                                receiveActionDelete(result.messageId)
                             }
                         }
                     }
@@ -81,6 +81,17 @@ class ChatSocket(
             put("chat_message_type", "UPDATE")
             put("role", "CUSTOMER")
             put("message", text)
+        }
+
+        webSocket.send(data.toString())
+    }
+
+    fun sendDelete(roomId: String, messageId: String) {
+        val data = JSONObject().apply {
+            put("room_id", roomId)
+            put("message_id", messageId)
+            put("chat_message_type", "DELETE")
+            put("role", "CUSTOMER")
         }
 
         webSocket.send(data.toString())

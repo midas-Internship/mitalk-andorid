@@ -36,12 +36,20 @@ data class ChatData(
     @SerializedName("chat_message_type")
     val chatMessageType: String,
     @SerializedName("message")
-    val message: String,
+    val message: String?,
 )
 
 fun ChatData.toUseData() = com.example.mitalk.ui.chat.ChatData(
     id = messageId,
-    text = message,
+    text = message ?: "",
     isMe = role == "CUSTOMER",
     time = LocalTime.now().toChatTime()
 )
+
+fun com.example.mitalk.ui.chat.ChatData.toDeleteChatData(deleteMsg: String) =
+    com.example.mitalk.ui.chat.ChatData(
+        id = id,
+        text = deleteMsg,
+        isMe = isMe,
+        time = time
+    )

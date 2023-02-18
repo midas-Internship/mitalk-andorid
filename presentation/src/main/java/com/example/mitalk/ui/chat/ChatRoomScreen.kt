@@ -31,6 +31,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.R
 import com.example.mitalk.mvi.ChatSideEffect
+import com.example.mitalk.socket.toDeleteChatData
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.observeWithLifecycle
@@ -74,6 +75,7 @@ fun ChatRoomScreen(
     var exitChatDialogVisible by remember { mutableStateOf(false) }
     var emptyDialogVisible by remember { mutableStateOf(false) }
     var emptyTime by remember { mutableStateOf(EmptyTime) }
+    val deleteMsg = stringResource(id = R.string.main_screen)
 
     val container = vm.container
     val state = container.stateFlow.collectAsState().value
@@ -101,6 +103,9 @@ fun ChatRoomScreen(
             is ChatSideEffect.ReceiveChatUpdate -> {
                 chatList.replaceAll { if (it.id == effect.chat.id) effect.chat else it }
             }
+            is ChatSideEffect.ReceiveChatDelete -> {
+                chatList.replaceAll { if (it.id == effect.chatId) it.toDeleteChatData(deleteMsg) else it }
+            }
         }
     }
 
@@ -110,7 +115,8 @@ fun ChatRoomScreen(
             backPressed = { exitChatDialogVisible = true })
         Box(modifier = Modifier.weight(1f)) {
             ChatList(chatList = chatList, chatListState = chatListState, clickAction = {
-                state.chatSocket.sendUpdate(roomId, it, "안녕")
+//                state.chatSocket.sendUpdate(roomId, it, "안녕")
+                state.chatSocket.sendDelete(roomId, it)
             })
         }
         ChatInput(sendAction = {
