@@ -63,35 +63,18 @@ class ChatSocket(
         }
     }
 
-    fun send(roomId: String, text: String) {
+    fun send(
+        roomId: String,
+        messageId: String? = null,
+        text: String? = null,
+        messageType: String = "SEND",
+    ) {
         val data = JSONObject().apply {
             put("room_id", roomId)
-            put("chat_message_type", "SEND")
+            if (messageId != null) put("message_id", messageId)
+            put("chat_message_type", messageType)
             put("role", "CUSTOMER")
-            put("message", text)
-        }
-
-        webSocket.send(data.toString())
-    }
-
-    fun sendUpdate(roomId: String, messageId: String, text: String) {
-        val data = JSONObject().apply {
-            put("room_id", roomId)
-            put("message_id", messageId)
-            put("chat_message_type", "UPDATE")
-            put("role", "CUSTOMER")
-            put("message", text)
-        }
-
-        webSocket.send(data.toString())
-    }
-
-    fun sendDelete(roomId: String, messageId: String) {
-        val data = JSONObject().apply {
-            put("room_id", roomId)
-            put("message_id", messageId)
-            put("chat_message_type", "DELETE")
-            put("role", "CUSTOMER")
+            if (text != null) put("message", text)
         }
 
         webSocket.send(data.toString())
