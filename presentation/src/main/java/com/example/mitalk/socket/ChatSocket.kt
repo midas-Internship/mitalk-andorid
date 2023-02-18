@@ -13,7 +13,7 @@ class ChatSocket(
     successAction: (String) -> Unit = {},
     receiveAction: (com.example.mitalk.ui.chat.ChatData) -> Unit = {},
     receiveActionUpdate: (com.example.mitalk.ui.chat.ChatData) -> Unit = {},
-    receiveActionDelete: (String) -> Unit = {}
+    receiveActionDelete: (String) -> Unit = {},
 ) {
     private lateinit var webSocket: WebSocket
     private lateinit var request: Request
@@ -25,6 +25,7 @@ class ChatSocket(
             override fun onMessage(webSocket: WebSocket, text: String) {
                 super.onMessage(webSocket, text)
                 val gson = Gson()
+                println("소켓 $text")
                 when (gson.fromJson(text, SocketType::class.java).type) {
                     "SYSTEM_1_1_1", "SYSTEM_1_2" -> {
                         val result = gson.fromJson(text, WaitingRoom::class.java)
@@ -40,7 +41,7 @@ class ChatSocket(
                     }
                     null -> {
                         val result = gson.fromJson(text, ChatData::class.java)
-                        when(result.chatMessageType) {
+                        when (result.chatMessageType) {
                             "SEND" -> {
                                 receiveAction(result.toUseData())
                             }
@@ -73,9 +74,10 @@ class ChatSocket(
         webSocket.send(data.toString())
     }
 
-    fun sendUpdate(roomId: String, text: String) {
+    fun sendUpdate(roomId: String, messageId: String, text: String) {
         val data = JSONObject().apply {
             put("room_id", roomId)
+            put("message_id", messageId)
             put("chat_message_type", "UPDATE")
             put("role", "CUSTOMER")
             put("message", text)

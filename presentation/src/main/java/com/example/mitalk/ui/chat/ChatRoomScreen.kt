@@ -69,8 +69,8 @@ fun ChatRoomScreen(
     vm: ChatViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    var chatList = remember { mutableStateListOf<ChatData>() }
     var chatListState = rememberLazyListState()
+    var chatList = remember { mutableStateListOf<ChatData>() }
     var exitChatDialogVisible by remember { mutableStateOf(false) }
     var emptyDialogVisible by remember { mutableStateOf(false) }
     var emptyTime by remember { mutableStateOf(EmptyTime) }
@@ -99,8 +99,7 @@ fun ChatRoomScreen(
                 }
             }
             is ChatSideEffect.ReceiveChatUpdate -> {
-                chatList = chatList.map { if (it.id == effect.chat.id) effect.chat else it }
-                    .toMutableStateList()
+                chatList.replaceAll { if (it.id == effect.chat.id) effect.chat else it }
             }
         }
     }
@@ -111,6 +110,7 @@ fun ChatRoomScreen(
             backPressed = { exitChatDialogVisible = true })
         Box(modifier = Modifier.weight(1f)) {
             ChatList(chatList = chatList, chatListState = chatListState, clickAction = {
+                state.chatSocket.sendUpdate(roomId, it, "안녕")
             })
         }
         ChatInput(sendAction = {
@@ -146,7 +146,7 @@ fun ChatRoomScreen(
 fun ChatList(
     chatList: List<ChatData>,
     chatListState: LazyListState = rememberLazyListState(),
-    clickAction: () -> Unit,
+    clickAction: (String) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -300,7 +300,7 @@ fun CounselorChat(
 @Composable
 fun ClientChat(
     item: ChatData,
-    clickAction: () -> Unit,
+    clickAction: (String) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.Bottom
@@ -317,7 +317,7 @@ fun ClientChat(
                 .widthIn(min = 0.dp, max = 200.dp)
                 .padding(horizontal = 7.dp, vertical = 5.dp)
                 .miClickable {
-                    clickAction()
+                    clickAction(item.id)
                 }
         )
     }
