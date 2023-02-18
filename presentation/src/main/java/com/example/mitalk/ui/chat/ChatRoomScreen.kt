@@ -115,13 +115,13 @@ fun ChatRoomScreen(
             backPressed = { exitChatDialogVisible = true })
         Box(modifier = Modifier.weight(1f)) {
             ChatList(chatList = chatList, chatListState = chatListState, clickAction = {
-//                state.chatSocket.sendUpdate(roomId, it, "안녕")
-                state.chatSocket.sendDelete(roomId, it)
+                state.chatSocket.send(roomId = roomId, messageId = it, text = "안녕", messageType = "UPDATE")
+//                state.chatSocket.send(roomId = roomId, messageId = it, messageType = "DELETE")
             })
         }
         ChatInput(sendAction = {
             emptyTime = EmptyTime
-            state.chatSocket.send(roomId, it)
+            state.chatSocket.send(roomId = roomId, text = it)
             MainScope().launch {
                 chatListState.scrollToItem(chatList.size - 1)
             }
