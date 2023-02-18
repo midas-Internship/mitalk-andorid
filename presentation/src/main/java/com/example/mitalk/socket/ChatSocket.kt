@@ -65,8 +65,18 @@ class ChatSocket(
     fun send(roomId: String, text: String) {
         val data = JSONObject().apply {
             put("room_id", roomId)
-            put("message_id", UUID.randomUUID())
             put("chat_message_type", "SEND")
+            put("role", "CUSTOMER")
+            put("message", text)
+        }
+
+        webSocket.send(data.toString())
+    }
+
+    fun sendUpdate(roomId: String, text: String) {
+        val data = JSONObject().apply {
+            put("room_id", roomId)
+            put("chat_message_type", "UPDATE")
             put("role", "CUSTOMER")
             put("message", text)
         }
