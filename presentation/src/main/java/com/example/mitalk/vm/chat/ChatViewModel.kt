@@ -10,7 +10,8 @@ import com.example.domain.usecase.chat.SaveChatInfoUseCase
 import com.example.domain.usecase.file.PostFileUseCase
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.mvi.ChatState
-import com.example.mitalk.socket.ChatTypeSocket
+import com.example.mitalk.socket.ChatSocket
+import com.example.mitalk.ui.chat.ChatData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
@@ -27,7 +28,7 @@ class ChatViewModel @Inject constructor(
     private val saveChatInfoUseCase: SaveChatInfoUseCase,
     private val fetchChatInfoUseCase: FetchChatInfoUseCase,
     private val clearChatInfoUseCase: ClearChatInfoUseCase,
-    private val postFileUseCase: PostFileUseCase
+    private val postFileUseCase: PostFileUseCase,
 ) : ContainerHost<ChatState, ChatSideEffect>, ViewModel() {
     override val container = container<ChatState, ChatSideEffect>(ChatState())
 
@@ -65,9 +66,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             postFileUseCase(file)
                 .onSuccess {
-                    println("안녕 ${it}")
                 }.onFailure {
-                    println("안녕 실패 $it")
                 }
         }
     }
@@ -80,9 +79,21 @@ class ChatViewModel @Inject constructor(
         postSideEffect(ChatSideEffect.SuccessRoom(roomId))
     }
 
+    fun receiveChat(chat: ChatData) = intent {
+        postSideEffect(ChatSideEffect.ReceiveChat(chat))
+    }
+
+    fun receiveChatUpdate(chat: ChatData) = intent {
+        postSideEffect(ChatSideEffect.ReceiveChatUpdate(chat))
+    }
+
+    fun receiveChatDelete(chatId: String) = intent {
+        postSideEffect(ChatSideEffect.ReceiveChatDelete(chatId))
+    }
+
     fun setChatTypeSocket(
-        chatTypeSocket: ChatTypeSocket
+        chatSocket: ChatSocket,
     ) = intent {
-        reduce { state.copy(chatTypeSocket = chatTypeSocket) }
+        reduce { state.copy(chatSocket = chatSocket) }
     }
 }

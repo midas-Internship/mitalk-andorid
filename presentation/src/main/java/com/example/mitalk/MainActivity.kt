@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -25,6 +26,7 @@ import com.example.mitalk.util.MiTalkExceptionHandler
 import com.example.mitalk.util.repeatOnStarted
 import com.example.mitalk.util.theme.base.MitalkTheme
 import com.example.mitalk.vm.TokenRefreshViewModel
+import com.example.mitalk.vm.chat.ChatViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -54,6 +56,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BaseApp(navController: NavHostController) {
+    val chatViewModel = viewModel<ChatViewModel>()
 
     NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
         composable(AppNavigationItem.Splash.route) {
@@ -69,30 +72,24 @@ fun BaseApp(navController: NavHostController) {
         }
 
         composable(AppNavigationItem.ChatType.route) {
-            ChatTypeScreen(navController = navController)
+            ChatTypeScreen(navController = navController, vm = chatViewModel)
         }
 
         composable(
             route = AppNavigationItem.ChatRoom.route
-                    + DeepLinkKey.CHAT_TYPE + "{${DeepLinkKey.CHAT_TYPE}}"
                     + DeepLinkKey.ROOM_ID + "{${DeepLinkKey.ROOM_ID}}",
             arguments = listOf(
-                navArgument(DeepLinkKey.CHAT_TYPE) {
-                    type = NavType.StringType
-                    defaultValue = ""
-                },
                 navArgument(DeepLinkKey.ROOM_ID) {
                     type = NavType.StringType
                     defaultValue = ""
                 }
             )
         ) {
-            val type = it.arguments?.getString(DeepLinkKey.CHAT_TYPE) ?: ""
             val roomId = it.arguments?.getString(DeepLinkKey.ROOM_ID) ?: ""
 
             ChatRoomScreen(
                 navController = navController,
-                type = type,
+                vm = chatViewModel,
                 roomId = roomId
             )
         }
@@ -145,6 +142,5 @@ sealed class AppNavigationItem(val route: String) {
 
 object DeepLinkKey {
     const val HEADER = "header"
-    const val CHAT_TYPE = "chatType"
     const val ROOM_ID = "roomId"
 }

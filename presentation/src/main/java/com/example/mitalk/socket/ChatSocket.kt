@@ -2,39 +2,18 @@ package com.example.mitalk.socket
 
 import com.example.mitalk.BuildConfig
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import okhttp3.*
+import org.json.JSONObject
 import java.util.UUID
 
-data class SocketType(
-    val type: String?
-)
-
-data class FailWaitingRoom(
-    val message: String
-)
-
-data class WaitingRoom(
-    val order: String,
-    val message: String
-)
-
-data class SuccessRoom(
-    val roomId: String,
-)
-
-data class ChatData(
-    val roomId: String,
-    val messageId: String,
-    val role: String,
-    val chatMessageType: String,
-    val message: String,
-)
-
-class ChatTypeSocket(
+class ChatSocket(
     failAction: () -> Unit = {},
     waitingAction: (String) -> Unit = {},
     successAction: (String) -> Unit = {},
-    receiveAction: (String) -> Unit = {},
+    receiveAction: (com.example.mitalk.ui.chat.ChatData) -> Unit = {},
+    receiveActionUpdate: (com.example.mitalk.ui.chat.ChatData) -> Unit = {},
+    receiveActionDelete: (String) -> Unit = {},
 ) {
     private lateinit var webSocket: WebSocket
     private lateinit var request: Request
@@ -46,6 +25,7 @@ class ChatTypeSocket(
             override fun onMessage(webSocket: WebSocket, text: String) {
                 super.onMessage(webSocket, text)
                 val gson = Gson()
+                println("소켓 $text")
                 when (gson.fromJson(text, SocketType::class.java).type) {
                     "SYSTEM_1_1_1", "SYSTEM_1_2" -> {
                         val result = gson.fromJson(text, WaitingRoom::class.java)
@@ -60,7 +40,18 @@ class ChatTypeSocket(
                         successAction(result.roomId)
                     }
                     null -> {
-                        receiveAction(text)
+                        val result = gson.fromJson(text, ChatData::class.java)
+                        when (result.chatMessageType) {
+                            "SEND" -> {
+                                receiveAction(result.toUseData())
+                            }
+                            "UPDATE" -> {
+                                receiveActionUpdate(result.toUseData())
+                            }
+                            "DELETE" -> {
+                                receiveActionDelete(result.messageId)
+                            }
+                        }
                     }
                 }
             }
@@ -72,14 +63,20 @@ class ChatTypeSocket(
         }
     }
 
-    fun send(roomId: String, text: String) {
-        val data = ChatData(
-            roomId = roomId,
-            messageId = UUID.randomUUID().toString(),
-            chatMessageType = "SEND",
-            role = "CUSTOMER",
-            message = text
-        )
+    fun send(
+        roomId: String,
+        messageId: String? = null,
+        text: String? = null,
+        messageType: String = "SEND",
+    ) {
+        val data = JSONObject().apply {
+            put("room_id", roomId)
+            if (messageId != null) put("message_id", messageId)
+            put("chat_message_type", messageType)
+            put("role", "CUSTOMER")
+            if (text != null) put("message", text)
+        }
+
         webSocket.send(data.toString())
     }
 
