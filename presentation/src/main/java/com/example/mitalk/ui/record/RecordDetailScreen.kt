@@ -28,11 +28,6 @@ fun RecordDetailScreen(
     header: String,
 ) {
     var chatList = remember { mutableStateListOf<ChatData>() }
-    chatList.add(ChatData("asasf", true, ""))
-    chatList.add(ChatData("asfasfasf", true, ""))
-    chatList.add(ChatData("asfasf", false, ""))
-    chatList.add(ChatData("asfasf", true, ""))
-    chatList.add(ChatData("asfasfasf", false, ""))
     Column {
         MiHeader(
             backPressed = {
@@ -44,7 +39,6 @@ fun RecordDetailScreen(
         FindInput {
         }
         Box(modifier = Modifier.weight(1f)) {
-            ChatList(chatList = chatList)
         }
     }
 }
