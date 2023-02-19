@@ -26,6 +26,7 @@ import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.ui.util.RecordItemType
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.*
+import com.example.mitalk.util.toRecordDate
 import com.example.mitalk.vm.record.RecordViewModel
 
 @Composable
@@ -141,7 +142,7 @@ private fun RecordItem(
             Spacer(modifier = Modifier.width(30.dp))
 
             Medium10GM(
-                text = date,
+                text = date.toRecordDate(),
                 modifier = Modifier.width(83.dp)
             )
 
