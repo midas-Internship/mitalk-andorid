@@ -109,6 +109,10 @@ fun ChatRoomScreen(
 
     sideEffect.observeWithLifecycle { effect ->
         when (effect) {
+            ChatSideEffect.FinishRoom -> {
+                state.chatSocket.close()
+                navController.popBackStack()
+            }
             is ChatSideEffect.ReceiveChat -> {
                 chatList.add(effect.chat)
                 MainScope().launch {

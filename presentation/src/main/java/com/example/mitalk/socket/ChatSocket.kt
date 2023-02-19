@@ -11,6 +11,7 @@ class ChatSocket(
     failAction: () -> Unit = {},
     waitingAction: (String) -> Unit = {},
     successAction: (String) -> Unit = {},
+    finishAction: () -> Unit = {},
     receiveAction: (com.example.mitalk.ui.chat.ChatData) -> Unit = {},
     receiveActionUpdate: (com.example.mitalk.ui.chat.ChatData) -> Unit = {},
     receiveActionDelete: (String) -> Unit = {},
@@ -25,7 +26,6 @@ class ChatSocket(
             override fun onMessage(webSocket: WebSocket, text: String) {
                 super.onMessage(webSocket, text)
                 val gson = Gson()
-                println("소켓 $text")
                 when (gson.fromJson(text, SocketType::class.java).type) {
                     "SYSTEM_1_1_1", "SYSTEM_1_2" -> {
                         val result = gson.fromJson(text, WaitingRoom::class.java)
@@ -38,6 +38,9 @@ class ChatSocket(
                     "SYSTEM_3_1" -> {
                         val result = gson.fromJson(text, SuccessRoom::class.java)
                         successAction(result.roomId)
+                    }
+                    "SYSTEM_3_2" -> {
+                        finishAction()
                     }
                     null -> {
                         val result = gson.fromJson(text, ChatData::class.java)

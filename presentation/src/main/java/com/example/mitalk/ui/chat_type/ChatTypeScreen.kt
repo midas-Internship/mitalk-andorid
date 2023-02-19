@@ -62,6 +62,8 @@ fun ChatTypeScreen(
                     vm.receiveChatUpdate(it)
                 }, receiveActionDelete = {
                     vm.receiveChatDelete(it)
+                }, finishAction = {
+                    vm.finishRoom()
                 })
         )
     }
