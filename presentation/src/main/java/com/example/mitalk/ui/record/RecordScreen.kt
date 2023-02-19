@@ -26,12 +26,13 @@ import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.ui.util.RecordItemType
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.*
+import com.example.mitalk.util.toRecordDate
 import com.example.mitalk.vm.record.RecordViewModel
 
 @Composable
 fun RecordScreen(
     navController: NavController,
-    vm: RecordViewModel = hiltViewModel()
+    vm: RecordViewModel = hiltViewModel(),
 ) {
 
     val container = vm.container
@@ -107,7 +108,7 @@ private fun RecordItem(
     type: String,
     counselor: String,
     lastDate: Int,
-    onClicked: () -> Unit
+    onClicked: () -> Unit,
 ) {
     val thisDateInt = dateToInt(date)
     val dividerHeight =
@@ -141,7 +142,7 @@ private fun RecordItem(
             Spacer(modifier = Modifier.width(30.dp))
 
             Medium10GM(
-                text = date,
+                text = date.toRecordDate(),
                 modifier = Modifier.width(83.dp)
             )
 

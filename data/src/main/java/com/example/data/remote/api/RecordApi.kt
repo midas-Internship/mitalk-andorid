@@ -7,7 +7,7 @@ import retrofit2.http.Path
 
 interface RecordApi {
     @GET("/customer/record")
-    suspend fun getRecordList(): List<RecordResponse>
+    suspend fun getRecordList(): RecordResponse
 
     @GET("/customer/{recordId}")
     suspend fun getRecordDetail(
