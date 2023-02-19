@@ -1,6 +1,7 @@
 package com.example.mitalk.ui.chat
 
 import android.net.Uri
+import android.text.Editable
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
@@ -8,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -18,12 +20,20 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,6 +43,7 @@ import com.example.mitalk.R
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.socket.toDeleteChatData
 import com.example.mitalk.ui.util.MiHeader
+import com.example.mitalk.ui.util.TriangleShape
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.*
@@ -43,7 +54,6 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.LocalTime
 
 @Stable
 private val CounselorChat =
@@ -70,11 +80,16 @@ fun ChatRoomScreen(
     vm: ChatViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    var chatListState = rememberLazyListState()
-    var chatList = remember { mutableStateListOf<ChatData>() }
+    val focusManager = LocalFocusManager.current
+    val chatListState = rememberLazyListState()
+    val chatList = remember { mutableStateListOf<ChatData>() }
+    val inputFocusRequester = remember { FocusRequester() }
+    var editMsgId by remember { mutableStateOf<String?>(null) }
     var exitChatDialogVisible by remember { mutableStateOf(false) }
     var emptyDialogVisible by remember { mutableStateOf(false) }
+    var selectItemUUID by remember { mutableStateOf<String?>(null) }
     var emptyTime by remember { mutableStateOf(EmptyTime) }
+    var text by remember { mutableStateOf("") }
     val deleteMsg = stringResource(id = R.string.main_screen)
 
     val container = vm.container
@@ -109,25 +124,57 @@ fun ChatRoomScreen(
         }
     }
 
-    Column {
+    Column(modifier = Modifier.pointerInput(Unit) {
+        detectTapGestures {
+            selectItemUUID = null
+            focusManager.clearFocus()
+        }
+    }) {
         MiHeader(
             modifier = Modifier.background(Color(0xFFF2F2F2)),
             backPressed = { exitChatDialogVisible = true })
         Box(modifier = Modifier.weight(1f)) {
-            ChatList(chatList = chatList, chatListState = chatListState, clickAction = {
-                state.chatSocket.send(roomId = roomId, messageId = it, text = "안녕", messageType = "UPDATE")
-//                state.chatSocket.send(roomId = roomId, messageId = it, messageType = "DELETE")
-            })
+            ChatList(
+                chatList = chatList,
+                chatListState = chatListState,
+                selectItemUUID = selectItemUUID,
+                changeSelectItemUUID = {
+                    selectItemUUID = it
+                },
+                editAction = { id, msg ->
+                    text = msg
+                    editMsgId = id
+                    inputFocusRequester.requestFocus()
+                    selectItemUUID = null
+                },
+                deleteAction = {
+                    state.chatSocket.send(roomId = roomId, messageId = it, messageType = "DELETE")
+                    selectItemUUID = null
+                })
         }
-        ChatInput(sendAction = {
-            emptyTime = EmptyTime
-            state.chatSocket.send(roomId = roomId, text = it)
-            MainScope().launch {
-                chatListState.scrollToItem(chatList.size - 1)
-            }
-        }, fileSendAction = {
-            vm.postFile(it.toFile(context))
-        })
+        ChatInput(text = text, onValueChange = {
+            text = it
+        }, focusRequester = inputFocusRequester,
+            sendAction = {
+                emptyTime = EmptyTime
+                if (editMsgId != null) {
+                    state.chatSocket.send(
+                        roomId = roomId,
+                        messageId = editMsgId,
+                        text = it,
+                        messageType = "UPDATE"
+                    )
+                    editMsgId = null
+                } else {
+                    state.chatSocket.send(roomId = roomId, text = it)
+                    MainScope().launch {
+                        chatListState.scrollToItem(chatList.size - 1)
+                    }
+                }
+            }, fileSendAction = {
+                vm.postFile(it.toFile(context))
+            }, isEditable = (editMsgId != null)
+        )
         Spacer(modifier = Modifier.height(18.dp))
         ExitChatDialog(
             visible = exitChatDialogVisible,
@@ -152,7 +199,10 @@ fun ChatRoomScreen(
 fun ChatList(
     chatList: List<ChatData>,
     chatListState: LazyListState = rememberLazyListState(),
-    clickAction: (String) -> Unit,
+    selectItemUUID: String?,
+    changeSelectItemUUID: (String?) -> Unit,
+    editAction: (String, String) -> Unit,
+    deleteAction: (String) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -172,7 +222,15 @@ fun ChatList(
                 horizontalArrangement = if (item.isMe) Arrangement.End else Arrangement.Start
             ) {
                 if (item.isMe) {
-                    ClientChat(item = item, clickAction = clickAction)
+                    ClientChat(
+                        item = item,
+                        longClickAction = changeSelectItemUUID,
+                        itemVisible = selectItemUUID == item.id,
+                        editAction = editAction,
+                        deleteAction = {
+                            deleteAction(it)
+                        }
+                    )
                 } else {
                     CounselorChat(item = item)
                 }
@@ -186,11 +244,14 @@ fun ChatList(
 
 @Composable
 fun ChatInput(
+    text: String,
+    onValueChange: (String) -> Unit,
+    focusRequester: FocusRequester,
     sendAction: (String) -> Unit,
     fileSendAction: (Uri) -> Unit,
+    isEditable: Boolean,
 ) {
     var isExpand by remember { mutableStateOf(false) }
-    var text by remember { mutableStateOf("") }
     var targetValue by remember { mutableStateOf(0F) }
     val launcherFile = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
         if (it != null) {
@@ -201,49 +262,68 @@ fun ChatInput(
         targetValue = targetValue,
         tween(300)
     )
-    Row(
-        modifier = Modifier
-            .height(40.dp)
-            .fillMaxWidth()
-    ) {
-        Spacer(modifier = Modifier.width(7.dp))
-        IconButton(icon = MitalkIcon.Plus, modifier = Modifier.rotate(rotateValue), onClick = {
-            isExpand = !isExpand
-            targetValue = if (isExpand) {
-                45F
-            } else {
-                0F
+    Column {
+        if (isEditable) {
+            Regular14NO(
+                text = "문자를 수정 중 입니다.",
+                modifier = Modifier.background(
+                    color = Color(0xFFF3F3F3),
+                    shape = RoundedCornerShape(5.dp)
+                )
+            )
+        }
+        Row(
+            modifier = Modifier
+                .height(40.dp)
+                .fillMaxWidth()
+        ) {
+            Spacer(modifier = Modifier.width(7.dp))
+            IconButton(icon = MitalkIcon.Plus, modifier = Modifier.rotate(rotateValue), onClick = {
+                isExpand = !isExpand
+                targetValue = if (isExpand) {
+                    45F
+                } else {
+                    0F
+                }
+            })
+            if (isExpand) {
+                Spacer(modifier = Modifier.width(5.dp))
+                IconButton(icon = MitalkIcon.Picture, onClick = {
+                    launcherFile.launch("image/*")
+                })
+                Spacer(modifier = Modifier.width(5.dp))
+                IconButton(icon = MitalkIcon.Video, onClick = {
+                    launcherFile.launch("video/*")
+                })
+                Spacer(modifier = Modifier.width(5.dp))
+                IconButton(icon = MitalkIcon.Document, onClick = {
+                    launcherFile.launch("application/*")
+                })
             }
-        })
-        if (isExpand) {
             Spacer(modifier = Modifier.width(5.dp))
-            IconButton(icon = MitalkIcon.Picture, onClick = {
-                launcherFile.launch("image/*")
-            })
-            Spacer(modifier = Modifier.width(5.dp))
-            IconButton(icon = MitalkIcon.Video, onClick = {
-                launcherFile.launch("video/*")
-            })
-            Spacer(modifier = Modifier.width(5.dp))
-            IconButton(icon = MitalkIcon.Document, onClick = {
-                launcherFile.launch("application/*")
+            ChatEditText(
+                focusRequester = focusRequester,
+                value = text,
+                modifier = Modifier.weight(1f),
+                onValueChange = onValueChange
+            )
+            IconButton(icon = MitalkIcon.Send, onClick = {
+                if (!text.isNullOrBlank()) {
+                    sendAction(text)
+                }
+                onValueChange("")
             })
         }
-        Spacer(modifier = Modifier.width(5.dp))
-        ChatEditText(value = text, modifier = Modifier.weight(1f), onValueChange = {
-            text = it
-        })
-        IconButton(icon = MitalkIcon.Send, onClick = {
-            if (!text.isNullOrBlank()) {
-                sendAction(text)
-            }
-            text = ""
-        })
     }
 }
 
 @Composable
-fun ChatEditText(value: String, onValueChange: (String) -> Unit, modifier: Modifier) {
+fun ChatEditText(
+    focusRequester: FocusRequester,
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier,
+) {
     Row(
         modifier = modifier
             .fillMaxHeight()
@@ -255,12 +335,14 @@ fun ChatEditText(value: String, onValueChange: (String) -> Unit, modifier: Modif
             value = value,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 15.dp, vertical = 5.dp),
+                .padding(horizontal = 15.dp, vertical = 5.dp)
+                .focusRequester(focusRequester = focusRequester),
             onValueChange = { onValueChange(it) },
             textStyle = MiTalkTypography.regular14NO,
-            decorationBox = @Composable {
+            decorationBox = {
                 Box(
                     contentAlignment = Alignment.CenterStart,
+                    modifier = Modifier.focusRequester(focusRequester = focusRequester)
                 ) {
                     it()
                 }
@@ -306,26 +388,86 @@ fun CounselorChat(
 @Composable
 fun ClientChat(
     item: ChatData,
-    clickAction: (String) -> Unit,
+    longClickAction: (String) -> Unit,
+    editAction: (String, String) -> Unit,
+    deleteAction: (String) -> Unit,
+    itemVisible: Boolean,
 ) {
-    Row(
-        verticalAlignment = Alignment.Bottom
-    ) {
-        Light09NO(text = item.time)
-        Spacer(modifier = Modifier.width(3.dp))
-        Bold11NO(
-            text = item.text,
-            modifier = Modifier
-                .background(
-                    color = MitalkColor.White,
-                    shape = ClientChat
-                )
-                .widthIn(min = 0.dp, max = 200.dp)
-                .padding(horizontal = 7.dp, vertical = 5.dp)
-                .miClickable {
-                    clickAction(item.id)
+    Box {
+        if (itemVisible) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(y = (-25).dp)
+            ) {
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .width(55.dp)
+                            .height(17.dp)
+                            .background(
+                                color = Color(0xFFF3F3F3),
+                                shape = RoundedCornerShape(5.dp)
+                            ),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Light09NO(
+                            text = "수정",
+                            color = Color(0xFF4200FF),
+                            modifier = Modifier
+                                .padding(end = 3.dp)
+                                .miClickable {
+                                    editAction(item.id, item.text)
+                                })
+                        Spacer(
+                            modifier = Modifier
+                                .background(Color(0x66C9C6C6))
+                                .width((0.5).dp)
+                                .fillMaxHeight(0.7f)
+                        )
+                        Light09NO(
+                            text = "삭제",
+                            color = Color(0xFFFF0000),
+                            modifier = Modifier
+                                .padding(start = 3.dp)
+                                .miClickable {
+                                    deleteAction(item.id)
+                                })
+                    }
+                    Box(
+                        modifier = Modifier
+                            .width(10.dp)
+                            .height(5.dp)
+                            .background(color = Color(0xFFF3F3F3), shape = TriangleShape())
+                            .align(Alignment.CenterHorizontally)
+                    )
                 }
-        )
+            }
+        }
+        Row(
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Light09NO(text = item.time)
+            Spacer(modifier = Modifier.width(3.dp))
+            Box(
+                modifier = Modifier
+                    .miClickable(onLongClick = {
+                        longClickAction(item.id)
+                    }, onClick = null)
+                    .background(
+                        color = MitalkColor.White,
+                        shape = ClientChat
+                    )
+                    .widthIn(min = 0.dp, max = 200.dp)
+                    .padding(horizontal = 7.dp, vertical = 5.dp)
+            ) {
+                Bold11NO(
+                    text = item.text,
+                    modifier = Modifier
+                )
+            }
+        }
     }
 }
 
