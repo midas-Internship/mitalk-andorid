@@ -31,7 +31,7 @@ import com.example.mitalk.vm.record.RecordViewModel
 @Composable
 fun RecordScreen(
     navController: NavController,
-    vm: RecordViewModel = hiltViewModel()
+    vm: RecordViewModel = hiltViewModel(),
 ) {
 
     val container = vm.container
@@ -107,7 +107,7 @@ private fun RecordItem(
     type: String,
     counselor: String,
     lastDate: Int,
-    onClicked: () -> Unit
+    onClicked: () -> Unit,
 ) {
     val thisDateInt = dateToInt(date)
     val dividerHeight =
