@@ -79,6 +79,10 @@ class ChatViewModel @Inject constructor(
         postSideEffect(ChatSideEffect.SuccessRoom(roomId))
     }
 
+    fun finishRoom() = intent {
+        postSideEffect(ChatSideEffect.FinishRoom)
+    }
+
     fun receiveChat(chat: ChatData) = intent {
         postSideEffect(ChatSideEffect.ReceiveChat(chat))
     }
