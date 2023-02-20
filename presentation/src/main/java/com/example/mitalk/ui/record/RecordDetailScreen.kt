@@ -27,7 +27,7 @@ import com.example.mitalk.vm.record_detail.RecordDetailViewModel
 @Composable
 fun RecordDetailScreen(
     navController: NavController,
-    header: String,
+    headerId: Int,
     recordId: String,
     vm: RecordDetailViewModel = hiltViewModel()
 ) {
@@ -42,7 +42,7 @@ fun RecordDetailScreen(
             backPressed = {
                 navController.popBackStack()
             },
-            text = header,
+            text = stringResource(id = headerId),
         )
         Spacer(modifier = Modifier.height(10.dp))
         FindInput {
@@ -101,5 +101,5 @@ fun FindInput(
 @Preview
 fun showRecordDetailScreen() {
     val navController = rememberNavController()
-    RecordDetailScreen(navController = navController, "", "헤더")
+    RecordDetailScreen(navController = navController, 0, "헤더")
 }
