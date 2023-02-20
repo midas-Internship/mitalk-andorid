@@ -100,18 +100,25 @@ fun BaseApp(navController: NavHostController) {
 
         composable(
             route = AppNavigationItem.RecordDetail.route
+                    + DeepLinkKey.HEADER + "{${DeepLinkKey.HEADER}}"
                     + DeepLinkKey.RECORD_ID + "{${DeepLinkKey.RECORD_ID}}",
             arguments = listOf(
+                navArgument(DeepLinkKey.HEADER) {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
                 navArgument(DeepLinkKey.RECORD_ID) {
                     type = NavType.StringType
                     defaultValue = ""
                 }
             )
         ) {
+            val header = it.arguments?.getString(DeepLinkKey.HEADER) ?: ""
             val recordId = it.arguments?.getString(DeepLinkKey.RECORD_ID) ?: ""
 
             RecordDetailScreen(
                 navController = navController,
+                header = header,
                 recordId = recordId
             )
         }
@@ -141,6 +148,7 @@ sealed class AppNavigationItem(val route: String) {
 }
 
 object DeepLinkKey {
+    const val HEADER = "header"
     const val RECORD_ID = "recordId"
     const val ROOM_ID = "roomId"
 }

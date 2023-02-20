@@ -94,6 +94,7 @@ private fun RecordList(
             ) {
                 navController.navigate(
                     route = AppNavigationItem.RecordDetail.route
+                            + DeepLinkKey.HEADER + it.type
                             + DeepLinkKey.RECORD_ID + it.recordId
                 )
             }
