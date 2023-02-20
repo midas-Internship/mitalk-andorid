@@ -1,5 +1,7 @@
 package com.example.mitalk.ui.chat
 
+import android.app.DownloadManager
+import android.content.Context
 import android.net.Uri
 import android.text.Editable
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -9,6 +11,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -50,6 +53,7 @@ import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.*
 import com.example.mitalk.util.theme.base.MitalkTheme
 import com.example.mitalk.util.toFile
+import com.example.mitalk.video.VideoPlayer
 import com.example.mitalk.vm.chat.ChatViewModel
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.MainScope
@@ -456,9 +460,6 @@ fun ClientChat(
             Spacer(modifier = Modifier.width(3.dp))
             Box(
                 modifier = Modifier
-                    .miClickable(onLongClick = {
-                        longClickAction(item.id)
-                    }, onClick = null)
                     .background(
                         color = MitalkColor.White,
                         shape = ClientChat
@@ -467,11 +468,20 @@ fun ClientChat(
                     .padding(horizontal = 7.dp, vertical = 5.dp)
             ) {
                 if (item.text.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/")) {
-                    AsyncImage(model = item.text, contentDescription = "Client Image")
+                    when (item.text.split(".").last().lowercase()) {
+                        "jpg", "jpeg", "gif", "png", "bmp", "svg" -> {
+                            AsyncImage(model = item.text, contentDescription = "Client Image")
+                        }
+                        "mp4", "mov", "wmv", "avi", "mkv", "mpeg-2" -> {
+                            VideoPlayer(url = item.text)
+                        }
+                    }
                 } else {
                     Bold11NO(
                         text = item.text,
-                        modifier = Modifier
+                        modifier = Modifier.miClickable(onLongClick = {
+                            longClickAction(item.id)
+                        }, onClick = null)
                     )
                 }
             }
