@@ -6,6 +6,7 @@ import com.example.domain.usecase.record.GetRecordDetailUseCase
 import com.example.mitalk.mvi.RecordDetailSideEffect
 import com.example.mitalk.mvi.RecordDetailState
 import com.example.mitalk.mvi.toSateData
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -13,6 +14,7 @@ import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
+@HiltViewModel
 class RecordDetailViewModel @Inject constructor(
     private val getRecordDetailUseCase: GetRecordDetailUseCase
 ) : ContainerHost<RecordDetailState, RecordDetailSideEffect>, ViewModel() {
