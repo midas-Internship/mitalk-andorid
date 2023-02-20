@@ -377,10 +377,8 @@ fun CounselorChat(
         Spacer(modifier = Modifier.width(3.dp))
         Column {
             Light09NO(text = stringResource(id = R.string.counselor))
-            Bold11NO(
-                text = item.text,
-                color = MitalkColor.White,
-                modifier = Modifier
+            ChatItem(
+                item = item.text, isMe = item.isMe, modifier = Modifier
                     .background(
                         color = MitalkColor.MainBlue,
                         shape = CounselorChat
@@ -469,30 +467,39 @@ fun ClientChat(
                     .widthIn(min = 0.dp, max = 200.dp)
                     .padding(horizontal = 7.dp, vertical = 5.dp)
             ) {
-                if (item.text.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/")) {
-                    when (item.text.split(".").last().lowercase()) {
-                        "jpg", "jpeg", "gif", "png", "bmp", "svg" -> {
-                            AsyncImage(model = item.text, contentDescription = "Client Image")
-                        }
-                        "mp4", "mov", "wmv", "avi", "mkv", "mpeg-2" -> {
-                            VideoPlayer(url = item.text)
-                        }
-                        "hwp", "txt", "doc", "pdf", "csv", "xls", "ppt", "pptx" -> {
-                            Bold11NO(text = "File Download", modifier = Modifier.clickable {
-                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.text)))
-                            })
-                        }
-                    }
-                } else {
-                    Bold11NO(
-                        text = item.text,
-                        modifier = Modifier.miClickable(onLongClick = {
-                            longClickAction(item.id)
-                        }, onClick = null)
-                    )
-                }
+                ChatItem(
+                    item.text,
+                    modifier = Modifier.miClickable(rippleEnabled = false, onLongClick = {
+                        longClickAction(item.id)
+                    }) { })
             }
         }
+    }
+}
+
+@Composable
+fun ChatItem(item: String, isMe: Boolean = true, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    if (item.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/")) {
+        when (item.split(".").last().lowercase()) {
+            "jpg", "jpeg", "gif", "png", "bmp", "svg" -> {
+                AsyncImage(model = item, contentDescription = "Client Image")
+            }
+            "mp4", "mov", "wmv", "avi", "mkv", "mpeg-2" -> {
+                VideoPlayer(url = item)
+            }
+            "hwp", "txt", "doc", "pdf", "csv", "xls", "ppt", "pptx" -> {
+                Bold11NO(text = "File Download", modifier = Modifier.clickable {
+                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item)))
+                })
+            }
+        }
+    } else {
+        Bold11NO(
+            text = item,
+            modifier = modifier,
+            color = if (isMe) MitalkColor.Black else MitalkColor.White
+        )
     }
 }
 
