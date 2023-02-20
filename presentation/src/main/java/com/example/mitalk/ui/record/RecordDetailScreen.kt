@@ -31,7 +31,11 @@ fun RecordDetailScreen(
     vm: RecordDetailViewModel = hiltViewModel()
 ) {
     var chatList = remember { mutableStateListOf<ChatData>() }
-    
+
+    LaunchedEffect(Unit) {
+        vm.getRecordDetail(recordId = recordId)
+    }
+
     Column {
         MiHeader(
             backPressed = {
