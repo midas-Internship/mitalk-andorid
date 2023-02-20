@@ -2,6 +2,7 @@ package com.example.mitalk.ui.chat
 
 import android.app.DownloadManager
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.text.Editable
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -401,6 +402,7 @@ fun ClientChat(
     deleteAction: (String) -> Unit,
     itemVisible: Boolean,
 ) {
+    val context = LocalContext.current
     Box {
         if (itemVisible) {
             Box(
@@ -474,6 +476,11 @@ fun ClientChat(
                         }
                         "mp4", "mov", "wmv", "avi", "mkv", "mpeg-2" -> {
                             VideoPlayer(url = item.text)
+                        }
+                        "hwp", "txt", "doc", "pdf", "csv", "xls", "ppt", "pptx" -> {
+                            Bold11NO(text = "File Download", modifier = Modifier.clickable {
+                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.text)))
+                            })
                         }
                     }
                 } else {
