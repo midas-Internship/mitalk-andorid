@@ -51,7 +51,6 @@ fun RecordDetailScreen(
     val focusManager = LocalFocusManager.current
     val chatListState = rememberLazyListState()
     var text by remember { mutableStateOf("") }
-    var isFind by remember { mutableStateOf(true) }
 
     val container = vm.container
     val state = container.stateFlow.collectAsState().value
@@ -64,9 +63,8 @@ fun RecordDetailScreen(
     sideEffect.observeWithLifecycle {
         when (it) {
             is RecordDetailSideEffect.ChangeCurrentFindPosition -> {
-                println("안녕 ${state.totalFindResultList}, ${it.scrollPosition}")
                 MainScope().launch {
-                    chatListState.scrollToItem(state.totalFindResultList[it.scrollPosition])
+                    chatListState.scrollToItem(it.list[it.scrollPosition])
                 }
             }
         }
@@ -104,7 +102,7 @@ fun RecordDetailScreen(
                     vm.plusCurrentFindPosition()
                 }
             }, downFindAction = {
-                if (state.currentFindPosition > 1) {
+                if (state.currentFindPosition > 0) {
                     vm.minusCurrentFindPosition()
                 }
             })

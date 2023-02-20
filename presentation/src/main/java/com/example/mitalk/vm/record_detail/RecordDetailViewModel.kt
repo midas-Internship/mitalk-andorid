@@ -41,16 +41,31 @@ class RecordDetailViewModel @Inject constructor(
 
     fun setTotalFindResultList(list: List<Int>) = intent {
         reduce { state.copy(totalFindResultList = list) }
-        postSideEffect(RecordDetailSideEffect.ChangeCurrentFindPosition(0))
+        postSideEffect(
+            RecordDetailSideEffect.ChangeCurrentFindPosition(
+                state.totalFindResultList,
+                0
+            )
+        )
     }
 
     fun plusCurrentFindPosition() = intent {
-        postSideEffect(RecordDetailSideEffect.ChangeCurrentFindPosition(state.currentFindPosition + 1))
+        postSideEffect(
+            RecordDetailSideEffect.ChangeCurrentFindPosition(
+                state.totalFindResultList,
+                state.currentFindPosition + 1
+            )
+        )
         reduce { state.copy(currentFindPosition = state.currentFindPosition + 1) }
     }
 
     fun minusCurrentFindPosition() = intent {
-        postSideEffect(RecordDetailSideEffect.ChangeCurrentFindPosition(state.currentFindPosition - 1))
+        postSideEffect(
+            RecordDetailSideEffect.ChangeCurrentFindPosition(
+                state.totalFindResultList,
+                state.currentFindPosition - 1
+            )
+        )
         reduce { state.copy(currentFindPosition = state.currentFindPosition - 1) }
     }
 

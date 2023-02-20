@@ -39,5 +39,5 @@ fun RecordDetailEntity.MessageRecord.MessageData.toStateData() =
     )
 
 sealed class RecordDetailSideEffect {
-    data class ChangeCurrentFindPosition(val scrollPosition: Int) : RecordDetailSideEffect()
+    data class ChangeCurrentFindPosition(val list: List<Int>, val scrollPosition: Int) : RecordDetailSideEffect()
 }
