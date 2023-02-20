@@ -37,7 +37,9 @@ object Version {
     const val ANDROID_JUNIT = "1.1.2"
     const val ESPRESSO_CORE = "3.3.0"
 
-    const val COIL = "0.10.0"
+    const val COIL = "2.2.2"
+
+    const val EXO_PLAYER = "2.17.1"
 
     const val OAUTH = "19.0.0"
 

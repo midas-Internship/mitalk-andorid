@@ -1,5 +1,8 @@
 package com.example.mitalk.ui.chat
 
+import android.app.DownloadManager
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.text.Editable
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -9,6 +12,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -39,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.mitalk.R
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.socket.toDeleteChatData
@@ -49,6 +54,7 @@ import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.*
 import com.example.mitalk.util.theme.base.MitalkTheme
 import com.example.mitalk.util.toFile
+import com.example.mitalk.video.VideoPlayer
 import com.example.mitalk.vm.chat.ChatViewModel
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.MainScope
@@ -82,7 +88,6 @@ fun ChatRoomScreen(
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val chatListState = rememberLazyListState()
-    val chatList = remember { mutableStateListOf<ChatData>() }
     val inputFocusRequester = remember { FocusRequester() }
     var editMsgId by remember { mutableStateOf<String?>(null) }
     var exitChatDialogVisible by remember { mutableStateOf(false) }
@@ -114,16 +119,19 @@ fun ChatRoomScreen(
                 navController.popBackStack()
             }
             is ChatSideEffect.ReceiveChat -> {
-                chatList.add(effect.chat)
+                vm.addChatList(effect.chat)
                 MainScope().launch {
-                    chatListState.scrollToItem(chatList.size - 1)
+                    chatListState.scrollToItem(state.chatList.size - 1)
                 }
             }
             is ChatSideEffect.ReceiveChatUpdate -> {
-                chatList.replaceAll { if (it.id == effect.chat.id) effect.chat else it }
+                vm.editChatList(effect.chat)
             }
             is ChatSideEffect.ReceiveChatDelete -> {
-                chatList.replaceAll { if (it.id == effect.chatId) it.toDeleteChatData(deleteMsg) else it }
+                vm.deleteChatList(effect.chatId, deleteMsg)
+            }
+            is ChatSideEffect.SuccessUpload -> {
+                state.chatSocket.send(roomId = roomId, text = effect.url)
             }
         }
     }
@@ -139,7 +147,7 @@ fun ChatRoomScreen(
             backPressed = { exitChatDialogVisible = true })
         Box(modifier = Modifier.weight(1f)) {
             ChatList(
-                chatList = chatList,
+                chatList = state.chatList,
                 chatListState = chatListState,
                 selectItemUUID = selectItemUUID,
                 changeSelectItemUUID = {
@@ -171,9 +179,6 @@ fun ChatRoomScreen(
                     editMsgId = null
                 } else {
                     state.chatSocket.send(roomId = roomId, text = it)
-                    MainScope().launch {
-                        chatListState.scrollToItem(chatList.size - 1)
-                    }
                 }
             }, fileSendAction = {
                 vm.postFile(it.toFile(context))
@@ -397,6 +402,7 @@ fun ClientChat(
     deleteAction: (String) -> Unit,
     itemVisible: Boolean,
 ) {
+    val context = LocalContext.current
     Box {
         if (itemVisible) {
             Box(
@@ -456,9 +462,6 @@ fun ClientChat(
             Spacer(modifier = Modifier.width(3.dp))
             Box(
                 modifier = Modifier
-                    .miClickable(onLongClick = {
-                        longClickAction(item.id)
-                    }, onClick = null)
                     .background(
                         color = MitalkColor.White,
                         shape = ClientChat
@@ -466,10 +469,28 @@ fun ClientChat(
                     .widthIn(min = 0.dp, max = 200.dp)
                     .padding(horizontal = 7.dp, vertical = 5.dp)
             ) {
-                Bold11NO(
-                    text = item.text,
-                    modifier = Modifier
-                )
+                if (item.text.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/")) {
+                    when (item.text.split(".").last().lowercase()) {
+                        "jpg", "jpeg", "gif", "png", "bmp", "svg" -> {
+                            AsyncImage(model = item.text, contentDescription = "Client Image")
+                        }
+                        "mp4", "mov", "wmv", "avi", "mkv", "mpeg-2" -> {
+                            VideoPlayer(url = item.text)
+                        }
+                        "hwp", "txt", "doc", "pdf", "csv", "xls", "ppt", "pptx" -> {
+                            Bold11NO(text = "File Download", modifier = Modifier.clickable {
+                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.text)))
+                            })
+                        }
+                    }
+                } else {
+                    Bold11NO(
+                        text = item.text,
+                        modifier = Modifier.miClickable(onLongClick = {
+                            longClickAction(item.id)
+                        }, onClick = null)
+                    )
+                }
             }
         }
     }
