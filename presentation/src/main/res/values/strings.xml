@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">mitalk</string>
     <string name="main">메인</string>
-    <string name="find_comment_hit">찾고싶은 문구를 입력해주세요</string>
+    <string name="find_comment_hint">찾고싶은 문구를 입력해주세요</string>
     <string name="consulting_record">상담 기록</string>
+    <string name="no_search_result">검색 결과가 없습니다.</string>
 
     <!--main screen-->
     <string name="new_counselor_answer">고객센터의 답장이 왔어요!</string>

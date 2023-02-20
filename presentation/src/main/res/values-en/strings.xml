@@ -2,7 +2,8 @@
 <resources>
     <string name="app_name">mitalk</string>
     <string name="main">main</string>
-    <string name="find_comment_hit">Please enter the phrase you are looking for</string>
+    <string name="no_search_result">No Matches Found</string>
+    <string name="find_comment_hint">Please enter the phrase you are looking for</string>
     <string name="new_counselor_answer">The customer service center has replied!</string>
     <string name="counselor_connect">Connect with a Counselor</string>
     <string name="counselor_connect_comment">Do you have any questions?</string>
