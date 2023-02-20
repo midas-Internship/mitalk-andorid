@@ -160,7 +160,7 @@ fun CounselorChat(
         Spacer(modifier = Modifier.width(3.dp))
         Column {
             Light09NO(text = stringResource(id = R.string.counselor))
-            if (item.isDeleted) Bold11NO(text = stringResource(id = R.string.main_screen)) else {
+            if (item.isDeleted) Bold11NO(text = stringResource(id = R.string.delete_message)) else {
                 ChatItem(
                     item = item.dataMap.last().message,
                     isMe = item.sender == "CUSTOMER",
@@ -198,7 +198,7 @@ fun ClientChat(
                     .widthIn(min = 0.dp, max = 200.dp)
                     .padding(horizontal = 7.dp, vertical = 5.dp)
             ) {
-                if (item.isDeleted) Bold11NO(text = stringResource(id = R.string.main_screen)) else {
+                if (item.isDeleted) Bold11NO(text = stringResource(id = R.string.delete_message)) else {
                     ChatItem(item = item.dataMap.last().message)
                 }
             }

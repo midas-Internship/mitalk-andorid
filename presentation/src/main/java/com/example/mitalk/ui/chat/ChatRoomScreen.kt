@@ -95,7 +95,7 @@ fun ChatRoomScreen(
     var selectItemUUID by remember { mutableStateOf<String?>(null) }
     var emptyTime by remember { mutableStateOf(EmptyTime) }
     var text by remember { mutableStateOf("") }
-    val deleteMsg = stringResource(id = R.string.main_screen)
+    val deleteMsg = stringResource(id = R.string.delete_message)
 
     val container = vm.container
     val state = container.stateFlow.collectAsState().value
