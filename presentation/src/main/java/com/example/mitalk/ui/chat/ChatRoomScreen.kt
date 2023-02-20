@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.mitalk.R
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.socket.toDeleteChatData
@@ -82,7 +83,6 @@ fun ChatRoomScreen(
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val chatListState = rememberLazyListState()
-    val chatList = remember { mutableStateListOf<ChatData>() }
     val inputFocusRequester = remember { FocusRequester() }
     var editMsgId by remember { mutableStateOf<String?>(null) }
     var exitChatDialogVisible by remember { mutableStateOf(false) }
@@ -114,19 +114,19 @@ fun ChatRoomScreen(
                 navController.popBackStack()
             }
             is ChatSideEffect.ReceiveChat -> {
-                chatList.add(effect.chat)
+                vm.addChatList(effect.chat)
                 MainScope().launch {
-                    chatListState.scrollToItem(chatList.size - 1)
+                    chatListState.scrollToItem(state.chatList.size - 1)
                 }
             }
             is ChatSideEffect.ReceiveChatUpdate -> {
-                chatList.replaceAll { if (it.id == effect.chat.id) effect.chat else it }
+                vm.editChatList(effect.chat)
             }
             is ChatSideEffect.ReceiveChatDelete -> {
-                chatList.replaceAll { if (it.id == effect.chatId) it.toDeleteChatData(deleteMsg) else it }
+                vm.deleteChatList(effect.chatId, deleteMsg)
             }
             is ChatSideEffect.SuccessUpload -> {
-                state.chatSocket.send(roomId = roomId, text = "문자처리")
+                state.chatSocket.send(roomId = roomId, text = effect.url)
             }
         }
     }
@@ -142,7 +142,7 @@ fun ChatRoomScreen(
             backPressed = { exitChatDialogVisible = true })
         Box(modifier = Modifier.weight(1f)) {
             ChatList(
-                chatList = chatList,
+                chatList = state.chatList,
                 chatListState = chatListState,
                 selectItemUUID = selectItemUUID,
                 changeSelectItemUUID = {
@@ -174,9 +174,6 @@ fun ChatRoomScreen(
                     editMsgId = null
                 } else {
                     state.chatSocket.send(roomId = roomId, text = it)
-                    MainScope().launch {
-                        chatListState.scrollToItem(chatList.size - 1)
-                    }
                 }
             }, fileSendAction = {
                 vm.postFile(it.toFile(context))
@@ -469,10 +466,14 @@ fun ClientChat(
                     .widthIn(min = 0.dp, max = 200.dp)
                     .padding(horizontal = 7.dp, vertical = 5.dp)
             ) {
-                Bold11NO(
-                    text = item.text,
-                    modifier = Modifier
-                )
+                if (item.text.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/")) {
+                    AsyncImage(model = item.text, contentDescription = "Client Image")
+                } else {
+                    Bold11NO(
+                        text = item.text,
+                        modifier = Modifier
+                    )
+                }
             }
         }
     }

@@ -11,6 +11,7 @@ import com.example.domain.usecase.file.PostFileUseCase
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.mvi.ChatState
 import com.example.mitalk.socket.ChatSocket
+import com.example.mitalk.socket.toDeleteChatData
 import com.example.mitalk.ui.chat.ChatData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -59,6 +60,28 @@ class ChatViewModel @Inject constructor(
     fun clearChatInfo() = intent {
         viewModelScope.launch {
             clearChatInfoUseCase()
+        }
+    }
+
+    fun addChatList(chatData: ChatData) = intent {
+        reduce { state.copy(chatList = state.chatList.plus(chatData)) }
+    }
+
+    fun editChatList(chatData: ChatData) = intent {
+        reduce {
+            state.copy(chatList = state.chatList.map {
+                if (it.id == chatData.id) chatData else it
+            })
+        }
+    }
+
+    fun deleteChatList(chatId: String, deleteMsg: String) = intent {
+        reduce {
+            state.copy(chatList = state.chatList.map {
+                if (it.id == chatId) it.toDeleteChatData(
+                    deleteMsg
+                ) else it
+            })
         }
     }
 
