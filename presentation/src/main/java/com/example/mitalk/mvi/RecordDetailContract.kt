@@ -13,17 +13,28 @@ data class RecordDetailState(
         val isFile: Boolean,
         val isDeleted: Boolean,
         val isUpdated: Boolean,
-        val dataMap: List<Map<String, String>>,
-    )
+        val dataMap: List<MessageData>,
+    ) {
+        data class MessageData(
+            val message: String,
+            val time: String
+        )
+    }
 }
 
 fun RecordDetailEntity.MessageRecord.toSateData() = RecordDetailState.MessageRecordData(
     sender = sender,
     isFile = isFile,
-    isDeleted =  isDeleted,
+    isDeleted = isDeleted,
     isUpdated = isUpdated,
-    dataMap = dataMap
+    dataMap = dataMap.map { it.toStateData() }
 )
+
+fun RecordDetailEntity.MessageRecord.MessageData.toStateData() =
+    RecordDetailState.MessageRecordData.MessageData(
+        message = message,
+        time = time
+    )
 
 sealed class RecordDetailSideEffect {
 

@@ -23,8 +23,15 @@ data class RecordDetailResponse(
         @SerializedName("is_updated")
         val isUpdated: Boolean,
         @SerializedName("data_map")
-        val dataMap: List<Map<String, String>>,
-    )
+        val dataMap: List<MessageData>,
+    ) {
+        data class MessageData(
+            @SerializedName("message")
+            val message: String,
+            @SerializedName("local_date_time")
+            val time: String
+        )
+    }
 }
 
 fun RecordDetailResponse.toEntity() = RecordDetailEntity(
@@ -39,5 +46,11 @@ fun RecordDetailResponse.MessageRecord.toEntity() = RecordDetailEntity.MessageRe
     isFile = isFile,
     isDeleted = isDeleted,
     isUpdated = isUpdated,
-    dataMap = dataMap
+    dataMap = dataMap.map { it.toEntity() }
 )
+
+fun RecordDetailResponse.MessageRecord.MessageData.toEntity() =
+    RecordDetailEntity.MessageRecord.MessageData(
+        message = message,
+        time = time
+    )
