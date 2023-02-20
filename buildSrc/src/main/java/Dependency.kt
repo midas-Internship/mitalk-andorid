@@ -71,7 +71,7 @@ object Dependency {
     }
 
     object Coil {
-        const val COIL = "io.coil-kt:coil:${Version.COIL}"
+        const val COIL = "io.coil-kt:coil-compose:${Version.COIL}"
     }
 
     object Google {
