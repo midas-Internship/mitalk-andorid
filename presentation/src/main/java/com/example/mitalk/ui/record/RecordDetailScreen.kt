@@ -1,5 +1,6 @@
 package com.example.mitalk.ui.record
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +16,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,13 +26,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.R
+import com.example.mitalk.mvi.RecordDetailSideEffect
 import com.example.mitalk.mvi.RecordDetailState
 import com.example.mitalk.ui.chat.ChatItem
 import com.example.mitalk.ui.util.MiHeader
+import com.example.mitalk.util.miClickable
+import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.*
 import com.example.mitalk.util.toChatTime
 import com.example.mitalk.vm.record_detail.RecordDetailViewModel
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
+@OptIn(InternalCoroutinesApi::class)
 @Composable
 fun RecordDetailScreen(
     navController: NavController,
@@ -37,12 +47,29 @@ fun RecordDetailScreen(
     recordId: String,
     vm: RecordDetailViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+    val chatListState = rememberLazyListState()
+    var text by remember { mutableStateOf("") }
+    var isFind by remember { mutableStateOf(true) }
+
     val container = vm.container
     val state = container.stateFlow.collectAsState().value
     val sideEffect = container.sideEffectFlow
 
     LaunchedEffect(Unit) {
         vm.getRecordDetail(recordId = recordId)
+    }
+
+    sideEffect.observeWithLifecycle {
+        when (it) {
+            is RecordDetailSideEffect.ChangeCurrentFindPosition -> {
+                println("안녕 ${state.totalFindResultList}, ${it.scrollPosition}")
+                MainScope().launch {
+                    chatListState.scrollToItem(state.totalFindResultList[it.scrollPosition])
+                }
+            }
+        }
     }
 
     Column {
@@ -53,19 +80,52 @@ fun RecordDetailScreen(
             text = stringResource(id = headerId),
         )
         Spacer(modifier = Modifier.height(10.dp))
-        FindInput {
-        }
+        FindInput(
+            text = text,
+            isFind = state.totalFindResultList.isNotEmpty(),
+            currentResult = state.currentFindPosition + 1,
+            totalResult = state.totalFindResultList,
+            onTextChange = { text = it },
+            onFindAction = {
+                val list = state.messageRecords.mapIndexed { index, data ->
+                    if (!data.isDeleted && data.dataMap.last().message.contains(text)) index else null
+                }.filterNotNull().toMutableList()
+                vm.setTotalFindResultList(list)
+                if (list.isEmpty()) {
+                    Toast.makeText(context, "검색결과가 없습니다.", Toast.LENGTH_SHORT).show()
+                } else {
+                    focusManager.clearFocus()
+                }
+            }, onCancelAction = {
+                vm.clearFindResult()
+                text = ""
+            }, upFindAction = {
+                if (state.currentFindPosition < state.totalFindResultList.size - 1) {
+                    vm.plusCurrentFindPosition()
+                }
+            }, downFindAction = {
+                if (state.currentFindPosition > 1) {
+                    vm.minusCurrentFindPosition()
+                }
+            })
         Box(modifier = Modifier.weight(1f)) {
-            ChatList(state.messageRecords)
+            ChatList(chatList = state.messageRecords, chatListState = chatListState)
         }
     }
 }
 
 @Composable
 fun FindInput(
-    onFindAction: () -> Unit
+    text: String,
+    isFind: Boolean,
+    currentResult: Int,
+    totalResult: List<Int>,
+    onTextChange: (String) -> Unit,
+    onFindAction: () -> Unit,
+    onCancelAction: () -> Unit,
+    downFindAction: () -> Unit,
+    upFindAction: () -> Unit
 ) {
-    var text by remember { mutableStateOf("") }
     Row(
         modifier = Modifier
             .height(30.dp)
@@ -75,11 +135,12 @@ fun FindInput(
         verticalAlignment = Alignment.CenterVertically
     ) {
         BasicTextField(
-            value = text,
+            value = "$text${if (isFind) " $currentResult/${totalResult.size}" else ""}",
             modifier = Modifier
                 .weight(1F)
                 .padding(horizontal = 15.dp, vertical = 5.dp),
-            onValueChange = { text = it },
+            enabled = !isFind,
+            onValueChange = { onTextChange(it) },
             textStyle = MiTalkTypography.regular14NO,
             singleLine = true,
             decorationBox = @Composable {
@@ -96,12 +157,48 @@ fun FindInput(
                 }
             }
         )
-        Icon(
-            painter = painterResource(id = MitalkIcon.Search.drawableId),
-            contentDescription = MitalkIcon.Search.contentDescription,
-            modifier = Modifier
-                .width(15.dp)
-        )
+        if (!isFind) {
+            Icon(
+                painter = painterResource(id = MitalkIcon.Search.drawableId),
+                contentDescription = MitalkIcon.Search.contentDescription,
+                modifier = Modifier
+                    .width(15.dp)
+                    .miClickable(rippleEnabled = false) {
+                        if (!text.isNullOrBlank()) {
+                            onFindAction()
+                        }
+                    }
+            )
+        } else {
+            Icon(
+                painter = painterResource(id = MitalkIcon.Up.drawableId),
+                contentDescription = MitalkIcon.Up.contentDescription,
+                modifier = Modifier
+                    .width(15.dp)
+                    .miClickable(rippleEnabled = false) {
+                        upFindAction()
+                    }
+            )
+            Icon(
+                painter = painterResource(id = MitalkIcon.Down.drawableId),
+                contentDescription = MitalkIcon.Down.contentDescription,
+                modifier = Modifier
+                    .width(15.dp)
+                    .miClickable(rippleEnabled = false) {
+                        downFindAction()
+                    }
+            )
+            Spacer(modifier = Modifier.width(5.dp))
+            Icon(
+                painter = painterResource(id = MitalkIcon.Cancel.drawableId),
+                contentDescription = MitalkIcon.Cancel.contentDescription,
+                modifier = Modifier
+                    .width(15.dp)
+                    .miClickable(rippleEnabled = false) {
+                        onCancelAction()
+                    }
+            )
+        }
         Spacer(modifier = Modifier.width(15.dp))
     }
 }

@@ -7,6 +7,8 @@ data class RecordDetailState(
     val customerName: String = "",
     val counsellorName: String = "",
     val messageRecords: List<MessageRecordData> = listOf(),
+    val totalFindResultList: List<Int> = listOf(),
+    val currentFindPosition: Int = 0
 ) {
     data class MessageRecordData(
         val sender: String,
@@ -37,5 +39,5 @@ fun RecordDetailEntity.MessageRecord.MessageData.toStateData() =
     )
 
 sealed class RecordDetailSideEffect {
-
+    data class ChangeCurrentFindPosition(val scrollPosition: Int) : RecordDetailSideEffect()
 }

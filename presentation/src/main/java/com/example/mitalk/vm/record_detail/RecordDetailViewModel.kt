@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
@@ -36,5 +37,24 @@ class RecordDetailViewModel @Inject constructor(
 
                 }
         }
+    }
+
+    fun setTotalFindResultList(list: List<Int>) = intent {
+        reduce { state.copy(totalFindResultList = list) }
+        postSideEffect(RecordDetailSideEffect.ChangeCurrentFindPosition(0))
+    }
+
+    fun plusCurrentFindPosition() = intent {
+        postSideEffect(RecordDetailSideEffect.ChangeCurrentFindPosition(state.currentFindPosition + 1))
+        reduce { state.copy(currentFindPosition = state.currentFindPosition + 1) }
+    }
+
+    fun minusCurrentFindPosition() = intent {
+        postSideEffect(RecordDetailSideEffect.ChangeCurrentFindPosition(state.currentFindPosition - 1))
+        reduce { state.copy(currentFindPosition = state.currentFindPosition - 1) }
+    }
+
+    fun clearFindResult() = intent {
+        reduce { state.copy(totalFindResultList = listOf(), currentFindPosition = 0) }
     }
 }
