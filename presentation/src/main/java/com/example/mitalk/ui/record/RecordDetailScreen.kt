@@ -24,7 +24,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.R
 import com.example.mitalk.mvi.RecordDetailState
-import com.example.mitalk.ui.chat.ChatData
+import com.example.mitalk.ui.chat.ChatItem
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.theme.*
 import com.example.mitalk.util.toChatTime
@@ -160,10 +160,10 @@ fun CounselorChat(
         Spacer(modifier = Modifier.width(3.dp))
         Column {
             Light09NO(text = stringResource(id = R.string.counselor))
-            if (item.isDeleted) stringResource(id = R.string.main_screen) else {
-                Bold11NO(
-                    text = item.dataMap.last().message,
-                    color = MitalkColor.White,
+            if (item.isDeleted) Bold11NO(text = stringResource(id = R.string.main_screen)) else {
+                ChatItem(
+                    item = item.dataMap.last().message,
+                    isMe = item.sender == "CUSTOMER",
                     modifier = Modifier
                         .background(
                             color = MitalkColor.MainBlue,
@@ -198,10 +198,8 @@ fun ClientChat(
                     .widthIn(min = 0.dp, max = 200.dp)
                     .padding(horizontal = 7.dp, vertical = 5.dp)
             ) {
-                if (item.isDeleted) stringResource(id = R.string.main_screen) else {
-                    Bold11NO(
-                        text = item.dataMap.last().message
-                    )
+                if (item.isDeleted) Bold11NO(text = stringResource(id = R.string.main_screen)) else {
+                    ChatItem(item = item.dataMap.last().message)
                 }
             }
         }
