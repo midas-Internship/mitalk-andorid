@@ -62,11 +62,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Stable
-private val CounselorChat =
+val CounselorChat =
     RoundedCornerShape(topStart = 0.dp, topEnd = 5.dp, bottomEnd = 5.dp, bottomStart = 5.dp)
 
 @Stable
-private val ClientChat =
+val ClientChat =
     RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, bottomEnd = 0.dp, bottomStart = 5.dp)
 
 const val EmptyTime = 300
