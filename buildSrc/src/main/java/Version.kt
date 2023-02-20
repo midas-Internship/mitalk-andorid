@@ -39,6 +39,8 @@ object Version {
 
     const val COIL = "2.2.2"
 
+    const val EXO_PLAYER = "2.17.1"
+
     const val OAUTH = "19.0.0"
 
     const val INJECT = "1"

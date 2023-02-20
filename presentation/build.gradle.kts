@@ -106,5 +106,7 @@ dependencies {
 
     implementation(Dependency.Coil.COIL)
 
+    implementation(Dependency.ExoPlayer.EXO_PLAYER)
+
     implementation(Dependency.Google.OAUTH)
 }

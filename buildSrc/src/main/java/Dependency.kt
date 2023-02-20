@@ -74,6 +74,10 @@ object Dependency {
         const val COIL = "io.coil-kt:coil-compose:${Version.COIL}"
     }
 
+    object ExoPlayer {
+        const val EXO_PLAYER = "com.google.android.exoplayer:exoplayer:${Version.EXO_PLAYER}"
+    }
+
     object Google {
         const val OAUTH = "com.google.android.gms:play-services-auth:${Version.OAUTH}"
     }
