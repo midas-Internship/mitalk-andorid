@@ -51,6 +51,7 @@ fun RecordDetailScreen(
     val focusManager = LocalFocusManager.current
     val chatListState = rememberLazyListState()
     var text by remember { mutableStateOf("") }
+    val noSearchMsg = stringResource(id = R.string.no_search_result)
 
     val container = vm.container
     val state = container.stateFlow.collectAsState().value
@@ -90,7 +91,7 @@ fun RecordDetailScreen(
                 }.filterNotNull().toMutableList()
                 vm.setTotalFindResultList(list)
                 if (list.isEmpty()) {
-                    Toast.makeText(context, "검색결과가 없습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, noSearchMsg, Toast.LENGTH_SHORT).show()
                 } else {
                     focusManager.clearFocus()
                 }
@@ -148,7 +149,7 @@ fun FindInput(
                     it()
                     if (text.isEmpty()) {
                         Regular12NO(
-                            text = stringResource(id = R.string.find_comment_hit),
+                            text = stringResource(id = R.string.find_comment_hint),
                             color = Color(0xFFACABED)
                         )
                     }
