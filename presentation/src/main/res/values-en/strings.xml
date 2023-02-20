@@ -64,4 +64,5 @@
     <string name="english">English</string>
     <string name="korean">Korean</string>
     <string name="setting_language">Language</string>
+    <string name="delete_message">deleted</string>
 </resources>
