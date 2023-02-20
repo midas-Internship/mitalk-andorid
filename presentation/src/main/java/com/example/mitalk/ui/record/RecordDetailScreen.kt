@@ -1,8 +1,13 @@
 package com.example.mitalk.ui.record
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Icon
@@ -18,10 +23,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mitalk.R
+import com.example.mitalk.mvi.RecordDetailState
 import com.example.mitalk.ui.chat.ChatData
-import com.example.mitalk.ui.chat.ChatList
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.theme.*
+import com.example.mitalk.util.toChatTime
 import com.example.mitalk.vm.record_detail.RecordDetailViewModel
 
 @Composable
@@ -31,7 +37,9 @@ fun RecordDetailScreen(
     recordId: String,
     vm: RecordDetailViewModel = hiltViewModel()
 ) {
-    var chatList = remember { mutableStateListOf<ChatData>() }
+    val container = vm.container
+    val state = container.stateFlow.collectAsState().value
+    val sideEffect = container.sideEffectFlow
 
     LaunchedEffect(Unit) {
         vm.getRecordDetail(recordId = recordId)
@@ -48,6 +56,7 @@ fun RecordDetailScreen(
         FindInput {
         }
         Box(modifier = Modifier.weight(1f)) {
+            ChatList(state.messageRecords)
         }
     }
 }
@@ -94,6 +103,108 @@ fun FindInput(
                 .width(15.dp)
         )
         Spacer(modifier = Modifier.width(15.dp))
+    }
+}
+
+@Composable
+fun ChatList(
+    chatList: List<RecordDetailState.MessageRecordData>,
+    chatListState: LazyListState = rememberLazyListState(),
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        state = chatListState
+    ) {
+        items(1) {
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+        itemsIndexed(chatList) { _, item ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(start = 20.dp, end = 10.dp, top = 10.dp),
+                horizontalArrangement = if (item.sender == "CUSTOMER") Arrangement.End else Arrangement.Start
+            ) {
+                if (item.sender == "CUSTOMER") {
+                    ClientChat(
+                        item = item
+                    )
+                } else {
+                    CounselorChat(item = item)
+                }
+            }
+        }
+        items(1) {
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+    }
+}
+
+@Composable
+fun CounselorChat(
+    item: RecordDetailState.MessageRecordData,
+) {
+    Row(
+        verticalAlignment = Alignment.Bottom
+    ) {
+        Image(
+            painter = painterResource(id = MitalkIcon.Counselor.drawableId),
+            contentDescription = MitalkIcon.Counselor.contentDescription,
+            modifier = Modifier
+                .size(35.dp)
+                .align(Alignment.Top),
+        )
+        Spacer(modifier = Modifier.width(3.dp))
+        Column {
+            Light09NO(text = stringResource(id = R.string.counselor))
+            if (item.isDeleted) stringResource(id = R.string.main_screen) else {
+                Bold11NO(
+                    text = item.dataMap.last().message,
+                    color = MitalkColor.White,
+                    modifier = Modifier
+                        .background(
+                            color = MitalkColor.MainBlue,
+                            shape = com.example.mitalk.ui.chat.CounselorChat
+                        )
+                        .widthIn(min = 0.dp, max = 180.dp)
+                        .padding(horizontal = 7.dp, vertical = 5.dp)
+                )
+            }
+        }
+        Spacer(modifier = Modifier.width(3.dp))
+        Light09NO(text = item.dataMap.last().time.toChatTime())
+    }
+}
+
+@Composable
+fun ClientChat(
+    item: RecordDetailState.MessageRecordData
+) {
+    Box {
+        Row(
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Light09NO(text = item.dataMap.last().time.toChatTime())
+            Spacer(modifier = Modifier.width(3.dp))
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = MitalkColor.White,
+                        shape = com.example.mitalk.ui.chat.ClientChat
+                    )
+                    .widthIn(min = 0.dp, max = 200.dp)
+                    .padding(horizontal = 7.dp, vertical = 5.dp)
+            ) {
+                if (item.isDeleted) stringResource(id = R.string.main_screen) else {
+                    Bold11NO(
+                        text = item.dataMap.last().message
+                    )
+                }
+            }
+        }
     }
 }
 
