@@ -421,7 +421,7 @@ fun ClientChat(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Light09NO(
-                            text = "수정",
+                            text = stringResource(id = R.string.update),
                             color = Color(0xFF4200FF),
                             modifier = Modifier
                                 .padding(end = 3.dp)
@@ -435,7 +435,7 @@ fun ClientChat(
                                 .fillMaxHeight(0.7f)
                         )
                         Light09NO(
-                            text = "삭제",
+                            text = stringResource(id = R.string.delete),
                             color = Color(0xFFFF0000),
                             modifier = Modifier
                                 .padding(start = 3.dp)
@@ -483,7 +483,7 @@ fun ChatItem(item: String, isMe: Boolean = true, modifier: Modifier = Modifier) 
     if (item.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/")) {
         when (item.split(".").last().lowercase()) {
             "jpg", "jpeg", "gif", "png", "bmp", "svg" -> {
-                AsyncImage(model = item, contentDescription = "Client Image")
+                AsyncImage(model = item, contentDescription = "Chat Image")
             }
             "mp4", "mov", "wmv", "avi", "mkv", "mpeg-2" -> {
                 VideoPlayer(url = item)
