@@ -121,6 +121,9 @@ fun ChatRoomScreen(
             is ChatSideEffect.ReceiveChatDelete -> {
                 chatList.replaceAll { if (it.id == effect.chatId) it.toDeleteChatData(deleteMsg) else it }
             }
+            is ChatSideEffect.SuccessUpload -> {
+                state.chatSocket.send(roomId = roomId, text = "문자처리")
+            }
         }
     }
 

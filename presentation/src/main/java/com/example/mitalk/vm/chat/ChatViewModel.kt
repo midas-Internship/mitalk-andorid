@@ -66,6 +66,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             postFileUseCase(file)
                 .onSuccess {
+                    postSideEffect(ChatSideEffect.SuccessUpload(it.file))
                 }.onFailure {
                 }
         }
