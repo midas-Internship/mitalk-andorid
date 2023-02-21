@@ -20,4 +20,7 @@ sealed class ChatSideEffect {
     data class SuccessUpload(val url: String) : ChatSideEffect()
     data class ChatInfo(val chatInfoEntity: ChatInfoEntity) : ChatSideEffect()
     object FinishRoom : ChatSideEffect()
+    object FileSizeException : ChatSideEffect()
+    object FileOverException : ChatSideEffect()
+    object FileNotAllowedException : ChatSideEffect()
 }
