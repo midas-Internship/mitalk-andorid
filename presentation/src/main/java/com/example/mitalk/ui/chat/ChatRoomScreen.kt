@@ -478,7 +478,12 @@ fun ClientChat(
 }
 
 @Composable
-fun ChatItem(item: String, isMe: Boolean = true, modifier: Modifier = Modifier) {
+fun ChatItem(
+    item: String,
+    isMe: Boolean = true,
+    modifier: Modifier = Modifier,
+    findText: String = ""
+) {
     val context = LocalContext.current
     if (item.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/")) {
         when (item.split(".").last().lowercase()) {
@@ -497,7 +502,7 @@ fun ChatItem(item: String, isMe: Boolean = true, modifier: Modifier = Modifier) 
     } else {
         Bold11NO(
             text = item,
-            modifier = modifier,
+            modifier = modifier.background(if (findText.isNotEmpty() && item.contains(findText)) Color.Yellow else Color.Transparent),
             color = if (isMe) MitalkColor.Black else MitalkColor.White
         )
     }
