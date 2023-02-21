@@ -52,6 +52,8 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalTime
 
 const val EmptyTime = 300
 
@@ -59,7 +61,7 @@ data class ChatData(
     val id: String,
     val text: String,
     val isMe: Boolean,
-    val time: String,
+    val time: LocalTime,
 )
 
 @OptIn(InternalCoroutinesApi::class)
@@ -158,8 +160,12 @@ fun ChatRoomScreen(
                 uploadList = state.uploadList,
                 chatListState = chatListState,
                 selectItemUUID = selectItemUUID,
-                changeSelectItemUUID = {
-                    selectItemUUID = it
+                longClickAction = { uuid, time ->
+                    selectItemUUID = if (time.plusMinutes(1) >= LocalTime.now()) {
+                        uuid
+                    } else {
+                        null
+                    }
                 },
                 editAction = { id, msg ->
                     text = msg
@@ -190,6 +196,9 @@ fun ChatRoomScreen(
                 }
             }, fileSendAction = {
                 vm.postFile(uri = it, context = context)
+            }, editCancelAction = {
+                editMsgId = null
+                text = ""
             }, isEditable = (editMsgId != null)
         )
         Spacer(modifier = Modifier.height(18.dp))
@@ -225,7 +234,7 @@ fun ChatList(
     uploadList: List<Uri>,
     chatListState: LazyListState = rememberLazyListState(),
     selectItemUUID: String?,
-    changeSelectItemUUID: (String?) -> Unit,
+    longClickAction: (String?, LocalTime) -> Unit,
     editAction: (String, String) -> Unit,
     deleteAction: (String) -> Unit,
 ) {
@@ -249,7 +258,8 @@ fun ChatList(
                 if (item.isMe) {
                     ClientChat(
                         item = item,
-                        longClickAction = changeSelectItemUUID,
+                        longClickAction = longClickAction,
+                        isFile = item.text.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/"),
                         itemVisible = selectItemUUID == item.id,
                         editAction = editAction,
                         deleteAction = {
@@ -294,6 +304,7 @@ fun ChatInput(
     sendAction: (String) -> Unit,
     fileSendAction: (Uri) -> Unit,
     isEditable: Boolean,
+    editCancelAction: () -> Unit
 ) {
     var isExpand by remember { mutableStateOf(false) }
     var targetValue by remember { mutableStateOf(0F) }
@@ -308,13 +319,28 @@ fun ChatInput(
     )
     Column {
         if (isEditable) {
-            Regular14NO(
-                text = "문자를 수정 중 입니다.",
-                modifier = Modifier.background(
-                    color = Color(0xFFF3F3F3),
-                    shape = RoundedCornerShape(5.dp)
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 30.dp, vertical = 5.dp)
+                    .fillMaxWidth()
+                    .background(
+                        color = Color.LightGray,
+                        shape = RoundedCornerShape(5.dp)
+                    ),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Regular14NO(
+                    text = stringResource(id = R.string.editing_message),
+                    modifier = Modifier.padding(start = 5.dp, top = 5.dp, bottom = 5.dp)
                 )
-            )
+                Icon(
+                    painter = painterResource(id = MitalkIcon.Cancel.drawableId),
+                    contentDescription = MitalkIcon.Cancel.contentDescription,
+                    modifier = Modifier
+                        .padding(end = 5.dp, top = 5.dp, bottom = 5.dp)
+                        .miClickable(rippleEnabled = false) { editCancelAction() }
+                )
+            }
         }
         Row(
             modifier = Modifier
@@ -423,14 +449,15 @@ fun CounselorChat(
             )
         }
         Spacer(modifier = Modifier.width(3.dp))
-        Light09NO(text = item.time)
+        Light09NO(text = item.time.toChatTime())
     }
 }
 
 @Composable
 fun ClientChat(
     item: ChatData,
-    longClickAction: (String) -> Unit,
+    isFile: Boolean,
+    longClickAction: (String?, LocalTime) -> Unit,
     editAction: (String, String) -> Unit,
     deleteAction: (String) -> Unit,
     itemVisible: Boolean,
@@ -454,20 +481,22 @@ fun ClientChat(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Light09NO(
-                            text = stringResource(id = R.string.update),
-                            color = Color(0xFF4200FF),
-                            modifier = Modifier
-                                .padding(end = 3.dp)
-                                .miClickable {
-                                    editAction(item.id, item.text)
-                                })
-                        Spacer(
-                            modifier = Modifier
-                                .background(Color(0x66C9C6C6))
-                                .width((0.5).dp)
-                                .fillMaxHeight(0.7f)
-                        )
+                        if (!isFile) {
+                            Light09NO(
+                                text = stringResource(id = R.string.update),
+                                color = Color(0xFF4200FF),
+                                modifier = Modifier
+                                    .padding(end = 3.dp)
+                                    .miClickable {
+                                        editAction(item.id, item.text)
+                                    })
+                            Spacer(
+                                modifier = Modifier
+                                    .background(Color(0x66C9C6C6))
+                                    .width((0.5).dp)
+                                    .fillMaxHeight(0.7f)
+                            )
+                        }
                         Light09NO(
                             text = stringResource(id = R.string.delete),
                             color = Color(0xFFFF0000),
@@ -490,7 +519,7 @@ fun ClientChat(
         Row(
             verticalAlignment = Alignment.Bottom
         ) {
-            Light09NO(text = item.time)
+            Light09NO(text = item.time.toChatTime())
             Spacer(modifier = Modifier.width(3.dp))
             Box(
                 modifier = Modifier
@@ -504,8 +533,8 @@ fun ClientChat(
                 ChatItem(
                     item.text,
                     modifier = Modifier.miClickable(rippleEnabled = false, onLongClick = {
-                        longClickAction(item.id)
-                    }) { })
+                        longClickAction(item.id, item.time)
+                    }) { longClickAction(null, item.time) })
             }
         }
     }
@@ -522,13 +551,23 @@ fun ChatItem(
     if (item.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/")) {
         val fileExt = item.split(".").last().lowercase()
         if (ImageAllowedList.contains(fileExt)) {
-            AsyncImage(model = item, contentDescription = "Chat Image")
+            AsyncImage(model = item, contentDescription = "Chat Image", modifier = modifier)
         } else if (VideoAllowedList.contains(fileExt)) {
-            VideoPlayer(url = item)
+            VideoPlayer(url = item, modifier = modifier)
         } else if (DocumentAllowedList.contains(fileExt)) {
-            Bold11NO(text = "File Download", modifier = Modifier.clickable {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item)))
-            })
+            Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = MitalkIcon.Download.drawableId),
+                    contentDescription = MitalkIcon.Download.contentDescription,
+                    modifier = Modifier
+                        .background(color = Color.LightGray, shape = RoundedCornerShape(5.dp))
+                        .clickable {
+                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item)))
+                        }
+                )
+                Spacer(modifier = Modifier.width(5.dp))
+                Regular12NO(text = "Download")
+            }
         }
     } else {
         Bold11NO(

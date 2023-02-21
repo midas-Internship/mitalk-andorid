@@ -72,4 +72,5 @@
     <string name="big_size_file_comment">파일을 전송하시겠습니까?</string>
     <string name="over_size_file">파일 용량 초과</string>
     <string name="over_size_file_comment">파일의 용량이 너무 커서 전송할 수 없습니다.</string>
+    <string name="editing_message">메시지를 수정 중 입니다.</string>
 </resources>
