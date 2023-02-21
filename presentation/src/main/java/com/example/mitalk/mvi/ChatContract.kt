@@ -1,8 +1,11 @@
 package com.example.mitalk.mvi
 
 import android.net.Uri
+import com.example.domain.entity.RecordDetailEntity
 import com.example.mitalk.socket.ChatSocket
 import com.example.mitalk.ui.chat.ChatData
+import java.time.LocalTime
+import java.util.UUID
 
 
 data class ChatState(
@@ -13,6 +16,13 @@ data class ChatState(
     val uploadList: List<Uri> = mutableListOf(),
     val callCheck: Boolean = false,
     val chatType: String = "",
+)
+
+fun RecordDetailEntity.MessageRecord.toChatData() = ChatData(
+    id = UUID.randomUUID().toString(),
+    text = if (isDeleted) "sdsd" else dataMap.last().message,
+    isMe = sender == "CUSTOMER",
+    time = LocalTime.parse(dataMap.last().time)
 )
 
 sealed class ChatSideEffect {

@@ -74,11 +74,13 @@ fun MainScreen(
                 mainViewModel.clearCounsellorId()
             }
             is MainSideEffect.RemainRoom -> {
+                chatViewModel.loadChatData(it.roomId)
                 chatState.chatSocket.startSocket(
                     chatState.chatType,
                     chatState.accessToken,
                     it.roomId
                 )
+                navController.navigate(AppNavigationItem.ChatRoom.route)
             }
         }
     }

@@ -10,8 +10,10 @@ import com.example.domain.usecase.chat.ClearChatInfoUseCase
 import com.example.domain.usecase.chat.FetchChatInfoUseCase
 import com.example.domain.usecase.chat.SaveChatInfoUseCase
 import com.example.domain.usecase.file.PostFileUseCase
+import com.example.domain.usecase.record.GetRecordDetailUseCase
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.mvi.ChatState
+import com.example.mitalk.mvi.toChatData
 import com.example.mitalk.socket.ChatSocket
 import com.example.mitalk.socket.toDeleteChatData
 import com.example.mitalk.ui.chat.ChatData
@@ -36,6 +38,7 @@ class ChatViewModel @Inject constructor(
     private val fetchChatInfoUseCase: FetchChatInfoUseCase,
     private val clearChatInfoUseCase: ClearChatInfoUseCase,
     private val postFileUseCase: PostFileUseCase,
+    private val getRecordDetailUseCase: GetRecordDetailUseCase
 ) : ContainerHost<ChatState, ChatSideEffect>, ViewModel() {
     override val container = container<ChatState, ChatSideEffect>(ChatState())
 
@@ -45,6 +48,13 @@ class ChatViewModel @Inject constructor(
                 .onSuccess {
                     reduce { state.copy(accessToken = it) }
                 }
+        }
+    }
+
+    fun loadChatData(roomId: String) = intent {
+        viewModelScope.launch {
+            getRecordDetailUseCase(recordId = roomId)
+                .onSuccess { reduce { state.copy(chatList = it.messageRecords.map { it.toChatData() }) } }
         }
     }
 
