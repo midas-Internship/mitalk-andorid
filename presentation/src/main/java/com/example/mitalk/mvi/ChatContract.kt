@@ -12,7 +12,8 @@ data class ChatState(
     val chatSocket: ChatSocket = ChatSocket({}, {}, {}, {}, {}, {}, {}, {}),
     val chatList: List<ChatData> = mutableListOf(),
     val uploadList: List<Uri> = mutableListOf(),
-    val callCheck: Boolean = false
+    val callCheck: Boolean = false,
+    val chatType: String = "",
 )
 
 sealed class ChatSideEffect {
@@ -21,7 +22,6 @@ sealed class ChatSideEffect {
     data class ReceiveChatDelete(val chatId: String) : ChatSideEffect()
     data class SuccessRoom(val roomId: String) : ChatSideEffect()
     data class SuccessUpload(val url: String) : ChatSideEffect()
-    data class ChatInfo(val chatInfoEntity: ChatInfoEntity) : ChatSideEffect()
     object FinishRoom : ChatSideEffect()
     data class FileSizeException(val uri: Uri) : ChatSideEffect()
     object FileOverException : ChatSideEffect()

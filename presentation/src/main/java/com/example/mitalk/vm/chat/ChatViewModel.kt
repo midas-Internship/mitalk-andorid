@@ -58,7 +58,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             fetchChatInfoUseCase()
                 .onSuccess {
-                    postSideEffect(ChatSideEffect.ChatInfo(it))
+                    reduce { state.copy(chatType = it.chatType) }
                 }
         }
     }

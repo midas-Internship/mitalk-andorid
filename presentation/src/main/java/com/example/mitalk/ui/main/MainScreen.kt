@@ -36,7 +36,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 fun MainScreen(
     navController: NavController,
     mainViewModel: MainViewModel = hiltViewModel(),
-    chatViewModel: ChatViewModel = hiltViewModel()
+    chatViewModel: ChatViewModel = hiltViewModel(),
 ) {
     val container = mainViewModel.container
     val state = container.stateFlow.collectAsState().value
@@ -72,6 +72,13 @@ fun MainScreen(
             }
             MainSideEffect.ReviewSuccess -> {
                 mainViewModel.clearCounsellorId()
+            }
+            is MainSideEffect.RemainRoom -> {
+                chatState.chatSocket.startSocket(
+                    chatState.chatType,
+                    chatState.accessToken,
+                    it.roomId
+                )
             }
         }
     }
@@ -143,6 +150,7 @@ fun MainScreen(
             callCheck = chatState.callCheck,
             disConnectAction = {
                 chatState.chatSocket.send(messageType = "END")
+                mainViewModel.checkReviewState()
             }
         ) {
             if (chatState.callCheck) {
@@ -251,7 +259,7 @@ private fun MainContent(
     icon: Painter,
     callCheck: Boolean = false,
     disConnectAction: () -> Unit = {},
-    onPressed: () -> Unit
+    onPressed: () -> Unit,
 ) {
     Row(
         modifier = Modifier

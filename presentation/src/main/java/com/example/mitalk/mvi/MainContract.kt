@@ -19,4 +19,6 @@ sealed class MainSideEffect {
 
     object ReviewSuccess : MainSideEffect()
 
+    data class RemainRoom(val roomId: String) : MainSideEffect()
+
 }
