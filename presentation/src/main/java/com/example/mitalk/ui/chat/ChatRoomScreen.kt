@@ -62,11 +62,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Stable
-private val CounselorChat =
+val CounselorChat =
     RoundedCornerShape(topStart = 0.dp, topEnd = 5.dp, bottomEnd = 5.dp, bottomStart = 5.dp)
 
 @Stable
-private val ClientChat =
+val ClientChat =
     RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, bottomEnd = 0.dp, bottomStart = 5.dp)
 
 const val EmptyTime = 300
@@ -95,7 +95,7 @@ fun ChatRoomScreen(
     var selectItemUUID by remember { mutableStateOf<String?>(null) }
     var emptyTime by remember { mutableStateOf(EmptyTime) }
     var text by remember { mutableStateOf("") }
-    val deleteMsg = stringResource(id = R.string.main_screen)
+    val deleteMsg = stringResource(id = R.string.delete_message)
 
     val container = vm.container
     val state = container.stateFlow.collectAsState().value
@@ -377,10 +377,8 @@ fun CounselorChat(
         Spacer(modifier = Modifier.width(3.dp))
         Column {
             Light09NO(text = stringResource(id = R.string.counselor))
-            Bold11NO(
-                text = item.text,
-                color = MitalkColor.White,
-                modifier = Modifier
+            ChatItem(
+                item = item.text, isMe = item.isMe, modifier = Modifier
                     .background(
                         color = MitalkColor.MainBlue,
                         shape = CounselorChat
@@ -423,7 +421,7 @@ fun ClientChat(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Light09NO(
-                            text = "수정",
+                            text = stringResource(id = R.string.update),
                             color = Color(0xFF4200FF),
                             modifier = Modifier
                                 .padding(end = 3.dp)
@@ -437,7 +435,7 @@ fun ClientChat(
                                 .fillMaxHeight(0.7f)
                         )
                         Light09NO(
-                            text = "삭제",
+                            text = stringResource(id = R.string.delete),
                             color = Color(0xFFFF0000),
                             modifier = Modifier
                                 .padding(start = 3.dp)
@@ -469,30 +467,44 @@ fun ClientChat(
                     .widthIn(min = 0.dp, max = 200.dp)
                     .padding(horizontal = 7.dp, vertical = 5.dp)
             ) {
-                if (item.text.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/")) {
-                    when (item.text.split(".").last().lowercase()) {
-                        "jpg", "jpeg", "gif", "png", "bmp", "svg" -> {
-                            AsyncImage(model = item.text, contentDescription = "Client Image")
-                        }
-                        "mp4", "mov", "wmv", "avi", "mkv", "mpeg-2" -> {
-                            VideoPlayer(url = item.text)
-                        }
-                        "hwp", "txt", "doc", "pdf", "csv", "xls", "ppt", "pptx" -> {
-                            Bold11NO(text = "File Download", modifier = Modifier.clickable {
-                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.text)))
-                            })
-                        }
-                    }
-                } else {
-                    Bold11NO(
-                        text = item.text,
-                        modifier = Modifier.miClickable(onLongClick = {
-                            longClickAction(item.id)
-                        }, onClick = null)
-                    )
-                }
+                ChatItem(
+                    item.text,
+                    modifier = Modifier.miClickable(rippleEnabled = false, onLongClick = {
+                        longClickAction(item.id)
+                    }) { })
             }
         }
+    }
+}
+
+@Composable
+fun ChatItem(
+    item: String,
+    isMe: Boolean = true,
+    modifier: Modifier = Modifier,
+    findText: String = ""
+) {
+    val context = LocalContext.current
+    if (item.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/")) {
+        when (item.split(".").last().lowercase()) {
+            "jpg", "jpeg", "gif", "png", "bmp", "svg" -> {
+                AsyncImage(model = item, contentDescription = "Chat Image")
+            }
+            "mp4", "mov", "wmv", "avi", "mkv", "mpeg-2" -> {
+                VideoPlayer(url = item)
+            }
+            "hwp", "txt", "doc", "pdf", "csv", "xls", "ppt", "pptx" -> {
+                Bold11NO(text = "File Download", modifier = Modifier.clickable {
+                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item)))
+                })
+            }
+        }
+    } else {
+        Bold11NO(
+            text = item,
+            modifier = modifier.background(if (findText.isNotEmpty() && item.contains(findText)) Color.Yellow else Color.Transparent),
+            color = if (isMe) MitalkColor.Black else MitalkColor.White
+        )
     }
 }
 

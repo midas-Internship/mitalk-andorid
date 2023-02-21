@@ -1,5 +1,6 @@
 package com.example.mitalk.ui.record
 
+import android.icu.text.AlphabeticIndex.Record
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -85,16 +86,26 @@ private fun RecordList(
 ) {
     LazyColumn {
         itemsIndexed(list) { index, it ->
+            val type = when (it.type) {
+                RecordItemType.QUESTION.type -> RecordItemType.QUESTION
+                RecordItemType.FEEDBACK.type -> RecordItemType.FEEDBACK
+                RecordItemType.BUG.type -> RecordItemType.BUG
+                RecordItemType.SUGGEST.type -> RecordItemType.SUGGEST
+                RecordItemType.INQUIRY.type -> RecordItemType.INQUIRY
+                RecordItemType.ETC.type -> RecordItemType.ETC
+                else -> RecordItemType.ElSE
+            }
             RecordItem(
                 date = it.time,
                 icon = painterResource(id = returnIcon(index)),
-                type = it.type,
+                type = type,
                 counselor = it.counsellorName,
                 lastDate = returnLastDate(list, index),
             ) {
                 navController.navigate(
                     route = AppNavigationItem.RecordDetail.route
-                            + DeepLinkKey.HEADER + it.type
+                            + DeepLinkKey.HEADER_ID + type.titleId
+                            + DeepLinkKey.RECORD_ID + it.recordId
                 )
             }
         }
@@ -105,7 +116,7 @@ private fun RecordList(
 private fun RecordItem(
     date: String,
     icon: Painter,
-    type: String,
+    type: RecordItemType,
     counselor: String,
     lastDate: Int,
     onClicked: () -> Unit,
@@ -116,15 +127,6 @@ private fun RecordItem(
         else if (lastDate - thisDateInt > 100) 50.dp
         else if (lastDate > thisDateInt) 25.dp
         else 10.dp
-    val item = when (type) {
-        RecordItemType.QUESTION.type -> RecordItemType.QUESTION
-        RecordItemType.FEEDBACK.type -> RecordItemType.FEEDBACK
-        RecordItemType.BUG.type -> RecordItemType.BUG
-        RecordItemType.SUGGEST.type -> RecordItemType.SUGGEST
-        RecordItemType.INQUIRY.type -> RecordItemType.INQUIRY
-        RecordItemType.ETC.type -> RecordItemType.ETC
-        else -> RecordItemType.ElSE
-    }
     Column {
         Divider(
             color = MitalkColor.Black,
@@ -155,8 +157,8 @@ private fun RecordItem(
             Spacer(modifier = Modifier.width(10.dp))
 
             Medium15GM(
-                text = stringResource(id = item.titleId),
-                color = item.textColor,
+                text = stringResource(id = type.titleId),
+                color = type.textColor,
                 modifier = Modifier.width(88.dp)
             )
 
