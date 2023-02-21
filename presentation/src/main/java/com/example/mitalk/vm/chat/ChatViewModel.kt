@@ -1,5 +1,7 @@
 package com.example.mitalk.vm.chat
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.entity.ChatInfoEntity
@@ -13,6 +15,10 @@ import com.example.mitalk.mvi.ChatState
 import com.example.mitalk.socket.ChatSocket
 import com.example.mitalk.socket.toDeleteChatData
 import com.example.mitalk.ui.chat.ChatData
+import com.example.mitalk.util.FileNotAllowedException
+import com.example.mitalk.util.FileOverException
+import com.example.mitalk.util.FileSizeException
+import com.example.mitalk.util.toFile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
@@ -85,13 +91,29 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun postFile(file: File) = intent {
-        viewModelScope.launch {
-            postFileUseCase(file)
-                .onSuccess {
-                    postSideEffect(ChatSideEffect.SuccessUpload(it.file))
-                }.onFailure {
+    fun postFile(uri: Uri, context: Context) = intent {
+        kotlin.runCatching {
+            uri.toFile(context)
+        }.onSuccess { file ->
+            viewModelScope.launch {
+                postFileUseCase(file)
+                    .onSuccess {
+                        postSideEffect(ChatSideEffect.SuccessUpload(it.file))
+                    }.onFailure {
+                    }
+            }
+        }.onFailure {
+            when (it) {
+                is FileSizeException -> {
+                    postSideEffect(ChatSideEffect.FileSizeException)
                 }
+                is FileOverException -> {
+                    postSideEffect(ChatSideEffect.FileOverException)
+                }
+                is FileNotAllowedException -> {
+                    postSideEffect(ChatSideEffect.FileNotAllowedException)
+                }
+            }
         }
     }
 
