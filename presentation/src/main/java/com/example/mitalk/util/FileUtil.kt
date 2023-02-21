@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Environment
 import java.io.File
 import java.io.FileOutputStream
+import java.nio.file.Files
 
 @SuppressLint("Range")
 fun Uri.toFile(context: Context): File {
@@ -13,14 +14,30 @@ fun Uri.toFile(context: Context): File {
     val file = createTempFile(context, fileName)
     copyToFile(context, this, file)
 
-    return File(file.absolutePath.replace(".x-hwp", ""))
+    return file.absolutePath.replace(".x-hwp", "").check()
 }
 
 private fun Uri.getFileName(context: Context): String {
     val name = this.toString().split("/").last()
     val ext = context.contentResolver.getType(this)!!.split("/").last()
-
     return "$name.$ext"
+}
+
+private fun String.check(): File {
+    val file = File(this)
+    val kb = file.length() / 1024
+    val mb = kb / 1024
+    if (mb > 1000) {
+        throw FileOverException()
+    } else if (mb > 100) {
+        throw FileSizeException()
+    } else if (!(ImageAllowedList + VideoAllowedList + DocumentAllowedList).contains(
+            split(".").last().lowercase()
+        )
+    ) {
+        throw FileNotAllowedException()
+    }
+    return file
 }
 
 private fun createTempFile(context: Context, fileName: String): File {
@@ -41,3 +58,19 @@ private fun copyToFile(context: Context, uri: Uri, file: File) {
 
     outputStream.flush()
 }
+
+val ImageAllowedList = listOf(
+    "jpg", "jpeg", "gif", "png", "bmp", "svg"
+)
+
+val VideoAllowedList = listOf(
+    "mp4", "mov", "wmv", "avi", "mkv", "mpeg-2"
+)
+
+val DocumentAllowedList = listOf(
+    "hwp", "txt", "doc", "pdf", "csv", "xls", "ppt", "pptx"
+)
+
+class FileSizeException() : RuntimeException()
+class FileOverException() : RuntimeException()
+class FileNotAllowedException() : RuntimeException()
