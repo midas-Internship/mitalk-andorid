@@ -46,35 +46,19 @@ fun ChatTypeScreen(
     var waitingDialogVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        vm.getAccessToken()
-        vm.setChatTypeSocket(
-            ChatSocket(
-                failAction = {
 
-                }, waitingAction = {
-                    vm.setRemainPeople(it)
-                }, successAction = {
-                    waitingDialogVisible = false
-                    vm.successRoom(it)
-                }, receiveAction = {
-                    vm.receiveChat(it)
-                }, receiveActionUpdate = {
-                    vm.receiveChatUpdate(it)
-                }, receiveActionDelete = {
-                    vm.receiveChatDelete(it)
-                }, finishAction = {
-                    vm.finishRoom()
-                })
-        )
     }
 
     sideEffect.observeWithLifecycle {
         when (it) {
             is ChatSideEffect.SuccessRoom -> {
+                waitingDialogVisible = false
                 navController.navigate(
                     route = AppNavigationItem.ChatRoom.route
                             + DeepLinkKey.ROOM_ID + it.roomId
-                )
+                ) {
+                    popUpTo(AppNavigationItem.Main.route)
+                }
             }
         }
     }
