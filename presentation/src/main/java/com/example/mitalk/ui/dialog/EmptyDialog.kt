@@ -1,10 +1,9 @@
-package com.example.mitalk.ui.chat
+package com.example.mitalk.ui.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MovableContent
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,17 +18,30 @@ import com.example.mitalk.util.theme.Bold20NO
 import com.example.mitalk.util.theme.MitalkColor
 import com.example.mitalk.util.theme.Regular12NO
 import com.example.mitalk.util.theme.Regular14NO
+import kotlinx.coroutines.delay
+
+const val RemainTime = 30
 
 @Composable
-fun ExitChatDialog(
+fun EmptyDialog(
     visible: Boolean,
-    title: String,
-    content: String,
     onDismissRequest: () -> Unit,
-    onBtnPressed: () -> Unit
+    onTimeOut: () -> Unit
 ) {
+    var remainTime by remember { mutableStateOf(RemainTime) }
     if (visible) {
-        Dialog(onDismissRequest = onDismissRequest) {
+        LaunchedEffect(remainTime) {
+            if (remainTime > 0) {
+                delay(1_000L)
+                remainTime--
+            } else {
+                onTimeOut()
+            }
+        }
+        Dialog(onDismissRequest = {
+            remainTime = RemainTime
+            onDismissRequest()
+        }) {
             Column(
                 modifier = Modifier
                     .width(280.dp)
@@ -37,31 +49,34 @@ fun ExitChatDialog(
                     .background(color = MitalkColor.White, shape = RoundedCornerShape(5.dp))
             ) {
                 Bold20NO(
-                    text = title,
+                    text = stringResource(id = R.string.empty),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 30.dp)
                 )
                 Regular12NO(
-                    text = content,
+                    text = stringResource(id = R.string.empty_comment),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 20.dp),
+                        .padding(top = 20.dp, start = 5.dp, end = 5.dp),
                     color = Color(0xFF4C4C4C)
                 )
                 Spacer(modifier = Modifier.weight(1F))
-                ExitChatBtn(onDismissRequest = onDismissRequest, onBtnPressed = onBtnPressed)
+                EmptyBtn(remainTime = remainTime, onDismissRequest = {
+                    remainTime = RemainTime
+                    onDismissRequest()
+                })
             }
         }
     }
 }
 
 @Composable
-fun ExitChatBtn(
-    onDismissRequest: () -> Unit,
-    onBtnPressed: () -> Unit
+fun EmptyBtn(
+    remainTime: Int,
+    onDismissRequest: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -74,12 +89,18 @@ fun ExitChatBtn(
                 .weight(1F)
                 .fillMaxHeight()
                 .background(
-                    color = Color(0xFFD0D1DB),
+                    color = Color.White,
                     shape = RoundedCornerShape(bottomStart = 5.dp)
                 )
-                .miClickable { onDismissRequest() }
         ) {
-            Regular14NO(text = stringResource(id = R.string.cancel))
+            Row {
+                Regular14NO(text = stringResource(id = R.string.remain_time))
+                Regular14NO(
+                    text = remainTime.toString(),
+                    color = if (remainTime > 5) MitalkColor.Black else Color(0xFFFC2F2F)
+                )
+                Regular14NO(text = stringResource(id = R.string.remain_tim_sec))
+            }
         }
         Box(
             contentAlignment = Alignment.Center,
@@ -90,7 +111,7 @@ fun ExitChatBtn(
                     color = Color(0xFF4C53FF),
                     shape = RoundedCornerShape(bottomEnd = 5.dp)
                 )
-                .miClickable { onBtnPressed() }
+                .miClickable { onDismissRequest() }
         ) {
             Regular14NO(text = stringResource(id = R.string.okay), color = MitalkColor.White)
         }
@@ -99,8 +120,7 @@ fun ExitChatBtn(
 
 @Composable
 @Preview
-fun showExitChatDialog() {
-    ExitChatDialog(visible = true, onDismissRequest = { }, title = "제목", content = "본문") {
-
+fun showEmptyDialog() {
+    EmptyDialog(visible = true, onDismissRequest = { }) {
     }
 }

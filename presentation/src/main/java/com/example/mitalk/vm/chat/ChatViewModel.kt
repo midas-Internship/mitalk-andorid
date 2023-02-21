@@ -1,5 +1,7 @@
 package com.example.mitalk.vm.chat
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.entity.ChatInfoEntity
@@ -13,6 +15,10 @@ import com.example.mitalk.mvi.ChatState
 import com.example.mitalk.socket.ChatSocket
 import com.example.mitalk.socket.toDeleteChatData
 import com.example.mitalk.ui.chat.ChatData
+import com.example.mitalk.util.FileNotAllowedException
+import com.example.mitalk.util.FileOverException
+import com.example.mitalk.util.FileSizeException
+import com.example.mitalk.util.toFile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
@@ -63,10 +69,6 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun addChatList(chatData: ChatData) = intent {
-        reduce { state.copy(chatList = state.chatList.plus(chatData)) }
-    }
-
     fun editChatList(chatData: ChatData) = intent {
         reduce {
             state.copy(chatList = state.chatList.map {
@@ -85,13 +87,31 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun postFile(file: File) = intent {
-        viewModelScope.launch {
-            postFileUseCase(file)
-                .onSuccess {
-                    postSideEffect(ChatSideEffect.SuccessUpload(it.file))
-                }.onFailure {
+    fun postFile(uri: Uri, context: Context, approve: Boolean = false) = intent {
+        kotlin.runCatching {
+            uri.toFile(context, approve)
+        }.onSuccess { file ->
+            reduce { state.copy(uploadList = state.uploadList.plus(uri)) }
+            viewModelScope.launch {
+                postFileUseCase(file)
+                    .onSuccess {
+                        reduce { state.copy(uploadList = state.uploadList.filter { uploadUri -> uri != uploadUri }) }
+                        postSideEffect(ChatSideEffect.SuccessUpload(it.file))
+                    }.onFailure {
+                    }
+            }
+        }.onFailure {
+            when (it) {
+                is FileSizeException -> {
+                    postSideEffect(ChatSideEffect.FileSizeException(uri = uri))
                 }
+                is FileOverException -> {
+                    postSideEffect(ChatSideEffect.FileOverException)
+                }
+                is FileNotAllowedException -> {
+                    postSideEffect(ChatSideEffect.FileNotAllowedException)
+                }
+            }
         }
     }
 
@@ -108,7 +128,8 @@ class ChatViewModel @Inject constructor(
     }
 
     fun receiveChat(chat: ChatData) = intent {
-        postSideEffect(ChatSideEffect.ReceiveChat(chat))
+        reduce { state.copy(chatList = state.chatList.plus(chat)) }
+        postSideEffect(ChatSideEffect.ReceiveChat(chat, state.chatList.size))
     }
 
     fun receiveChatUpdate(chat: ChatData) = intent {

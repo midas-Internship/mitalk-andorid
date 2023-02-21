@@ -1,4 +1,4 @@
-package com.example.mitalk.ui.main
+package com.example.mitalk.ui.dialog
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

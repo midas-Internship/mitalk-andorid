@@ -1,9 +1,9 @@
-package com.example.mitalk.ui.chat
+package com.example.mitalk.ui.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,35 +13,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.mitalk.R
+import com.example.mitalk.ui.util.OkayEntireShape
+import com.example.mitalk.ui.util.OkayShape
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.Bold20NO
 import com.example.mitalk.util.theme.MitalkColor
 import com.example.mitalk.util.theme.Regular12NO
 import com.example.mitalk.util.theme.Regular14NO
-import kotlinx.coroutines.delay
-
-const val RemainTime = 30
 
 @Composable
-fun EmptyDialog(
+fun BasicDialog(
     visible: Boolean,
+    title: String,
+    content: String,
     onDismissRequest: () -> Unit,
-    onTimeOut: () -> Unit
+    onBtnPressed: (() -> Unit)? = null
 ) {
-    var remainTime by remember { mutableStateOf(RemainTime) }
     if (visible) {
-        LaunchedEffect(remainTime) {
-            if (remainTime > 0) {
-                delay(1_000L)
-                remainTime--
-            } else {
-                onTimeOut()
-            }
-        }
-        Dialog(onDismissRequest = {
-            remainTime = RemainTime
-            onDismissRequest()
-        }) {
+        Dialog(onDismissRequest = onDismissRequest) {
             Column(
                 modifier = Modifier
                     .width(280.dp)
@@ -49,57 +38,50 @@ fun EmptyDialog(
                     .background(color = MitalkColor.White, shape = RoundedCornerShape(5.dp))
             ) {
                 Bold20NO(
-                    text = stringResource(id = R.string.empty),
+                    text = title,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 30.dp)
                 )
                 Regular12NO(
-                    text = stringResource(id = R.string.empty_comment),
+                    text = content,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 20.dp, start = 5.dp, end = 5.dp),
+                        .padding(top = 20.dp),
                     color = Color(0xFF4C4C4C)
                 )
                 Spacer(modifier = Modifier.weight(1F))
-                EmptyBtn(remainTime = remainTime, onDismissRequest = {
-                    remainTime = RemainTime
-                    onDismissRequest()
-                })
+                BasicDialogBtn(onDismissRequest = onDismissRequest, onBtnPressed = onBtnPressed)
             }
         }
     }
 }
 
 @Composable
-fun EmptyBtn(
-    remainTime: Int,
-    onDismissRequest: () -> Unit
+fun BasicDialogBtn(
+    onDismissRequest: () -> Unit,
+    onBtnPressed: (() -> Unit)?
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(40.dp)
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .weight(1F)
-                .fillMaxHeight()
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(bottomStart = 5.dp)
-                )
-        ) {
-            Row {
-                Regular14NO(text = stringResource(id = R.string.remain_time))
-                Regular14NO(
-                    text = remainTime.toString(),
-                    color = if (remainTime > 5) MitalkColor.Black else Color(0xFFFC2F2F)
-                )
-                Regular14NO(text = stringResource(id = R.string.remain_tim_sec))
+        if (onBtnPressed != null) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .weight(1F)
+                    .fillMaxHeight()
+                    .background(
+                        color = Color(0xFFD0D1DB),
+                        shape = RoundedCornerShape(bottomStart = 5.dp)
+                    )
+                    .miClickable { onDismissRequest() }
+            ) {
+                Regular14NO(text = stringResource(id = R.string.cancel))
             }
         }
         Box(
@@ -109,9 +91,9 @@ fun EmptyBtn(
                 .fillMaxHeight()
                 .background(
                     color = Color(0xFF4C53FF),
-                    shape = RoundedCornerShape(bottomEnd = 5.dp)
+                    shape = if (onBtnPressed != null) OkayShape else OkayEntireShape
                 )
-                .miClickable { onDismissRequest() }
+                .miClickable { if (onBtnPressed != null) onBtnPressed() else onDismissRequest() }
         ) {
             Regular14NO(text = stringResource(id = R.string.okay), color = MitalkColor.White)
         }
@@ -120,7 +102,8 @@ fun EmptyBtn(
 
 @Composable
 @Preview
-fun showEmptyDialog() {
-    EmptyDialog(visible = true, onDismissRequest = { }) {
+fun showBasicDialog() {
+    BasicDialog(visible = true, onDismissRequest = { }, title = "제목", content = "본문") {
+
     }
 }
