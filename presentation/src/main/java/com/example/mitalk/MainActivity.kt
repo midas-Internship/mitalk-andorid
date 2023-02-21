@@ -57,6 +57,7 @@ fun BaseApp(navController: NavHostController) {
 
     LaunchedEffect(chatViewModel) {
         chatViewModel.getAccessToken()
+        chatViewModel.fetchChatInfo()
         chatViewModel.setChatTypeSocket()
     }
 
