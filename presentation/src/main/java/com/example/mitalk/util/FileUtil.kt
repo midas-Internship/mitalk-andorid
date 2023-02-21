@@ -9,12 +9,12 @@ import java.io.FileOutputStream
 import java.nio.file.Files
 
 @SuppressLint("Range")
-fun Uri.toFile(context: Context): File {
+fun Uri.toFile(context: Context, approve: Boolean): File {
     val fileName = getFileName(context)
     val file = createTempFile(context, fileName)
     copyToFile(context, this, file)
 
-    return file.absolutePath.replace(".x-hwp", "").check()
+    return file.absolutePath.replace(".x-hwp", "").check(approve = approve)
 }
 
 private fun Uri.getFileName(context: Context): String {
@@ -23,13 +23,13 @@ private fun Uri.getFileName(context: Context): String {
     return "$name.$ext"
 }
 
-private fun String.check(): File {
+private fun String.check(approve: Boolean): File {
     val file = File(this)
     val kb = file.length() / 1024
     val mb = kb / 1024
     if (mb > 1000) {
         throw FileOverException()
-    } else if (mb > 100) {
+    } else if (mb > 100 && !approve) {
         throw FileSizeException()
     } else if (!(ImageAllowedList + VideoAllowedList + DocumentAllowedList).contains(
             split(".").last().lowercase()
