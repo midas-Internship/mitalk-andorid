@@ -5,9 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -15,7 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.mitalk.ui.chat.ChatRoomScreen
-import com.example.mitalk.ui.chat_type.ChatTypeScreen
+import com.example.mitalk.ui.chat.ChatTypeScreen
 import com.example.mitalk.ui.main.MainScreen
 import com.example.mitalk.ui.question.QuestionScreen
 import com.example.mitalk.ui.record.RecordDetailScreen
@@ -23,11 +21,9 @@ import com.example.mitalk.ui.record.RecordScreen
 import com.example.mitalk.ui.setting.SettingScreen
 import com.example.mitalk.ui.splash.SplashScreen
 import com.example.mitalk.util.MiTalkExceptionHandler
-import com.example.mitalk.util.repeatOnStarted
 import com.example.mitalk.util.theme.base.MitalkTheme
 import com.example.mitalk.vm.TokenRefreshViewModel
 import com.example.mitalk.vm.chat.ChatViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
