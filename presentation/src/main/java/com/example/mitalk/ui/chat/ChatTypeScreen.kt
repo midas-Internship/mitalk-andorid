@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.domain.entity.ChatInfoEntity
 import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.DeepLinkKey
 import com.example.mitalk.R
@@ -44,15 +45,13 @@ fun ChatTypeScreen(
     val state = container.stateFlow.collectAsState().value
     val sideEffect = container.sideEffectFlow
     var waitingDialogVisible by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-
-    }
+    var chatType by remember { mutableStateOf("") }
 
     sideEffect.observeWithLifecycle {
         when (it) {
             is ChatSideEffect.SuccessRoom -> {
                 waitingDialogVisible = false
+                vm.saveChatInfo(ChatInfoEntity(chatType = chatType))
                 navController.navigate(AppNavigationItem.ChatRoom.route) {
                     popUpTo(AppNavigationItem.Main.route)
                 }

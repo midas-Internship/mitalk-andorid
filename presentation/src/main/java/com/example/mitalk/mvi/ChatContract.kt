@@ -1,7 +1,6 @@
 package com.example.mitalk.mvi
 
 import android.net.Uri
-import com.example.domain.entity.ChatInfoEntity
 import com.example.mitalk.socket.ChatSocket
 import com.example.mitalk.ui.chat.ChatData
 

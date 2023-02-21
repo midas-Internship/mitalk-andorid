@@ -151,6 +151,7 @@ fun MainScreen(
             disConnectAction = {
                 chatState.chatSocket.send(messageType = "END")
                 mainViewModel.checkReviewState()
+                chatViewModel.clearChatInfo()
             }
         ) {
             if (chatState.callCheck) {
