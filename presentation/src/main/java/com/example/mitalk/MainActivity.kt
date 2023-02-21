@@ -77,22 +77,10 @@ fun BaseApp(navController: NavHostController) {
             ChatTypeScreen(navController = navController, vm = chatViewModel)
         }
 
-        composable(
-            route = AppNavigationItem.ChatRoom.route
-                    + DeepLinkKey.ROOM_ID + "{${DeepLinkKey.ROOM_ID}}",
-            arguments = listOf(
-                navArgument(DeepLinkKey.ROOM_ID) {
-                    type = NavType.StringType
-                    defaultValue = ""
-                }
-            )
-        ) {
-            val roomId = it.arguments?.getString(DeepLinkKey.ROOM_ID) ?: ""
-
+        composable(AppNavigationItem.ChatRoom.route) {
             ChatRoomScreen(
                 navController = navController,
-                vm = chatViewModel,
-                roomId = roomId
+                vm = chatViewModel
             )
         }
 
@@ -152,5 +140,4 @@ sealed class AppNavigationItem(val route: String) {
 object DeepLinkKey {
     const val HEADER_ID = "headerId"
     const val RECORD_ID = "recordId"
-    const val ROOM_ID = "roomId"
 }
