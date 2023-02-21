@@ -9,9 +9,10 @@ import com.example.mitalk.ui.chat.ChatData
 data class ChatState(
     val accessToken: String = "",
     val remainPeople: String = "",
-    val chatSocket: ChatSocket = ChatSocket(),
+    val chatSocket: ChatSocket = ChatSocket({}, {}, {}, {}, {}, {}, {}, {}),
     val chatList: List<ChatData> = mutableListOf(),
-    val uploadList: List<Uri> = mutableListOf()
+    val uploadList: List<Uri> = mutableListOf(),
+    val callCheck: Boolean = false
 )
 
 sealed class ChatSideEffect {

@@ -115,34 +115,56 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun setRemainPeople(remainPeople: String) = intent {
+    fun setChatTypeSocket() = intent {
+        reduce {
+            state.copy(chatSocket = ChatSocket(
+                failAction = {
+
+                }, startAction = {
+                    startSocket()
+                }, waitingAction = {
+                    setRemainPeople(it)
+                }, successAction = {
+                    successRoom(it)
+                }, receiveAction = {
+                    receiveChat(it)
+                }, receiveActionUpdate = {
+                    receiveChatUpdate(it)
+                }, receiveActionDelete = {
+                    receiveChatDelete(it)
+                }, finishAction = {
+                    finishRoom()
+                })
+            )
+        }
+    }
+
+    private fun startSocket() = intent {
+        reduce { state.copy(callCheck = true) }
+    }
+
+    private fun setRemainPeople(remainPeople: String) = intent {
         reduce { state.copy(remainPeople = remainPeople) }
     }
 
-    fun successRoom(roomId: String) = intent {
+    private fun successRoom(roomId: String) = intent {
         postSideEffect(ChatSideEffect.SuccessRoom(roomId))
     }
 
-    fun finishRoom() = intent {
-        postSideEffect(ChatSideEffect.FinishRoom)
+    private fun finishRoom() = intent {
+
     }
 
-    fun receiveChat(chat: ChatData) = intent {
+    private fun receiveChat(chat: ChatData) = intent {
         reduce { state.copy(chatList = state.chatList.plus(chat)) }
         postSideEffect(ChatSideEffect.ReceiveChat(chat, state.chatList.size))
     }
 
-    fun receiveChatUpdate(chat: ChatData) = intent {
+    private fun receiveChatUpdate(chat: ChatData) = intent {
         postSideEffect(ChatSideEffect.ReceiveChatUpdate(chat))
     }
 
-    fun receiveChatDelete(chatId: String) = intent {
+    private fun receiveChatDelete(chatId: String) = intent {
         postSideEffect(ChatSideEffect.ReceiveChatDelete(chatId))
-    }
-
-    fun setChatTypeSocket(
-        chatSocket: ChatSocket,
-    ) = intent {
-        reduce { state.copy(chatSocket = chatSocket) }
     }
 }

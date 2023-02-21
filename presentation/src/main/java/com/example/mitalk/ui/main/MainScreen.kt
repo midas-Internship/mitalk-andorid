@@ -24,11 +24,13 @@ import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.R
+import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.mvi.MainSideEffect
 import com.example.mitalk.ui.dialog.EvaluationDialog
 import com.example.mitalk.ui.dialog.BasicDialog
 import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.*
+import com.example.mitalk.vm.chat.ChatViewModel
 import com.example.mitalk.vm.main.MainViewModel
 import kotlinx.coroutines.InternalCoroutinesApi
 
@@ -36,12 +38,27 @@ import kotlinx.coroutines.InternalCoroutinesApi
 @Composable
 fun MainScreen(
     navController: NavController,
-    mainViewModel: MainViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel(),
+    chatViewModel: ChatViewModel = hiltViewModel()
 ) {
-
     val container = mainViewModel.container
     val state = container.stateFlow.collectAsState().value
     val sideEffect = container.sideEffectFlow
+
+    val chatContainer = chatViewModel.container
+    val chatState = chatContainer.stateFlow.collectAsState().value
+    val chatSideEffect = chatContainer.sideEffectFlow
+
+    val counselorBackground = if (chatState.callCheck) Color(0xFFD49393) else MitalkColor.MainGreen
+    val counselorText =
+        if (chatState.callCheck) stringResource(id = R.string.counselor_connect_again)
+        else stringResource(id = R.string.counselor_connect)
+    val counselorComment =
+        if (chatState.callCheck) stringResource(id = R.string.counselor_connect_again_comment)
+        else stringResource(id = R.string.counselor_connect_comment)
+    var logoutDialogVisible by remember { mutableStateOf(false) }
+    var isNewAnswer by remember { mutableStateOf(false) }
+    val scroller = rememberScrollState()
 
     LaunchedEffect(Unit) {
         mainViewModel.checkReviewState()
@@ -62,21 +79,13 @@ fun MainScreen(
         }
     }
 
-
-    val newAnswer = true
-
-    val callCheck = false
-    val counselorBackground = if (callCheck) Color(0xFFD49393) else MitalkColor.MainGreen
-    val counselorText =
-        if (callCheck) stringResource(id = R.string.counselor_connect_again)
-        else stringResource(id = R.string.counselor_connect)
-    val counselorComment =
-        if (callCheck) stringResource(id = R.string.counselor_connect_again_comment)
-        else stringResource(id = R.string.counselor_connect_comment)
-
-    var exitDialogVisible by remember { mutableStateOf(false) }
-
-    val scroller = rememberScrollState()
+    chatSideEffect.observeWithLifecycle {
+        when (it) {
+            is ChatSideEffect.ReceiveChat -> {
+                isNewAnswer = true
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -104,7 +113,7 @@ fun MainScreen(
 
         Spacer(modifier = Modifier.height(26.93.dp))
 
-        if (newAnswer) {
+        if (isNewAnswer) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -134,11 +143,15 @@ fun MainScreen(
             comment = counselorComment,
             backgroundColor = counselorBackground,
             icon = painterResource(id = MitalkIcon.Counselor_Img.drawableId),
-            callCheck = callCheck,
+            callCheck = chatState.callCheck,
         ) {
-            navController.navigate(
-                route = AppNavigationItem.ChatType.route
-            )
+            if (chatState.callCheck) {
+                navController.navigate(route = AppNavigationItem.ChatRoom.route)
+            } else {
+                navController.navigate(
+                    route = AppNavigationItem.ChatType.route
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -180,10 +193,10 @@ fun MainScreen(
         )
 
         BasicDialog(
-            visible = exitDialogVisible,
+            visible = logoutDialogVisible,
             title = stringResource(id = R.string.logout),
             content = stringResource(id = R.string.logout_real),
-            onDismissRequest = { exitDialogVisible = false }
+            onDismissRequest = { logoutDialogVisible = false }
         ) {
             mainViewModel.logout()
         }
@@ -222,7 +235,7 @@ fun MainScreen(
             backgroundColor = Color(0xFF58EBD0),
             icon = painterResource(id = MitalkIcon.Logout_Img.drawableId)
         ) {
-            exitDialogVisible = true
+            logoutDialogVisible = true
         }
     }
 }
