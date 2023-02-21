@@ -40,7 +40,7 @@ import coil.compose.AsyncImage
 import com.example.mitalk.R
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.ui.dialog.EmptyDialog
-import com.example.mitalk.ui.dialog.ExitChatDialog
+import com.example.mitalk.ui.dialog.BasicDialog
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.ui.util.TriangleShape
 import com.example.mitalk.util.*
@@ -186,7 +186,7 @@ fun ChatRoomScreen(
             }, isEditable = (editMsgId != null)
         )
         Spacer(modifier = Modifier.height(18.dp))
-        ExitChatDialog(
+        BasicDialog(
             visible = exitChatDialogVisible,
             title = stringResource(id = R.string.main_screen),
             content = stringResource(id = R.string.main_screen_comment),

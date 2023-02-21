@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MovableContent
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,7 +20,7 @@ import com.example.mitalk.util.theme.Regular12NO
 import com.example.mitalk.util.theme.Regular14NO
 
 @Composable
-fun ExitChatDialog(
+fun BasicDialog(
     visible: Boolean,
     title: String,
     content: String,
@@ -52,14 +51,14 @@ fun ExitChatDialog(
                     color = Color(0xFF4C4C4C)
                 )
                 Spacer(modifier = Modifier.weight(1F))
-                ExitChatBtn(onDismissRequest = onDismissRequest, onBtnPressed = onBtnPressed)
+                BasicDialogBtn(onDismissRequest = onDismissRequest, onBtnPressed = onBtnPressed)
             }
         }
     }
 }
 
 @Composable
-fun ExitChatBtn(
+fun BasicDialogBtn(
     onDismissRequest: () -> Unit,
     onBtnPressed: () -> Unit
 ) {
@@ -99,8 +98,8 @@ fun ExitChatBtn(
 
 @Composable
 @Preview
-fun showExitChatDialog() {
-    ExitChatDialog(visible = true, onDismissRequest = { }, title = "제목", content = "본문") {
+fun showBasicDialog() {
+    BasicDialog(visible = true, onDismissRequest = { }, title = "제목", content = "본문") {
 
     }
 }
