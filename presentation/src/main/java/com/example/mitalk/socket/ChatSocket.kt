@@ -8,13 +8,14 @@ import org.json.JSONObject
 import java.util.UUID
 
 class ChatSocket(
-    failAction: () -> Unit = {},
-    waitingAction: (String) -> Unit = {},
-    successAction: (String) -> Unit = {},
-    finishAction: () -> Unit = {},
-    receiveAction: (com.example.mitalk.ui.chat.ChatData) -> Unit = {},
-    receiveActionUpdate: (com.example.mitalk.ui.chat.ChatData) -> Unit = {},
-    receiveActionDelete: (String) -> Unit = {},
+    failAction: () -> Unit,
+    startAction: () -> Unit,
+    waitingAction: (String) -> Unit,
+    successAction: (String) -> Unit,
+    finishAction: () -> Unit,
+    receiveAction: (com.example.mitalk.ui.chat.ChatData) -> Unit,
+    receiveActionUpdate: (com.example.mitalk.ui.chat.ChatData) -> Unit,
+    receiveActionDelete: (String) -> Unit,
 ) {
     private lateinit var webSocket: WebSocket
     private lateinit var request: Request
@@ -23,6 +24,11 @@ class ChatSocket(
 
     init {
         listener = object : WebSocketListener() {
+            override fun onOpen(webSocket: WebSocket, response: Response) {
+                super.onOpen(webSocket, response)
+                startAction()
+            }
+
             override fun onMessage(webSocket: WebSocket, text: String) {
                 super.onMessage(webSocket, text)
                 val gson = Gson()
