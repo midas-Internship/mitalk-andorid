@@ -21,6 +21,7 @@ class ChatSocket(
     private lateinit var request: Request
     private lateinit var client: OkHttpClient
     private val listener: WebSocketListener
+    private var roomId: String? = null
 
     init {
         listener = object : WebSocketListener() {
@@ -43,6 +44,7 @@ class ChatSocket(
                     }
                     "SYSTEM_3_1" -> {
                         val result = gson.fromJson(text, SuccessRoom::class.java)
+                        roomId = result.roomId
                         successAction(result.roomId)
                     }
                     "SYSTEM_3_2" -> {
@@ -73,7 +75,6 @@ class ChatSocket(
     }
 
     fun send(
-        roomId: String,
         messageId: String? = null,
         text: String? = null,
         messageType: String = "SEND",
