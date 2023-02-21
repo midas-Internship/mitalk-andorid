@@ -536,9 +536,19 @@ fun ChatItem(
         } else if (VideoAllowedList.contains(fileExt)) {
             VideoPlayer(url = item, modifier = modifier)
         } else if (DocumentAllowedList.contains(fileExt)) {
-            Bold11NO(text = "File Download", modifier = Modifier.clickable {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item)))
-            })
+            Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = MitalkIcon.Download.drawableId),
+                    contentDescription = MitalkIcon.Download.contentDescription,
+                    modifier = Modifier
+                        .background(color = Color.LightGray, shape = RoundedCornerShape(5.dp))
+                        .clickable {
+                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item)))
+                        }
+                )
+                Spacer(modifier = Modifier.width(5.dp))
+                Regular12NO(text = "Download")
+            }
         }
     } else {
         Bold11NO(
