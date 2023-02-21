@@ -11,6 +11,11 @@ data class RecordDetailEntity(
         val isFile: Boolean,
         val isDeleted: Boolean,
         val isUpdated: Boolean,
-        val dataMap: List<Map<String, String>>,
-    )
+        val dataMap: List<MessageData>,
+    ) {
+        data class MessageData(
+            val message: String,
+            val time: String
+        )
+    }
 }

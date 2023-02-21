@@ -9,7 +9,7 @@ interface RecordApi {
     @GET("/customer/record")
     suspend fun getRecordList(): RecordResponse
 
-    @GET("/customer/{recordId}")
+    @GET("/record/{recordId}")
     suspend fun getRecordDetail(
         @Path("recordId") recordId: String
     ): RecordDetailResponse
