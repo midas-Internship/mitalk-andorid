@@ -6,12 +6,16 @@
         <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
           <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\bsm0417\.android\avd\Pixel_3_XL_API_31.avd" />
+            <type value="SERIAL_NUMBER" />
+            <value value="R3CR30R6HZD" />
           </Key>
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
+<<<<<<< HEAD
+    <timeTargetWasSelectedWithDropDown value="2023-02-21T00:31:00.232352800Z" />
+=======
     <timeTargetWasSelectedWithDropDown value="2023-02-20T23:59:42.550750100Z" />
+>>>>>>> origin/feature/75_record_detail_view
   </component>
 </project>

@@ -11,7 +11,6 @@ import androidx.compose.material.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -90,19 +89,20 @@ private fun QuestionContent(
                 color = Color(0xFFEBEBEB),
                 shape = ItemShape,
             )
-            .clip(shape = ItemShape)
+            .miClickable(
+                rippleEnabled = false,
+            ) {
+                targetValue = if (!open) {
+                    270F
+                } else {
+                    180F
+                }
+                open = !open
+            }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .miClickable {
-                    targetValue = if (!open) {
-                        270F
-                    } else {
-                        180F
-                    }
-                    open = !open
-                }
                 .padding(vertical = 10.dp)
         ) {
             Spacer(modifier = Modifier.width(10.dp))
@@ -115,11 +115,12 @@ private fun QuestionContent(
             Spacer(modifier = Modifier.width(6.dp))
 
             Medium13NO(
+                modifier = Modifier.width(230.dp),
                 text = question,
-                modifier = Modifier.width(280.dp)
             )
 
             SeeAnswerIcon(rotateValue = rotateValue)
+
         }
 
         if (open) {
@@ -133,7 +134,7 @@ private fun QuestionContent(
 
                 Spacer(modifier = Modifier.width(6.dp))
 
-                Light09NO(
+                Light11NO(
                     text = answer,
                     modifier = Modifier.padding(end = 21.dp)
                 )
@@ -152,9 +153,9 @@ private fun SeeAnswerIcon(
         painter = painterResource(id = MitalkIcon.Back.drawableId),
         contentDescription = MitalkIcon.Back.contentDescription,
         modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentWidth(align = Alignment.End)
             .padding(end = 21.dp)
+            .fillMaxSize()
+            .wrapContentWidth(align = Alignment.End)
             .rotate(rotateValue)
     )
 }
