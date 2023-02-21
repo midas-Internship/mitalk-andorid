@@ -152,7 +152,8 @@ class ChatViewModel @Inject constructor(
     }
 
     private fun finishRoom() = intent {
-
+        reduce { state.copy(chatList = listOf(), uploadList = listOf(), callCheck = false) }
+        postSideEffect(ChatSideEffect.FinishRoom)
     }
 
     private fun receiveChat(chat: ChatData) = intent {
