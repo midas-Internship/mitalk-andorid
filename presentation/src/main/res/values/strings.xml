@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">mitalk</string>
     <string name="main">메인</string>
-    <string name="find_comment_hint">찾고싶은 문구를 입력해주세요</string>
-    <string name="consulting_record">상담 기록</string>
-    <string name="no_search_result">검색 결과가 없습니다.</string>
 
     <!--main screen-->
     <string name="new_counselor_answer">고객센터의 답장이 왔어요!</string>
@@ -38,6 +35,11 @@
     <string name="update">수정</string>
     <string name="delete">삭제</string>
     <string name="delete_message">삭제된 메시지</string>
+
+    <!--record screen    -->
+    <string name="find_comment_hint">찾고싶은 문구를 입력해주세요</string>
+    <string name="consulting_record">상담 기록</string>
+    <string name="no_search_result">검색 결과가 없습니다.</string>
 
     <!--Setting Screen    -->
     <string name="setting_language">언어 설정</string>
@@ -82,4 +84,12 @@
     <string name="waiting_service_prev_comment">고객님 앞에</string>
     <string name="waiting_service_next_comment">명의 대기자가 있습니다.</string>
     <string name="waiting_service_comment">잠시만 기다리시면 상담원과 연결시켜드리겠습니다.</string>
+
+    <!--file_exception dialog    -->
+    <string name="not_allowed_file">지원하지 않는 파일</string>
+    <string name="not_allowed_file_comment">이 파일은 지원되지 않는 파일입니다.</string>
+    <string name="big_size_file">10MB 이상 파일</string>
+    <string name="big_size_file_comment">파일을 전송하시겠습니까?</string>
+    <string name="over_size_file">파일 용량 초과</string>
+    <string name="over_size_file_comment">파일의 용량이 너무 커서 전송할 수 없습니다.</string>
 </resources>
