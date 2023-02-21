@@ -89,7 +89,7 @@ fun RecordDetailScreen(
             onFindAction = {
                 findText = text
                 val list = state.messageRecords.mapIndexed { index, data ->
-                    if (!data.isDeleted && data.dataMap.last().message.contains(text)) index else null
+                    if (!data.isDeleted && !data.isFile && data.dataMap.last().message.contains(text)) index else null
                 }.filterNotNull().toMutableList()
                 vm.setTotalFindResultList(list)
                 if (list.isEmpty()) {
