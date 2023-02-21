@@ -208,7 +208,6 @@ fun ChatRoomScreen(
             content = stringResource(id = R.string.main_screen_comment),
             onDismissRequest = { exitChatDialogVisible = false },
             onBtnPressed = {
-                state.chatSocket.close()
                 navController.popBackStack()
             })
         EmptyDialog(visible = emptyDialogVisible, onDismissRequest = {
