@@ -52,6 +52,8 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalTime
 
 const val EmptyTime = 300
 
@@ -59,7 +61,7 @@ data class ChatData(
     val id: String,
     val text: String,
     val isMe: Boolean,
-    val time: String,
+    val time: LocalTime,
 )
 
 @OptIn(InternalCoroutinesApi::class)
@@ -158,8 +160,12 @@ fun ChatRoomScreen(
                 uploadList = state.uploadList,
                 chatListState = chatListState,
                 selectItemUUID = selectItemUUID,
-                changeSelectItemUUID = {
-                    selectItemUUID = it
+                longClickAction = { uuid, time ->
+                    selectItemUUID = if (time.plusMinutes(1) >= LocalTime.now()) {
+                        uuid
+                    } else {
+                        null
+                    }
                 },
                 editAction = { id, msg ->
                     text = msg
@@ -225,7 +231,7 @@ fun ChatList(
     uploadList: List<Uri>,
     chatListState: LazyListState = rememberLazyListState(),
     selectItemUUID: String?,
-    changeSelectItemUUID: (String?) -> Unit,
+    longClickAction: (String?, LocalTime) -> Unit,
     editAction: (String, String) -> Unit,
     deleteAction: (String) -> Unit,
 ) {
@@ -249,7 +255,8 @@ fun ChatList(
                 if (item.isMe) {
                     ClientChat(
                         item = item,
-                        longClickAction = changeSelectItemUUID,
+                        longClickAction = longClickAction,
+                        isFile = item.text.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/"),
                         itemVisible = selectItemUUID == item.id,
                         editAction = editAction,
                         deleteAction = {
@@ -423,14 +430,15 @@ fun CounselorChat(
             )
         }
         Spacer(modifier = Modifier.width(3.dp))
-        Light09NO(text = item.time)
+        Light09NO(text = item.time.toChatTime())
     }
 }
 
 @Composable
 fun ClientChat(
     item: ChatData,
-    longClickAction: (String) -> Unit,
+    isFile: Boolean,
+    longClickAction: (String?, LocalTime) -> Unit,
     editAction: (String, String) -> Unit,
     deleteAction: (String) -> Unit,
     itemVisible: Boolean,
@@ -454,20 +462,22 @@ fun ClientChat(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Light09NO(
-                            text = stringResource(id = R.string.update),
-                            color = Color(0xFF4200FF),
-                            modifier = Modifier
-                                .padding(end = 3.dp)
-                                .miClickable {
-                                    editAction(item.id, item.text)
-                                })
-                        Spacer(
-                            modifier = Modifier
-                                .background(Color(0x66C9C6C6))
-                                .width((0.5).dp)
-                                .fillMaxHeight(0.7f)
-                        )
+                        if (!isFile) {
+                            Light09NO(
+                                text = stringResource(id = R.string.update),
+                                color = Color(0xFF4200FF),
+                                modifier = Modifier
+                                    .padding(end = 3.dp)
+                                    .miClickable {
+                                        editAction(item.id, item.text)
+                                    })
+                            Spacer(
+                                modifier = Modifier
+                                    .background(Color(0x66C9C6C6))
+                                    .width((0.5).dp)
+                                    .fillMaxHeight(0.7f)
+                            )
+                        }
                         Light09NO(
                             text = stringResource(id = R.string.delete),
                             color = Color(0xFFFF0000),
@@ -490,7 +500,7 @@ fun ClientChat(
         Row(
             verticalAlignment = Alignment.Bottom
         ) {
-            Light09NO(text = item.time)
+            Light09NO(text = item.time.toChatTime())
             Spacer(modifier = Modifier.width(3.dp))
             Box(
                 modifier = Modifier
@@ -504,8 +514,8 @@ fun ClientChat(
                 ChatItem(
                     item.text,
                     modifier = Modifier.miClickable(rippleEnabled = false, onLongClick = {
-                        longClickAction(item.id)
-                    }) { })
+                        longClickAction(item.id, item.time)
+                    }) { longClickAction(null, item.time) })
             }
         }
     }
@@ -522,9 +532,9 @@ fun ChatItem(
     if (item.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/")) {
         val fileExt = item.split(".").last().lowercase()
         if (ImageAllowedList.contains(fileExt)) {
-            AsyncImage(model = item, contentDescription = "Chat Image")
+            AsyncImage(model = item, contentDescription = "Chat Image", modifier = modifier)
         } else if (VideoAllowedList.contains(fileExt)) {
-            VideoPlayer(url = item)
+            VideoPlayer(url = item, modifier = modifier)
         } else if (DocumentAllowedList.contains(fileExt)) {
             Bold11NO(text = "File Download", modifier = Modifier.clickable {
                 context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item)))
