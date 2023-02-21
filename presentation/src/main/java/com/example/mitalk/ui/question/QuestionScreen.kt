@@ -3,6 +3,7 @@ package com.example.mitalk.ui.question
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -90,19 +91,20 @@ private fun QuestionContent(
                 color = Color(0xFFEBEBEB),
                 shape = ItemShape,
             )
-            .clip(shape = ItemShape)
+            .miClickable(
+                rippleEnabled = false,
+            ) {
+                targetValue = if (!open) {
+                    270F
+                } else {
+                    180F
+                }
+                open = !open
+            }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .miClickable {
-                    targetValue = if (!open) {
-                        270F
-                    } else {
-                        180F
-                    }
-                    open = !open
-                }
                 .padding(vertical = 10.dp)
         ) {
             Spacer(modifier = Modifier.width(10.dp))
@@ -115,11 +117,12 @@ private fun QuestionContent(
             Spacer(modifier = Modifier.width(6.dp))
 
             Medium13NO(
+                modifier = Modifier.width(230.dp),
                 text = question,
-                modifier = Modifier.width(280.dp)
             )
 
             SeeAnswerIcon(rotateValue = rotateValue)
+
         }
 
         if (open) {
@@ -152,9 +155,9 @@ private fun SeeAnswerIcon(
         painter = painterResource(id = MitalkIcon.Back.drawableId),
         contentDescription = MitalkIcon.Back.contentDescription,
         modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentWidth(align = Alignment.End)
             .padding(end = 21.dp)
+            .fillMaxSize()
+            .wrapContentWidth(align = Alignment.End)
             .rotate(rotateValue)
     )
 }
