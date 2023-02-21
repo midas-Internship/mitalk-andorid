@@ -68,7 +68,6 @@ data class ChatData(
 @Composable
 fun ChatRoomScreen(
     navController: NavController,
-    roomId: String,
     vm: ChatViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -140,7 +139,7 @@ fun ChatRoomScreen(
                 vm.deleteChatList(effect.chatId, deleteMsg)
             }
             is ChatSideEffect.SuccessUpload -> {
-                state.chatSocket.send(roomId = roomId, text = effect.url)
+                state.chatSocket.send(text = effect.url)
             }
         }
     }
@@ -174,7 +173,7 @@ fun ChatRoomScreen(
                     selectItemUUID = null
                 },
                 deleteAction = {
-                    state.chatSocket.send(roomId = roomId, messageId = it, messageType = "DELETE")
+                    state.chatSocket.send(messageId = it, messageType = "DELETE")
                     selectItemUUID = null
                 })
         }
@@ -185,14 +184,13 @@ fun ChatRoomScreen(
                 emptyTime = EmptyTime
                 if (editMsgId != null) {
                     state.chatSocket.send(
-                        roomId = roomId,
                         messageId = editMsgId,
                         text = it,
                         messageType = "UPDATE"
                     )
                     editMsgId = null
                 } else {
-                    state.chatSocket.send(roomId = roomId, text = it)
+                    state.chatSocket.send(text = it)
                 }
             }, fileSendAction = {
                 vm.postFile(uri = it, context = context)
@@ -603,6 +601,6 @@ fun IconButton(
 fun showChatRoomScreen() {
     MitalkTheme() {
         val navController = rememberNavController()
-        ChatRoomScreen(navController, "")
+        ChatRoomScreen(navController)
     }
 }
