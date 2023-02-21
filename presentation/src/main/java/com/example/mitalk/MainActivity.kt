@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -54,13 +55,18 @@ class MainActivity : ComponentActivity() {
 fun BaseApp(navController: NavHostController) {
     val chatViewModel = viewModel<ChatViewModel>()
 
+    LaunchedEffect(chatViewModel) {
+        chatViewModel.getAccessToken()
+        chatViewModel.setChatTypeSocket()
+    }
+
     NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
         composable(AppNavigationItem.Splash.route) {
             SplashScreen(navController = navController)
         }
 
         composable(AppNavigationItem.Main.route) {
-            MainScreen(navController = navController)
+            MainScreen(navController = navController, chatViewModel = chatViewModel)
         }
 
         composable(AppNavigationItem.Question.route) {
