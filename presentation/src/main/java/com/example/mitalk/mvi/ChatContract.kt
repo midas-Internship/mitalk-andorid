@@ -10,7 +10,8 @@ data class ChatState(
     val accessToken: String = "",
     val remainPeople: String = "",
     val chatSocket: ChatSocket = ChatSocket(),
-    val chatList: List<ChatData> = mutableListOf()
+    val chatList: List<ChatData> = mutableListOf(),
+    val uploadList: List<Uri> = mutableListOf()
 )
 
 sealed class ChatSideEffect {

@@ -12,12 +12,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -158,6 +156,7 @@ fun ChatRoomScreen(
         Box(modifier = Modifier.weight(1f)) {
             ChatList(
                 chatList = state.chatList,
+                uploadList = state.uploadList,
                 chatListState = chatListState,
                 selectItemUUID = selectItemUUID,
                 changeSelectItemUUID = {
@@ -224,6 +223,7 @@ fun ChatRoomScreen(
 @Composable
 fun ChatList(
     chatList: List<ChatData>,
+    uploadList: List<Uri>,
     chatListState: LazyListState = rememberLazyListState(),
     selectItemUUID: String?,
     changeSelectItemUUID: (String?) -> Unit,
@@ -239,7 +239,7 @@ fun ChatList(
         items(1) {
             Spacer(modifier = Modifier.height(20.dp))
         }
-        itemsIndexed(chatList) { _, item ->
+        items(chatList) { item ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -259,6 +259,25 @@ fun ChatList(
                     )
                 } else {
                     CounselorChat(item = item)
+                }
+            }
+        }
+        items(uploadList) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(start = 20.dp, end = 10.dp, top = 10.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(150.dp)
+                        .height(150.dp)
+                        .background(color = MitalkColor.White, shape = ClientChatShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = MitalkColor.MainBlue)
                 }
             }
         }

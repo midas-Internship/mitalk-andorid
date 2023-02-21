@@ -95,9 +95,11 @@ class ChatViewModel @Inject constructor(
         kotlin.runCatching {
             uri.toFile(context, approve)
         }.onSuccess { file ->
+            reduce { state.copy(uploadList = state.uploadList.plus(uri)) }
             viewModelScope.launch {
                 postFileUseCase(file)
                     .onSuccess {
+                        reduce { state.copy(uploadList = state.uploadList.filter { uploadUri -> uri != uploadUri }) }
                         postSideEffect(ChatSideEffect.SuccessUpload(it.file))
                     }.onFailure {
                     }
