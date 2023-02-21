@@ -53,10 +53,7 @@ fun ChatTypeScreen(
         when (it) {
             is ChatSideEffect.SuccessRoom -> {
                 waitingDialogVisible = false
-                navController.navigate(
-                    route = AppNavigationItem.ChatRoom.route
-                            + DeepLinkKey.ROOM_ID + it.roomId
-                ) {
+                navController.navigate(AppNavigationItem.ChatRoom.route) {
                     popUpTo(AppNavigationItem.Main.route)
                 }
             }
