@@ -91,11 +91,12 @@ class ChatSocket(
         webSocket.send(data.toString())
     }
 
-    fun startSocket(chatType: String, accessToken: String) {
+    fun startSocket(chatType: String, accessToken: String, roomId: String = "") {
         client = OkHttpClient()
         request = Request.Builder()
             .addHeader("Authorization", "Bearer $accessToken")
             .addHeader("ChatType", chatType)
+            .addHeader("RoomId", roomId)
             .url(BuildConfig.SOCKET_URL)
             .build()
         webSocket = client.newWebSocket(request, listener)
