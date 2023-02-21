@@ -49,11 +49,9 @@ import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.socket.toDeleteChatData
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.ui.util.TriangleShape
-import com.example.mitalk.util.miClickable
-import com.example.mitalk.util.observeWithLifecycle
+import com.example.mitalk.util.*
 import com.example.mitalk.util.theme.*
 import com.example.mitalk.util.theme.base.MitalkTheme
-import com.example.mitalk.util.toFile
 import com.example.mitalk.video.VideoPlayer
 import com.example.mitalk.vm.chat.ChatViewModel
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -114,6 +112,15 @@ fun ChatRoomScreen(
 
     sideEffect.observeWithLifecycle { effect ->
         when (effect) {
+            ChatSideEffect.FileSizeException -> {
+                println("파일 경고 넘음")
+            }
+            ChatSideEffect.FileOverException -> {
+                println("파일 사이즈 넘음")
+            }
+            ChatSideEffect.FileNotAllowedException -> {
+                println("이상한 확장자")
+            }
             ChatSideEffect.FinishRoom -> {
                 state.chatSocket.close()
                 navController.popBackStack()
@@ -181,7 +188,7 @@ fun ChatRoomScreen(
                     state.chatSocket.send(roomId = roomId, text = it)
                 }
             }, fileSendAction = {
-                vm.postFile(it.toFile(context))
+                vm.postFile(uri = it, context = context)
             }, isEditable = (editMsgId != null)
         )
         Spacer(modifier = Modifier.height(18.dp))
@@ -486,18 +493,15 @@ fun ChatItem(
 ) {
     val context = LocalContext.current
     if (item.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/")) {
-        when (item.split(".").last().lowercase()) {
-            "jpg", "jpeg", "gif", "png", "bmp", "svg" -> {
-                AsyncImage(model = item, contentDescription = "Chat Image")
-            }
-            "mp4", "mov", "wmv", "avi", "mkv", "mpeg-2" -> {
-                VideoPlayer(url = item)
-            }
-            "hwp", "txt", "doc", "pdf", "csv", "xls", "ppt", "pptx" -> {
-                Bold11NO(text = "File Download", modifier = Modifier.clickable {
-                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item)))
-                })
-            }
+        val fileExt = item.split(".").last().lowercase()
+        if (ImageAllowedList.contains(fileExt)) {
+            AsyncImage(model = item, contentDescription = "Chat Image")
+        } else if (VideoAllowedList.contains(fileExt)) {
+            VideoPlayer(url = item)
+        } else if (DocumentAllowedList.contains(fileExt)) {
+            Bold11NO(text = "File Download", modifier = Modifier.clickable {
+                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item)))
+            })
         }
     } else {
         Bold11NO(
