@@ -29,6 +29,8 @@ import com.example.mitalk.R
 import com.example.mitalk.mvi.RecordDetailSideEffect
 import com.example.mitalk.mvi.RecordDetailState
 import com.example.mitalk.ui.chat.ChatItem
+import com.example.mitalk.ui.util.ClientChatShape
+import com.example.mitalk.ui.util.CounselorChatShape
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.observeWithLifecycle
@@ -273,7 +275,7 @@ fun CounselorChat(
                     modifier = Modifier
                         .background(
                             color = MitalkColor.MainBlue,
-                            shape = com.example.mitalk.ui.chat.CounselorChat
+                            shape = CounselorChatShape
                         )
                         .widthIn(min = 0.dp, max = 180.dp)
                         .padding(horizontal = 7.dp, vertical = 5.dp),
@@ -301,7 +303,7 @@ fun ClientChat(
                 modifier = Modifier
                     .background(
                         color = MitalkColor.White,
-                        shape = com.example.mitalk.ui.chat.ClientChat
+                        shape = ClientChatShape
                     )
                     .widthIn(min = 0.dp, max = 200.dp)
                     .padding(horizontal = 7.dp, vertical = 5.dp)

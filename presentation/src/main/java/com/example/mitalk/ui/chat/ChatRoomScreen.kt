@@ -41,6 +41,8 @@ import com.example.mitalk.R
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.ui.dialog.EmptyDialog
 import com.example.mitalk.ui.dialog.BasicDialog
+import com.example.mitalk.ui.util.ClientChatShape
+import com.example.mitalk.ui.util.CounselorChatShape
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.ui.util.TriangleShape
 import com.example.mitalk.util.*
@@ -52,14 +54,6 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-@Stable
-val CounselorChat =
-    RoundedCornerShape(topStart = 0.dp, topEnd = 5.dp, bottomEnd = 5.dp, bottomStart = 5.dp)
-
-@Stable
-val ClientChat =
-    RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, bottomEnd = 0.dp, bottomStart = 5.dp)
 
 const val EmptyTime = 300
 
@@ -318,7 +312,7 @@ fun ChatInput(
                 onValueChange = onValueChange
             )
             IconButton(icon = MitalkIcon.Send, onClick = {
-                if (!text.isNullOrBlank()) {
+                if (text.isNotBlank()) {
                     sendAction(text)
                 }
                 onValueChange("")
@@ -382,7 +376,7 @@ fun CounselorChat(
                 item = item.text, isMe = item.isMe, modifier = Modifier
                     .background(
                         color = MitalkColor.MainBlue,
-                        shape = CounselorChat
+                        shape = CounselorChatShape
                     )
                     .widthIn(min = 0.dp, max = 180.dp)
                     .padding(horizontal = 7.dp, vertical = 5.dp)
@@ -401,7 +395,6 @@ fun ClientChat(
     deleteAction: (String) -> Unit,
     itemVisible: Boolean,
 ) {
-    val context = LocalContext.current
     Box {
         if (itemVisible) {
             Box(
@@ -463,7 +456,7 @@ fun ClientChat(
                 modifier = Modifier
                     .background(
                         color = MitalkColor.White,
-                        shape = ClientChat
+                        shape = ClientChatShape
                     )
                     .widthIn(min = 0.dp, max = 200.dp)
                     .padding(horizontal = 7.dp, vertical = 5.dp)
