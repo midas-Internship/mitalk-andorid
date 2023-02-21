@@ -33,3 +33,9 @@ val CounselorChatShape =
 @Stable
 val ClientChatShape =
     RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, bottomEnd = 0.dp, bottomStart = 5.dp)
+
+@Stable
+val OkayShape = RoundedCornerShape(bottomEnd = 5.dp)
+
+@Stable
+val OkayEntireShape = RoundedCornerShape(bottomEnd = 5.dp, bottomStart = 5.dp)

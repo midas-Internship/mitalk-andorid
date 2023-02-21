@@ -13,6 +13,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.mitalk.R
+import com.example.mitalk.ui.util.OkayEntireShape
+import com.example.mitalk.ui.util.OkayShape
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.theme.Bold20NO
 import com.example.mitalk.util.theme.MitalkColor
@@ -25,7 +27,7 @@ fun BasicDialog(
     title: String,
     content: String,
     onDismissRequest: () -> Unit,
-    onBtnPressed: () -> Unit
+    onBtnPressed: (() -> Unit)? = null
 ) {
     if (visible) {
         Dialog(onDismissRequest = onDismissRequest) {
@@ -60,25 +62,27 @@ fun BasicDialog(
 @Composable
 fun BasicDialogBtn(
     onDismissRequest: () -> Unit,
-    onBtnPressed: () -> Unit
+    onBtnPressed: (() -> Unit)?
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(40.dp)
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .weight(1F)
-                .fillMaxHeight()
-                .background(
-                    color = Color(0xFFD0D1DB),
-                    shape = RoundedCornerShape(bottomStart = 5.dp)
-                )
-                .miClickable { onDismissRequest() }
-        ) {
-            Regular14NO(text = stringResource(id = R.string.cancel))
+        if (onBtnPressed != null) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .weight(1F)
+                    .fillMaxHeight()
+                    .background(
+                        color = Color(0xFFD0D1DB),
+                        shape = RoundedCornerShape(bottomStart = 5.dp)
+                    )
+                    .miClickable { onDismissRequest() }
+            ) {
+                Regular14NO(text = stringResource(id = R.string.cancel))
+            }
         }
         Box(
             contentAlignment = Alignment.Center,
@@ -87,9 +91,9 @@ fun BasicDialogBtn(
                 .fillMaxHeight()
                 .background(
                     color = Color(0xFF4C53FF),
-                    shape = RoundedCornerShape(bottomEnd = 5.dp)
+                    shape = if (onBtnPressed != null) OkayShape else OkayEntireShape
                 )
-                .miClickable { onBtnPressed() }
+                .miClickable { if (onBtnPressed != null) onBtnPressed() else onDismissRequest() }
         ) {
             Regular14NO(text = stringResource(id = R.string.okay), color = MitalkColor.White)
         }
