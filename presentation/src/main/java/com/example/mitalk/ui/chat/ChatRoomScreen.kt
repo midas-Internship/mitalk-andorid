@@ -124,7 +124,6 @@ fun ChatRoomScreen(
                 fileExceptionDialogVisible = true
             }
             ChatSideEffect.FinishRoom -> {
-                state.chatSocket.close()
                 navController.popBackStack()
             }
             is ChatSideEffect.ReceiveChat -> {

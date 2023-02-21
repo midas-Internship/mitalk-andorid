@@ -154,7 +154,7 @@ fun ChatTypeScreen(
         }
         Spacer(modifier = Modifier.height(25.dp))
         WaitingDialog(visible = waitingDialogVisible, remainPeople = state.remainPeople) {
-            state.chatSocket.close()
+            state.chatSocket.closeSocket()
             waitingDialogVisible = false
         }
     }
