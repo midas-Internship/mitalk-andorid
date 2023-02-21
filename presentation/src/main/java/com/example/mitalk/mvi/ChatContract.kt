@@ -15,7 +15,7 @@ data class ChatState(
 )
 
 sealed class ChatSideEffect {
-    data class ReceiveChat(val chat: ChatData) : ChatSideEffect()
+    data class ReceiveChat(val chat: ChatData, val chatSize: Int) : ChatSideEffect()
     data class ReceiveChatUpdate(val chat: ChatData) : ChatSideEffect()
     data class ReceiveChatDelete(val chatId: String) : ChatSideEffect()
     data class SuccessRoom(val roomId: String) : ChatSideEffect()

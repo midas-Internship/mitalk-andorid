@@ -127,9 +127,8 @@ fun ChatRoomScreen(
                 navController.popBackStack()
             }
             is ChatSideEffect.ReceiveChat -> {
-                vm.addChatList(effect.chat)
                 MainScope().launch {
-                    chatListState.scrollToItem(state.chatList.size)
+                    chatListState.scrollToItem(effect.chatSize)
                 }
             }
             is ChatSideEffect.ReceiveChatUpdate -> {

@@ -69,10 +69,6 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun addChatList(chatData: ChatData) = intent {
-        reduce { state.copy(chatList = state.chatList.plus(chatData)) }
-    }
-
     fun editChatList(chatData: ChatData) = intent {
         reduce {
             state.copy(chatList = state.chatList.map {
@@ -132,7 +128,8 @@ class ChatViewModel @Inject constructor(
     }
 
     fun receiveChat(chat: ChatData) = intent {
-        postSideEffect(ChatSideEffect.ReceiveChat(chat))
+        reduce { state.copy(chatList = state.chatList.plus(chat)) }
+        postSideEffect(ChatSideEffect.ReceiveChat(chat, state.chatList.size))
     }
 
     fun receiveChatUpdate(chat: ChatData) = intent {
