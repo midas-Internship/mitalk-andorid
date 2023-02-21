@@ -1,5 +1,6 @@
 package com.example.mitalk.mvi
 
+import android.net.Uri
 import com.example.domain.entity.ChatInfoEntity
 import com.example.mitalk.socket.ChatSocket
 import com.example.mitalk.ui.chat.ChatData
@@ -20,7 +21,7 @@ sealed class ChatSideEffect {
     data class SuccessUpload(val url: String) : ChatSideEffect()
     data class ChatInfo(val chatInfoEntity: ChatInfoEntity) : ChatSideEffect()
     object FinishRoom : ChatSideEffect()
-    object FileSizeException : ChatSideEffect()
+    data class FileSizeException(val uri: Uri) : ChatSideEffect()
     object FileOverException : ChatSideEffect()
     object FileNotAllowedException : ChatSideEffect()
 }

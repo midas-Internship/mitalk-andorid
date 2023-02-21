@@ -104,12 +104,6 @@ fun ChatRoomScreen(
 
     sideEffect.observeWithLifecycle { effect ->
         when (effect) {
-            ChatSideEffect.FileSizeException -> {
-                fileExceptionTitleId = R.string.big_size_file
-                fileExceptionContentId = R.string.big_size_file_comment
-                fileExceptionOnBtnPressed = {  }
-                fileExceptionDialogVisible = true
-            }
             ChatSideEffect.FileOverException -> {
                 fileExceptionTitleId = R.string.over_size_file
                 fileExceptionContentId = R.string.over_size_file_comment
@@ -118,6 +112,16 @@ fun ChatRoomScreen(
             ChatSideEffect.FileNotAllowedException -> {
                 fileExceptionTitleId = R.string.not_allowed_file
                 fileExceptionContentId = R.string.not_allowed_file_comment
+                fileExceptionDialogVisible = true
+            }
+            is ChatSideEffect.FileSizeException -> {
+                fileExceptionTitleId = R.string.big_size_file
+                fileExceptionContentId = R.string.big_size_file_comment
+                fileExceptionOnBtnPressed =
+                    {
+                        vm.postFile(uri = effect.uri, context = context, approve = true)
+                        fileExceptionDialogVisible = false
+                    }
                 fileExceptionDialogVisible = true
             }
             ChatSideEffect.FinishRoom -> {

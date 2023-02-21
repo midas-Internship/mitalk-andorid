@@ -91,9 +91,9 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun postFile(uri: Uri, context: Context) = intent {
+    fun postFile(uri: Uri, context: Context, approve: Boolean = false) = intent {
         kotlin.runCatching {
-            uri.toFile(context)
+            uri.toFile(context, approve)
         }.onSuccess { file ->
             viewModelScope.launch {
                 postFileUseCase(file)
@@ -105,7 +105,7 @@ class ChatViewModel @Inject constructor(
         }.onFailure {
             when (it) {
                 is FileSizeException -> {
-                    postSideEffect(ChatSideEffect.FileSizeException)
+                    postSideEffect(ChatSideEffect.FileSizeException(uri = uri))
                 }
                 is FileOverException -> {
                     postSideEffect(ChatSideEffect.FileOverException)
