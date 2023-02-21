@@ -13,11 +13,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.mitalk.R
+import com.example.mitalk.ui.dialog.LanguageDialog
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.*
 import com.example.mitalk.util.theme.Bold13NO
 import com.example.mitalk.util.theme.Bold20NO
-import com.example.mitalk.vm.setting.LanguageDialog
 import com.example.mitalk.vm.setting.SettingViewModel
 
 @Composable

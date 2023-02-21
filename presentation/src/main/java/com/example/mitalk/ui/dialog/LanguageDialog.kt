@@ -1,4 +1,4 @@
-package com.example.mitalk.vm.setting
+package com.example.mitalk.ui.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

@@ -20,8 +20,8 @@ import com.example.mitalk.DeepLinkKey
 import com.example.mitalk.R
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.socket.ChatSocket
+import com.example.mitalk.ui.dialog.WaitingDialog
 import com.example.mitalk.ui.util.MiHeader
-import com.example.mitalk.ui.waiting_dialog.WaitingDialog
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.MitalkColor

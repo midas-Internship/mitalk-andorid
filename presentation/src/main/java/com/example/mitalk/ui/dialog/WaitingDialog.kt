@@ -1,4 +1,4 @@
-package com.example.mitalk.ui.waiting_dialog
+package com.example.mitalk.ui.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

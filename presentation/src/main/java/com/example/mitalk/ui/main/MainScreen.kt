@@ -25,7 +25,8 @@ import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
 import com.example.mitalk.R
 import com.example.mitalk.mvi.MainSideEffect
-import com.example.mitalk.ui.chat.ExitChatDialog
+import com.example.mitalk.ui.dialog.EvaluationDialog
+import com.example.mitalk.ui.dialog.ExitChatDialog
 import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.*
 import com.example.mitalk.vm.main.MainViewModel
