@@ -48,6 +48,7 @@ class ChatSocket(
                         successAction(result.roomId)
                     }
                     "SYSTEM_3_2" -> {
+                        closeSocket()
                         finishAction()
                     }
                     null -> {
@@ -100,8 +101,8 @@ class ChatSocket(
         webSocket = client.newWebSocket(request, listener)
     }
 
-    fun close() {
-        webSocket?.close(1000, "Close")
+    fun closeSocket() {
+        webSocket.close(1000, "Close")
         client.dispatcher.executorService.shutdown()
     }
 }
