@@ -75,12 +75,16 @@ fun ChatRoomScreen(
     val focusManager = LocalFocusManager.current
     val chatListState = rememberLazyListState()
     val inputFocusRequester = remember { FocusRequester() }
+    var fileExceptionOnBtnPressed by remember { mutableStateOf<(() -> Unit)?>(null) }
     var editMsgId by remember { mutableStateOf<String?>(null) }
     var exitChatDialogVisible by remember { mutableStateOf(false) }
     var emptyDialogVisible by remember { mutableStateOf(false) }
+    var fileExceptionDialogVisible by remember { mutableStateOf(false) }
     var selectItemUUID by remember { mutableStateOf<String?>(null) }
     var emptyTime by remember { mutableStateOf(EmptyTime) }
     var text by remember { mutableStateOf("") }
+    var fileExceptionTitleId by remember { mutableStateOf(R.string.big_size_file) }
+    var fileExceptionContentId by remember { mutableStateOf(R.string.big_size_file_comment) }
     val deleteMsg = stringResource(id = R.string.delete_message)
 
     val container = vm.container
@@ -101,13 +105,20 @@ fun ChatRoomScreen(
     sideEffect.observeWithLifecycle { effect ->
         when (effect) {
             ChatSideEffect.FileSizeException -> {
-                println("파일 경고 넘음")
+                fileExceptionTitleId = R.string.big_size_file
+                fileExceptionContentId = R.string.big_size_file_comment
+                fileExceptionOnBtnPressed = {  }
+                fileExceptionDialogVisible = true
             }
             ChatSideEffect.FileOverException -> {
-                println("파일 사이즈 넘음")
+                fileExceptionTitleId = R.string.over_size_file
+                fileExceptionContentId = R.string.over_size_file_comment
+                fileExceptionDialogVisible = true
             }
             ChatSideEffect.FileNotAllowedException -> {
-                println("이상한 확장자")
+                fileExceptionTitleId = R.string.not_allowed_file
+                fileExceptionContentId = R.string.not_allowed_file_comment
+                fileExceptionDialogVisible = true
             }
             ChatSideEffect.FinishRoom -> {
                 state.chatSocket.close()
@@ -116,7 +127,7 @@ fun ChatRoomScreen(
             is ChatSideEffect.ReceiveChat -> {
                 vm.addChatList(effect.chat)
                 MainScope().launch {
-                    chatListState.scrollToItem(state.chatList.size - 1)
+                    chatListState.scrollToItem(state.chatList.size)
                 }
             }
             is ChatSideEffect.ReceiveChatUpdate -> {
@@ -196,6 +207,13 @@ fun ChatRoomScreen(
             emptyDialogVisible = false
             navController.popBackStack()
         })
+        BasicDialog(
+            visible = fileExceptionDialogVisible,
+            title = stringResource(id = fileExceptionTitleId),
+            content = stringResource(id = fileExceptionContentId),
+            onDismissRequest = { fileExceptionDialogVisible = false },
+            onBtnPressed = fileExceptionOnBtnPressed
+        )
     }
 }
 
