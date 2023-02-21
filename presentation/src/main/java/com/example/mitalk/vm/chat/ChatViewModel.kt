@@ -51,10 +51,18 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun loadChatData(roomId: String) = intent {
+    fun loadChatData(roomId: String, deleteMsg: String) = intent {
         viewModelScope.launch {
             getRecordDetailUseCase(recordId = roomId)
-                .onSuccess { reduce { state.copy(chatList = it.messageRecords.map { it.toChatData() }) } }
+                .onSuccess {
+                    reduce {
+                        state.copy(chatList = it.messageRecords.map {
+                            it.toChatData(
+                                deleteMsg
+                            )
+                        })
+                    }
+                }
         }
     }
 

@@ -56,6 +56,7 @@ fun MainScreen(
     var logoutDialogVisible by remember { mutableStateOf(false) }
     var isNewAnswer by remember { mutableStateOf(false) }
     val scroller = rememberScrollState()
+    val deleteMsg = stringResource(id = R.string.delete_message)
 
     LaunchedEffect(Unit) {
         mainViewModel.checkReviewState()
@@ -74,7 +75,7 @@ fun MainScreen(
                 mainViewModel.clearCounsellorId()
             }
             is MainSideEffect.RemainRoom -> {
-                chatViewModel.loadChatData(it.roomId)
+                chatViewModel.loadChatData(it.roomId, deleteMsg)
                 chatState.chatSocket.startSocket(
                     chatState.chatType,
                     chatState.accessToken,
