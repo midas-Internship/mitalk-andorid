@@ -196,6 +196,9 @@ fun ChatRoomScreen(
                 }
             }, fileSendAction = {
                 vm.postFile(uri = it, context = context)
+            }, editCancelAction = {
+                editMsgId = null
+                text = ""
             }, isEditable = (editMsgId != null)
         )
         Spacer(modifier = Modifier.height(18.dp))
@@ -301,6 +304,7 @@ fun ChatInput(
     sendAction: (String) -> Unit,
     fileSendAction: (Uri) -> Unit,
     isEditable: Boolean,
+    editCancelAction: () -> Unit
 ) {
     var isExpand by remember { mutableStateOf(false) }
     var targetValue by remember { mutableStateOf(0F) }
@@ -315,13 +319,28 @@ fun ChatInput(
     )
     Column {
         if (isEditable) {
-            Regular14NO(
-                text = "문자를 수정 중 입니다.",
-                modifier = Modifier.background(
-                    color = Color(0xFFF3F3F3),
-                    shape = RoundedCornerShape(5.dp)
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 30.dp, vertical = 5.dp)
+                    .fillMaxWidth()
+                    .background(
+                        color = Color.LightGray,
+                        shape = RoundedCornerShape(5.dp)
+                    ),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Regular14NO(
+                    text = stringResource(id = R.string.editing_message),
+                    modifier = Modifier.padding(start = 5.dp, top = 5.dp, bottom = 5.dp)
                 )
-            )
+                Icon(
+                    painter = painterResource(id = MitalkIcon.Cancel.drawableId),
+                    contentDescription = MitalkIcon.Cancel.contentDescription,
+                    modifier = Modifier
+                        .padding(end = 5.dp, top = 5.dp, bottom = 5.dp)
+                        .miClickable(rippleEnabled = false) { editCancelAction() }
+                )
+            }
         }
         Row(
             modifier = Modifier

@@ -72,4 +72,5 @@
     <string name="big_size_file_comment">Would you like to transfer the file?</string>
     <string name="over_size_file">Capacity exceeded</string>
     <string name="over_size_file_comment">too large to transfer.</string>
+    <string name="editing_message">Text is being edited.</string>
 </resources>

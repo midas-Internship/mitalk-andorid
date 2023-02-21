@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">mitalk</string>
     <string name="main">메인</string>
+    <string name="editing_message">메시지를 수정 중 입니다.</string>
 
     <!--main screen-->
     <string name="new_counselor_answer">고객센터의 답장이 왔어요!</string>
