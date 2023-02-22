@@ -23,7 +23,7 @@ import com.example.mitalk.util.miClickable
 import com.example.mitalk.R
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.mvi.MainSideEffect
-import com.example.mitalk.ui.dialog. EvaluationDialog
+import com.example.mitalk.ui.dialog.EvaluationDialog
 import com.example.mitalk.ui.dialog.BasicDialog
 import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.*
@@ -88,6 +88,11 @@ fun MainScreen(
 
     chatSideEffect.observeWithLifecycle {
         when (it) {
+            ChatSideEffect.FinishRoom -> {
+                mainViewModel.checkReviewState()
+                chatViewModel.clearChatData()
+                chatViewModel.clearChatInfo()
+            }
             is ChatSideEffect.ReceiveChat -> {
                 isNewAnswer = true
             }
@@ -153,9 +158,6 @@ fun MainScreen(
             callCheck = chatState.callCheck,
             disConnectAction = {
                 chatState.chatSocket.send(messageType = "END")
-                mainViewModel.checkReviewState()
-                chatViewModel.clearChatData()
-                chatViewModel.clearChatInfo()
             }
         ) {
             if (chatState.callCheck) {
