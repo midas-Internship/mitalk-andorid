@@ -45,6 +45,11 @@ jobs:
           BASE_URL: ${{ secrets.SOCKET_URL }}
         run: echo SOCKET_URL=\"SOCKET_URL\" >> ./local.properties
 
+      - name: Access IMAGE_URL
+        env:
+          BASE_URL: ${{ secrets.IMAGE_URL }}
+        run: echo IMAGE_URL=\"IMAGE_URL\" >> ./local.properties
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
