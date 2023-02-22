@@ -1,3 +1,101 @@
 <resources>
     <string name="app_name">mitalk</string>
+    <string name="main">메인</string>
+    <string name="editing_message">메시지를 수정 중 입니다.</string>
+    <string name="socket_error">에러가 발생했습니다.</string>
+    <string name="socket_error_comment">앱을 다시 실행 해주세요.</string>
+
+    <!--main screen-->
+    <string name="new_counselor_answer">고객센터의 답장이 왔어요!</string>
+    <string name="counselor_connect">상담사 연결</string>
+    <string name="counselor_connect_comment">혹시 물어볼게 있으신가요?</string>
+    <string name="counselor_connect_again">상담사 재연결|</string>
+    <string name="counselor_connect_again_comment">상담사와 상담중입니다!</string>
+    <string name="record_open">상담 기록 열람</string>
+    <string name="record_open_comment">과거에 했던 상담을 다시 열람합니다.</string>
+    <string name="question_many">자주 묻는 질문</string>
+    <string name="question_many_comment">사람들이 자주 묻는 질문입니다.</string>
+    <string name="call_out">연결 끊기</string>
+    <string name="setting">설정</string>
+    <string name="logout">로그아웃</string>
+
+    <!--chat-type screen    -->
+    <string name="consulting_connect">상담 연결</string>
+    <string name="function_suggest">기능 제안</string>
+    <string name="function_suggest_comment">새로운 기능을 제안해요</string>
+    <string name="bug_report">버그 제보</string>
+    <string name="bug_report_comment" translatable="false">null point exception</string>
+    <string name="function_question">기능 질문</string>
+    <string name="function_question_comment">\'이건 무슨 기능이죠?\'</string>
+    <string name="product_feedback">제품 피드백</string>
+    <string name="product_feedback_comment">피드백은 언제나 환영이에요</string>
+    <string name="alliance_inquiry">제휴 문의</string>
+    <string name="alliance_inquiry_comment">제품구매 문의, 이벤트 문의 등</string>
+    <string name="etc">기타</string>
+
+    <!--chatting screen    -->
+    <string name="counselor">상담사</string>
+    <string name="update">수정</string>
+    <string name="delete">삭제</string>
+    <string name="delete_message">삭제된 메시지</string>
+
+    <!--record screen    -->
+    <string name="find_comment_hint">찾고싶은 문구를 입력해주세요</string>
+    <string name="consulting_record">상담 기록</string>
+    <string name="no_search_result">검색 결과가 없습니다.</string>
+
+    <!--Setting Screen    -->
+    <string name="setting_language">언어 설정</string>
+    <string name="english">영어</string>
+    <string name="korean">한국어</string>
+
+    <!--evaluation dialog-->
+    <string name="how_was_counselor">상담사님은 어떠셨나요?</string>
+    <string name="what_like_counselor">어떤 점이 좋았나요?</string>
+    <string name="what_bad_counselor">어떤 점이 아쉬웠나요?</string>
+    <string name="submit">제출</string>
+    <string name="can_choose_from0_to2">2개까지 선택가능</string>
+    <string name="is_kind">친절해요</string>
+    <string name="is_unkind">불친절해요</string>
+    <string name="is_good_explanation">설명이 좋아요</string>
+    <string name="is_bad_explanation">어려운 설명</string>
+    <string name="is_useful">유용해요</string>
+    <string name="is_not_useful">유용하지 않음</string>
+    <string name="is_comfortable">편안해요</string>
+    <string name="abuse_slang">욕설, 비속어</string>
+    <string name="listen_well">잘 들어줘요</string>
+    <string name="inappropriate_answer">적절하지 않은 답변</string>
+    <string name="is_fast_reply">답변이 빨라요</string>
+    <string name="is_slow_reply">느린 답변시간</string>
+    <string name="evaluation_comment_hint">솔직한 후기 부탁드립니다</string>
+
+    <!--to_main dialog    -->
+    <string name="main_screen">메인 화면</string>
+    <string name="main_screen_comment">메인화면으로 이동하시겠습니까?</string>
+    <string name="cancel">취소</string>
+    <string name="okay">확인</string>
+    <string name="logout_real">정말 로그아웃 하시겠습니까?</string>
+
+    <!--empty dialog    -->
+    <string name="empty">자리비움</string>
+    <string name="empty_comment">아무런 행동도 없을경우 30초 후 자동으로 채팅방이 종료됩니다.</string>
+    <string name="remain_time">남은시간 :</string>
+    <string name="remain_tim_sec">초</string>
+
+    <!--waiting dialog    -->
+    <string name="waiting_service">서비스 접속 대기</string>
+    <string name="waiting_service_prev_comment">고객님 앞에</string>
+    <string name="waiting_service_next_comment">명의 대기자가 있습니다.</string>
+    <string name="waiting_service_comment">잠시만 기다리시면 상담원과 연결시켜드리겠습니다.</string>
+
+    <string name="crowed_service">대기열이 꽉 찼습니다</string>
+    <string name="crowed_service_comment">조금있다가 다시 시도해 주세요.</string>
+
+    <!--file_exception dialog    -->
+    <string name="not_allowed_file">지원하지 않는 파일</string>
+    <string name="not_allowed_file_comment">이 파일은 지원되지 않는 파일입니다.</string>
+    <string name="big_size_file">100MB 이상 파일</string>
+    <string name="big_size_file_comment">파일을 전송하시겠습니까?</string>
+    <string name="over_size_file">파일 용량 초과</string>
+    <string name="over_size_file_comment">파일의 용량이 너무 커서 전송할 수 없습니다.</string>
 </resources>

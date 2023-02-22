@@ -1,8 +1,10 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.application")
-    id("dagger.hilt.android.plugin")
     id("kotlin-android")
     id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -16,6 +18,16 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField(
+            "String",
+            "SOCKET_URL",
+            gradleLocalProperties(rootDir).getProperty("SOCKET_URL")
+        )
+        buildConfigField(
+            "String",
+            "CLIENT_ID",
+            gradleLocalProperties(rootDir).getProperty("CLIENT_ID")
+        )
     }
 
     buildTypes {
@@ -52,21 +64,24 @@ android {
             "META-INF/ASL2.0",
             "META-INF/gradle/incremental.annotation.processors"
     )
+    hilt {
+        enableAggregatingTask = true
+    }
 }
-
 dependencies {
     implementation(project(":domain"))
-    implementation(project(":data"))
     implementation(project(":di"))
 
     implementation(Dependency.AndroidX.CORE_KTX)
-    implementation(Dependency.AndroidX.LIFECYCLE_VIEWMODEL_KTX)
     implementation(Dependency.AndroidX.LIFECYCLE)
+
+    implementation(Dependency.Retrofit.RETROFIT_CONVERTER_GSON)
 
     implementation(Dependency.Compose.Activity)
     implementation(Dependency.Compose.UI)
     implementation(Dependency.Compose.PREVIEW)
     implementation(Dependency.Compose.MATERIAL)
+    implementation(Dependency.Compose.COMPOSE_HILT_NAV)
 
     implementation(Dependency.Kotlin.COROUTINES_CORE)
     implementation(Dependency.Kotlin.COROUTINES_ANDROID)
@@ -79,6 +94,10 @@ dependencies {
 
     testImplementation(Dependency.UnitTest.JUNIT)
 
+    implementation(Dependency.Mvi.ORBIT_CORE)
+    implementation(Dependency.Mvi.ORBIT_VIEWMODEL)
+    implementation(Dependency.Mvi.ORBIT_TEST)
+
     androidTestImplementation(Dependency.AndroidTest.ANDROID_JUNIT)
     androidTestImplementation(Dependency.AndroidTest.ESPRESSO_CORE)
     androidTestImplementation(Dependency.AndroidTest.COMPOSE_TEST)
@@ -86,4 +105,8 @@ dependencies {
     debugImplementation(Dependency.AndroidTest.COMPOSE_MANIFEST)
 
     implementation(Dependency.Coil.COIL)
+
+    implementation(Dependency.ExoPlayer.EXO_PLAYER)
+
+    implementation(Dependency.Google.OAUTH)
 }

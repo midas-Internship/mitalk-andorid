@@ -1,6 +1,9 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-android")
     id("kotlin-kapt")
 }
 
@@ -13,14 +16,19 @@ android {
         targetSdk = Version.TARGET_SDK_VERSION
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            gradleLocalProperties(rootDir).getProperty("BASE_URL")
+        )
     }
 
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
         }
     }
@@ -34,16 +42,25 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(project(":domain"))
+
+    implementation(Dependency.AndroidX.CORE_KTX)
+    implementation(Dependency.AndroidX.APP_COMPAT)
+    implementation(Dependency.AndroidX.PREFERENCE_KTX)
 
     implementation(Dependency.Hilt.HILT_ANDROID)
-    implementation(Dependency.Hilt.HILT_ANDROID_COMPILER)
-    
+    kapt(Dependency.Hilt.HILT_ANDROID_COMPILER)
+
     implementation(Dependency.Room.ROOM)
     kapt(Dependency.Room.ROOM_COMPILER)
 
     testImplementation(Dependency.UnitTest.JUNIT)
+
+    implementation(Dependency.Retrofit.RETROFIT)
+    implementation(Dependency.Retrofit.RETROFIT_CONVERTER_GSON)
+    implementation(Dependency.Retrofit.OKHTTP)
+    implementation(Dependency.Retrofit.OKHTTP_LOGGING_INTERCEPTOR)
 
     androidTestImplementation(Dependency.AndroidTest.ANDROID_JUNIT)
     androidTestImplementation(Dependency.AndroidTest.ESPRESSO_CORE)
