@@ -66,6 +66,8 @@
     <string name="korean">Korean</string>
     <string name="setting_language">Language</string>
     <string name="delete_message">deleted</string>
+    <string name="crowed_service">queue is full</string>
+    <string name="crowed_service_comment">Please wait a while and try again.</string>
     <string name="not_allowed_file">Not supported</string>
     <string name="not_allowed_file_comment">" This file is not supported."</string>
     <string name="big_size_file">Over 100MB</string>

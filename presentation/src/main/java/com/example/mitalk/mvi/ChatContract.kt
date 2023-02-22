@@ -31,6 +31,8 @@ sealed class ChatSideEffect {
     data class ReceiveChatDelete(val chatId: String) : ChatSideEffect()
     data class SuccessRoom(val name: String) : ChatSideEffect()
     data class SuccessUpload(val url: String) : ChatSideEffect()
+    object CrowedService : ChatSideEffect()
+    object WaitingRoom : ChatSideEffect()
     object FinishRoom : ChatSideEffect()
     data class FileSizeException(val uri: Uri) : ChatSideEffect()
     object FileOverException : ChatSideEffect()

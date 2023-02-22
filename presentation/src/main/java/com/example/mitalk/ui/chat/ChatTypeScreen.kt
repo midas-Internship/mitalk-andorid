@@ -21,6 +21,7 @@ import com.example.mitalk.DeepLinkKey
 import com.example.mitalk.R
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.socket.ChatSocket
+import com.example.mitalk.ui.dialog.CrowedDialog
 import com.example.mitalk.ui.dialog.WaitingDialog
 import com.example.mitalk.ui.util.MiHeader
 import com.example.mitalk.util.miClickable
@@ -45,10 +46,18 @@ fun ChatTypeScreen(
     val state = container.stateFlow.collectAsState().value
     val sideEffect = container.sideEffectFlow
     var waitingDialogVisible by remember { mutableStateOf(false) }
+    var crowedDialogVisible by remember { mutableStateOf(false) }
     var chatType by remember { mutableStateOf("") }
 
     sideEffect.observeWithLifecycle {
         when (it) {
+            ChatSideEffect.CrowedService -> {
+                crowedDialogVisible = true
+                waitingDialogVisible = false
+            }
+            ChatSideEffect.WaitingRoom -> {
+                waitingDialogVisible = true
+            }
             is ChatSideEffect.SuccessRoom -> {
                 waitingDialogVisible = false
                 vm.saveChatInfo(ChatInfoEntity(chatType = chatType))
@@ -79,7 +88,6 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFF62A3A7), shape = ChatTypeBoxShape),
                     imgModifier = Modifier.padding(bottom = 16.dp, start = 12.dp)
                 ) {
-                    waitingDialogVisible = true
                     state.chatSocket.startSocket("FEATURE_PROPOSAL", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -92,7 +100,6 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFF81A578), shape = ChatTypeBoxShape),
                     imgModifier = Modifier
                 ) {
-                    waitingDialogVisible = true
                     state.chatSocket.startSocket("FEATURE_QUESTION", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -105,7 +112,6 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFF959FC3), shape = ChatTypeBoxShape),
                     imgModifier = Modifier
                 ) {
-                    waitingDialogVisible = true
                     state.chatSocket.startSocket("PURCHASE", state.accessToken)
                 }
             }
@@ -120,7 +126,6 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFFA96A6A), shape = ChatTypeBoxShape),
                     imgModifier = Modifier.padding(top = 12.dp)
                 ) {
-                    waitingDialogVisible = true
                     state.chatSocket.startSocket("BUG", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -133,7 +138,6 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFFB49C79), shape = ChatTypeBoxShape),
                     imgModifier = Modifier.padding(start = 12.dp)
                 ) {
-                    waitingDialogVisible = true
                     state.chatSocket.startSocket("FEEDBACK", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -145,7 +149,6 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFF698EAF), shape = ChatTypeBoxShape),
                     imgModifier = Modifier.padding(start = 20.dp, top = 20.dp, end = 5.dp)
                 ) {
-                    waitingDialogVisible = true
                     state.chatSocket.startSocket("ETC", state.accessToken)
                 }
             }
@@ -155,6 +158,9 @@ fun ChatTypeScreen(
         WaitingDialog(visible = waitingDialogVisible, remainPeople = state.remainPeople) {
             state.chatSocket.closeSocket()
             waitingDialogVisible = false
+        }
+        CrowedDialog(visible = crowedDialogVisible) {
+            crowedDialogVisible = false
         }
     }
 }

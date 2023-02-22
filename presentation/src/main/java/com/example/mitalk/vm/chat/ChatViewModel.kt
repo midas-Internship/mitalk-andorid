@@ -142,7 +142,7 @@ class ChatViewModel @Inject constructor(
         reduce {
             state.copy(chatSocket = ChatSocket(
                 failAction = {
-
+                    crowedService()
                 }, waitingAction = {
                     setRemainPeople(it)
                 }, successAction = {
@@ -160,8 +160,13 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    private fun crowedService() = intent {
+        postSideEffect(ChatSideEffect.CrowedService)
+    }
+
     private fun setRemainPeople(remainPeople: String) = intent {
         reduce { state.copy(remainPeople = remainPeople) }
+        postSideEffect(ChatSideEffect.WaitingRoom)
     }
 
     private fun successRoom(name: String) = intent {
