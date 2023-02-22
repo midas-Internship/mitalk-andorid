@@ -47,6 +47,7 @@ fun RecordDetailScreen(
     navController: NavController,
     headerId: Int,
     recordId: String,
+    counsellorName: String,
     vm: RecordDetailViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -116,7 +117,8 @@ fun RecordDetailScreen(
             ChatList(
                 chatList = state.messageRecords,
                 chatListState = chatListState,
-                findText = findText
+                findText = findText,
+                name = counsellorName
             )
         }
     }
@@ -215,7 +217,8 @@ fun FindInput(
 fun ChatList(
     chatList: List<RecordDetailState.MessageRecordData>,
     chatListState: LazyListState = rememberLazyListState(),
-    findText: String
+    findText: String,
+    name: String
 ) {
     LazyColumn(
         modifier = Modifier
@@ -240,7 +243,7 @@ fun ChatList(
                         findText = findText
                     )
                 } else {
-                    CounselorChat(item = item, findText = findText)
+                    CounselorChat(item = item, findText = findText, name = name)
                 }
             }
         }
@@ -253,7 +256,8 @@ fun ChatList(
 @Composable
 fun CounselorChat(
     item: RecordDetailState.MessageRecordData,
-    findText: String
+    findText: String,
+    name: String
 ) {
     Row(
         verticalAlignment = Alignment.Bottom
@@ -267,7 +271,7 @@ fun CounselorChat(
         )
         Spacer(modifier = Modifier.width(3.dp))
         Column {
-            Light09NO(text = stringResource(id = R.string.counselor))
+            Light09NO(text = "$name ${stringResource(id = R.string.counselor)}")
             if (item.isDeleted) Bold11NO(text = stringResource(id = R.string.delete_message)) else {
                 ChatItem(
                     item = item.dataMap.last().message,
@@ -320,5 +324,5 @@ fun ClientChat(
 @Preview
 fun showRecordDetailScreen() {
     val navController = rememberNavController()
-    RecordDetailScreen(navController = navController, 0, "헤더")
+    RecordDetailScreen(navController = navController, 0, "헤더", "")
 }
