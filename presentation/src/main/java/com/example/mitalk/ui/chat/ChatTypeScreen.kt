@@ -55,6 +55,9 @@ fun ChatTypeScreen(
                 crowedDialogVisible = true
                 waitingDialogVisible = false
             }
+            ChatSideEffect.WaitingRoom -> {
+                waitingDialogVisible = true
+            }
             is ChatSideEffect.SuccessRoom -> {
                 waitingDialogVisible = false
                 vm.saveChatInfo(ChatInfoEntity(chatType = chatType))
@@ -97,7 +100,6 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFF81A578), shape = ChatTypeBoxShape),
                     imgModifier = Modifier
                 ) {
-                    waitingDialogVisible = true
                     state.chatSocket.startSocket("FEATURE_QUESTION", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -110,7 +112,6 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFF959FC3), shape = ChatTypeBoxShape),
                     imgModifier = Modifier
                 ) {
-                    waitingDialogVisible = true
                     state.chatSocket.startSocket("PURCHASE", state.accessToken)
                 }
             }
@@ -125,7 +126,6 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFFA96A6A), shape = ChatTypeBoxShape),
                     imgModifier = Modifier.padding(top = 12.dp)
                 ) {
-                    waitingDialogVisible = true
                     state.chatSocket.startSocket("BUG", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -138,7 +138,6 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFFB49C79), shape = ChatTypeBoxShape),
                     imgModifier = Modifier.padding(start = 12.dp)
                 ) {
-                    waitingDialogVisible = true
                     state.chatSocket.startSocket("FEEDBACK", state.accessToken)
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -150,7 +149,6 @@ fun ChatTypeScreen(
                         .background(color = Color(0xFF698EAF), shape = ChatTypeBoxShape),
                     imgModifier = Modifier.padding(start = 20.dp, top = 20.dp, end = 5.dp)
                 ) {
-                    waitingDialogVisible = true
                     state.chatSocket.startSocket("ETC", state.accessToken)
                 }
             }

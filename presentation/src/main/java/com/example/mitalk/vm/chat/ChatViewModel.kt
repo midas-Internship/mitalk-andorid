@@ -166,6 +166,7 @@ class ChatViewModel @Inject constructor(
 
     private fun setRemainPeople(remainPeople: String) = intent {
         reduce { state.copy(remainPeople = remainPeople) }
+        postSideEffect(ChatSideEffect.WaitingRoom)
     }
 
     private fun successRoom(name: String) = intent {
