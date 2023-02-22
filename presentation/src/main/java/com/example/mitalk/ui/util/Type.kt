@@ -72,7 +72,7 @@ enum class EvaluateItemType(
     ),
     FASTANSWER(
         typeId = R.string.is_fast_reply,
-        type = "FASTANSWER"
+        type = "FAST_ANSWER"
     ),
     UNKINDNESS(
         typeId = R.string.is_unkind,
