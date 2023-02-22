@@ -2,6 +2,8 @@
     <string name="app_name">mitalk</string>
     <string name="main">메인</string>
     <string name="editing_message">메시지를 수정 중 입니다.</string>
+    <string name="socket_error">에러가 발생했습니다.</string>
+    <string name="socket_error_comment">앱을 다시 실행 해주세요.</string>
 
     <!--main screen-->
     <string name="new_counselor_answer">고객센터의 답장이 왔어요!</string>
@@ -85,7 +87,7 @@
     <string name="waiting_service_prev_comment">고객님 앞에</string>
     <string name="waiting_service_next_comment">명의 대기자가 있습니다.</string>
     <string name="waiting_service_comment">잠시만 기다리시면 상담원과 연결시켜드리겠습니다.</string>
-    
+
     <string name="crowed_service">대기열이 꽉 찼습니다</string>
     <string name="crowed_service_comment">조금있다가 다시 시도해 주세요.</string>
 

@@ -11,7 +11,7 @@ data class ChatState(
     val counsellorName: String = "",
     val accessToken: String = "",
     val remainPeople: String = "",
-    val chatSocket: ChatSocket = ChatSocket({}, {}, {}, {}, {}, {}, {}),
+    val chatSocket: ChatSocket = ChatSocket({}, {}, {}, {}, {}, {}, {}, {}),
     val chatList: List<ChatData> = mutableListOf(),
     val uploadList: List<Uri> = mutableListOf(),
     val callCheck: Boolean = false,
@@ -34,6 +34,7 @@ sealed class ChatSideEffect {
     object CrowedService : ChatSideEffect()
     object WaitingRoom : ChatSideEffect()
     object FinishRoom : ChatSideEffect()
+    object ErrorSocket : ChatSideEffect()
     data class FileSizeException(val uri: Uri) : ChatSideEffect()
     object FileOverException : ChatSideEffect()
     object FileNotAllowedException : ChatSideEffect()

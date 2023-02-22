@@ -2,10 +2,8 @@ package com.example.mitalk.socket
 
 import com.example.mitalk.BuildConfig
 import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
 import okhttp3.*
 import org.json.JSONObject
-import java.util.UUID
 
 class ChatSocket(
     failAction: () -> Unit,
@@ -15,6 +13,7 @@ class ChatSocket(
     receiveAction: (com.example.mitalk.ui.chat.ChatData) -> Unit,
     receiveActionUpdate: (com.example.mitalk.ui.chat.ChatData) -> Unit,
     receiveActionDelete: (String) -> Unit,
+    errorAction: () -> Unit,
 ) {
     private lateinit var webSocket: WebSocket
     private lateinit var request: Request
@@ -64,7 +63,7 @@ class ChatSocket(
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)
-                println("소켓 연결 안됨 $t")
+                errorAction()
             }
         }
     }

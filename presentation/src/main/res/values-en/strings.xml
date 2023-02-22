@@ -75,4 +75,6 @@
     <string name="over_size_file">Capacity exceeded</string>
     <string name="over_size_file_comment">too large to transfer.</string>
     <string name="editing_message">Text is being edited.</string>
+    <string name="socket_error">An error has occurred.</string>
+    <string name="socket_error_comment">Please launch the app again.</string>
 </resources>
