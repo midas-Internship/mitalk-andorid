@@ -38,7 +38,7 @@ class ChatViewModel @Inject constructor(
     private val fetchChatInfoUseCase: FetchChatInfoUseCase,
     private val clearChatInfoUseCase: ClearChatInfoUseCase,
     private val postFileUseCase: PostFileUseCase,
-    private val getRecordDetailUseCase: GetRecordDetailUseCase
+    private val getRecordDetailUseCase: GetRecordDetailUseCase,
 ) : ContainerHost<ChatState, ChatSideEffect>, ViewModel() {
     override val container = container<ChatState, ChatSideEffect>(ChatState())
 
@@ -155,6 +155,8 @@ class ChatViewModel @Inject constructor(
                     receiveChatDelete(it)
                 }, finishAction = {
                     finishRoom()
+                }, errorAction = {
+                    errorSocket()
                 })
             )
         }
@@ -177,6 +179,10 @@ class ChatViewModel @Inject constructor(
     private fun finishRoom() = intent {
         clearChatData()
         postSideEffect(ChatSideEffect.FinishRoom)
+    }
+
+    private fun errorSocket() = intent {
+        postSideEffect(ChatSideEffect.ErrorSocket)
     }
 
     private fun receiveChat(chat: ChatData) = intent {

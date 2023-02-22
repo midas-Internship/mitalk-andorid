@@ -78,6 +78,7 @@ fun ChatRoomScreen(
     var exitChatDialogVisible by remember { mutableStateOf(false) }
     var emptyDialogVisible by remember { mutableStateOf(false) }
     var fileExceptionDialogVisible by remember { mutableStateOf(false) }
+    var errorSocketDialogVisible by remember { mutableStateOf(false) }
     var selectItemUUID by remember { mutableStateOf<String?>(null) }
     var emptyTime by remember { mutableStateOf(EmptyTime) }
     var text by remember { mutableStateOf("") }
@@ -124,6 +125,9 @@ fun ChatRoomScreen(
             }
             ChatSideEffect.FinishRoom -> {
                 navController.popBackStack()
+            }
+            ChatSideEffect.ErrorSocket -> {
+                errorSocketDialogVisible = true
             }
             is ChatSideEffect.ReceiveChat -> {
                 MainScope().launch {
@@ -222,6 +226,11 @@ fun ChatRoomScreen(
             onDismissRequest = { fileExceptionDialogVisible = false },
             onBtnPressed = fileExceptionOnBtnPressed
         )
+        BasicDialog(
+            visible = errorSocketDialogVisible,
+            title = stringResource(id = R.string.socket_error),
+            content = stringResource(id = R.string.socket_error_comment),
+            onDismissRequest = { errorSocketDialogVisible = false })
     }
 }
 
