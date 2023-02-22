@@ -9,11 +9,10 @@ class LocalChatDataSourceImpl @Inject constructor(
 ) : LocalChatDataSource {
     override suspend fun saveChatInfo(chatInfoEntity: ChatInfoEntity) = with(chatPreference) {
         saveChatType(chatInfoEntity.chatType)
-        saveRoomId(chatInfoEntity.roomId)
     }
 
     override suspend fun fetchChatInfo(): ChatInfoEntity = with(chatPreference) {
-        return ChatInfoEntity(chatType = fetchChatType(), roomId = fetchRoomId())
+        return ChatInfoEntity(chatType = fetchChatType())
     }
 
     override suspend fun clearChatInfo() = with(chatPreference) {
