@@ -23,7 +23,7 @@ import com.example.mitalk.util.miClickable
 import com.example.mitalk.R
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.mvi.MainSideEffect
-import com.example.mitalk.ui.dialog.EvaluationDialog
+import com.example.mitalk.ui.dialog. EvaluationDialog
 import com.example.mitalk.ui.dialog.BasicDialog
 import com.example.mitalk.util.observeWithLifecycle
 import com.example.mitalk.util.theme.*
@@ -185,7 +185,7 @@ fun MainScreen(
             visible = (state.counsellorId != null),
             mainViewModel = mainViewModel,
             onDismissRequest = {
-                mainViewModel.postReview(ReviewParam(null, null, listOf(), null))
+                mainViewModel.postReview(ReviewParam(null, null, listOf(), state.counsellorId))
             },
             onBtnPressed = {
                 mainViewModel.postReview(
