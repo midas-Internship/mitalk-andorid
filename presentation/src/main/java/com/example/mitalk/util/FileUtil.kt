@@ -27,7 +27,7 @@ private fun String.check(approve: Boolean): File {
     val file = File(this)
     val kb = file.length() / 1024
     val mb = kb / 1024
-    if (mb > 1000) {
+    if (mb > 1024) {
         throw FileOverException()
     } else if (mb > 100 && !approve) {
         throw FileSizeException()
