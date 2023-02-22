@@ -14,6 +14,8 @@ data class RecordDetailResponse(
     val messageRecords: List<MessageRecord>,
 ) {
     data class MessageRecord(
+        @SerializedName("id")
+        val messageId: String,
         @SerializedName("sender")
         val sender: String,
         @SerializedName("is_file")
@@ -42,6 +44,7 @@ fun RecordDetailResponse.toEntity() = RecordDetailEntity(
 )
 
 fun RecordDetailResponse.MessageRecord.toEntity() = RecordDetailEntity.MessageRecord(
+    messageId = messageId,
     sender = sender,
     isFile = isFile,
     isDeleted = isDeleted,

@@ -19,7 +19,7 @@ data class ChatState(
 )
 
 fun RecordDetailEntity.MessageRecord.toChatData(deleteMsg: String) = ChatData(
-    id = UUID.randomUUID().toString(),
+    id = messageId,
     text = if (isDeleted) deleteMsg else dataMap.last().message,
     isMe = sender == "CUSTOMER",
     time = LocalTime.parse(dataMap.last().time)
