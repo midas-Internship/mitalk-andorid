@@ -66,6 +66,10 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun clearChatData() = intent {
+        reduce { state.copy(chatList = listOf(), uploadList = listOf(), callCheck = false) }
+    }
+
     fun saveChatInfo(chatInfoEntity: ChatInfoEntity) = intent {
         viewModelScope.launch {
             saveChatInfoUseCase(chatInfoEntity = chatInfoEntity)
@@ -170,7 +174,7 @@ class ChatViewModel @Inject constructor(
     }
 
     private fun finishRoom() = intent {
-        reduce { state.copy(chatList = listOf(), uploadList = listOf(), callCheck = false) }
+        clearChatData()
         postSideEffect(ChatSideEffect.FinishRoom)
     }
 
