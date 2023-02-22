@@ -170,6 +170,7 @@ class ChatViewModel @Inject constructor(
     }
 
     private fun successRoom(name: String) = intent {
+        reduce { state.copy(counsellorName = name) }
         postSideEffect(ChatSideEffect.SuccessRoom(name))
     }
 

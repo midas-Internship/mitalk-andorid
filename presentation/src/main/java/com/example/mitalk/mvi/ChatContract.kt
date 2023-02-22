@@ -8,6 +8,7 @@ import java.time.LocalDateTime
 
 
 data class ChatState(
+    val counsellorName: String = "",
     val accessToken: String = "",
     val remainPeople: String = "",
     val chatSocket: ChatSocket = ChatSocket({}, {}, {}, {}, {}, {}, {}, {}),
