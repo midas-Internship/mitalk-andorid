@@ -24,6 +24,7 @@ fun VideoPlayer(url: String, modifier: Modifier) {
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(url))
             prepare()
+            playWhenReady = true
         }
     }
 
