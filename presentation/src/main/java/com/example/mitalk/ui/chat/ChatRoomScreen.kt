@@ -153,6 +153,7 @@ fun ChatRoomScreen(
             backPressed = { exitChatDialogVisible = true })
         Box(modifier = Modifier.weight(1f)) {
             ChatList(
+                name = state.counsellorName,
                 chatList = state.chatList,
                 uploadList = state.uploadList,
                 chatListState = chatListState,
@@ -225,6 +226,7 @@ fun ChatRoomScreen(
 
 @Composable
 fun ChatList(
+    name: String,
     chatList: List<ChatData>,
     uploadList: List<Uri>,
     chatListState: LazyListState = rememberLazyListState(),
@@ -262,7 +264,7 @@ fun ChatList(
                         }
                     )
                 } else {
-                    CounselorChat(item = item)
+                    CounselorChat(item = item, name = name)
                 }
             }
         }
@@ -419,6 +421,7 @@ fun ChatEditText(
 @Composable
 fun CounselorChat(
     item: ChatData,
+    name: String
 ) {
     Row(
         verticalAlignment = Alignment.Bottom
@@ -432,7 +435,7 @@ fun CounselorChat(
         )
         Spacer(modifier = Modifier.width(3.dp))
         Column {
-            Light09NO(text = stringResource(id = R.string.counselor))
+            Light09NO(text = "$name ${stringResource(id = R.string.counselor)}")
             ChatItem(
                 item = item.text, isMe = item.isMe, modifier = Modifier
                     .background(
