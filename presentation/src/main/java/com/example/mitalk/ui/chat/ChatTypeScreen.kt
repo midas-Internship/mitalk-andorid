@@ -53,6 +53,7 @@ fun ChatTypeScreen(
         when (it) {
             ChatSideEffect.CrowedService -> {
                 crowedDialogVisible = true
+                waitingDialogVisible = false
             }
             is ChatSideEffect.SuccessRoom -> {
                 waitingDialogVisible = false
