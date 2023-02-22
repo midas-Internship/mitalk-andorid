@@ -28,6 +28,11 @@ android {
             "CLIENT_ID",
             gradleLocalProperties(rootDir).getProperty("CLIENT_ID")
         )
+        buildConfigField(
+            "String",
+            "IMAGE_URL",
+            gradleLocalProperties(rootDir).getProperty("IMAGE_URL")
+        )
     }
 
     buildTypes {
