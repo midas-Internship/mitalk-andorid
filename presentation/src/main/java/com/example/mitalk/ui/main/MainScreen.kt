@@ -30,6 +30,7 @@ import com.example.mitalk.util.theme.*
 import com.example.mitalk.vm.chat.ChatViewModel
 import com.example.mitalk.vm.main.MainViewModel
 import kotlinx.coroutines.InternalCoroutinesApi
+import java.time.LocalTime
 
 @OptIn(InternalCoroutinesApi::class)
 @Composable
@@ -81,7 +82,6 @@ fun MainScreen(
                     chatState.accessToken,
                     it.roomId
                 )
-                navController.navigate(AppNavigationItem.ChatRoom.route)
             }
         }
     }
