@@ -190,7 +190,7 @@ fun MainScreen(
             onBtnPressed = {
                 mainViewModel.postReview(
                     ReviewParam(
-                        star = state.starCount,
+                        star = (6 - state.starCount),
                         message = state.evaluateComment,
                         reviewItem = if ((5 - state.starCount) < 2) listOfNotNull(
                             state.badEvaluationSelected1?.type,
