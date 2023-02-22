@@ -85,6 +85,9 @@
     <string name="waiting_service_prev_comment">고객님 앞에</string>
     <string name="waiting_service_next_comment">명의 대기자가 있습니다.</string>
     <string name="waiting_service_comment">잠시만 기다리시면 상담원과 연결시켜드리겠습니다.</string>
+    
+    <string name="crowed_service">대기열이 꽉 찼습니다</string>
+    <string name="crowed_service_comment">조금있다가 다시 시도해 주세요.</string>
 
     <!--file_exception dialog    -->
     <string name="not_allowed_file">지원하지 않는 파일</string>
