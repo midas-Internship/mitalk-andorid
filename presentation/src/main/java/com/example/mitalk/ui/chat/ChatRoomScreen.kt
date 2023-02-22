@@ -52,8 +52,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 const val EmptyTime = 300
 
@@ -61,7 +60,7 @@ data class ChatData(
     val id: String,
     val text: String,
     val isMe: Boolean,
-    val time: LocalTime,
+    val time: LocalDateTime,
 )
 
 @OptIn(InternalCoroutinesApi::class)
@@ -159,7 +158,7 @@ fun ChatRoomScreen(
                 chatListState = chatListState,
                 selectItemUUID = selectItemUUID,
                 longClickAction = { uuid, time ->
-                    selectItemUUID = if (time.plusMinutes(1) >= LocalTime.now()) {
+                    selectItemUUID = if (time.plusMinutes(1) >= LocalDateTime.now()) {
                         uuid
                     } else {
                         null
@@ -230,7 +229,7 @@ fun ChatList(
     uploadList: List<Uri>,
     chatListState: LazyListState = rememberLazyListState(),
     selectItemUUID: String?,
-    longClickAction: (String?, LocalTime) -> Unit,
+    longClickAction: (String?, LocalDateTime) -> Unit,
     editAction: (String, String) -> Unit,
     deleteAction: (String) -> Unit,
 ) {
@@ -453,7 +452,7 @@ fun CounselorChat(
 fun ClientChat(
     item: ChatData,
     isFile: Boolean,
-    longClickAction: (String?, LocalTime) -> Unit,
+    longClickAction: (String?, LocalDateTime) -> Unit,
     editAction: (String, String) -> Unit,
     deleteAction: (String) -> Unit,
     itemVisible: Boolean,

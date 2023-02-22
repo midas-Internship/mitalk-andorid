@@ -4,8 +4,7 @@ import android.net.Uri
 import com.example.domain.entity.RecordDetailEntity
 import com.example.mitalk.socket.ChatSocket
 import com.example.mitalk.ui.chat.ChatData
-import java.time.LocalTime
-import java.util.UUID
+import java.time.LocalDateTime
 
 
 data class ChatState(
@@ -22,7 +21,7 @@ fun RecordDetailEntity.MessageRecord.toChatData(deleteMsg: String) = ChatData(
     id = messageId,
     text = if (isDeleted) deleteMsg else dataMap.last().message,
     isMe = sender == "CUSTOMER",
-    time = LocalTime.parse(dataMap.last().time)
+    time = LocalDateTime.parse(dataMap.last().time)
 )
 
 sealed class ChatSideEffect {

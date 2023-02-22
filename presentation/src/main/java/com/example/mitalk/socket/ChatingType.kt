@@ -1,8 +1,7 @@
 package com.example.mitalk.socket
 
-import com.example.mitalk.util.toChatTime
 import com.google.gson.annotations.SerializedName
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 data class SocketType(
     @SerializedName("type")
@@ -43,7 +42,7 @@ fun ChatData.toUseData() = com.example.mitalk.ui.chat.ChatData(
     id = messageId,
     text = message ?: "",
     isMe = role == "CUSTOMER",
-    time = LocalTime.now()
+    time = LocalDateTime.now()
 )
 
 fun com.example.mitalk.ui.chat.ChatData.toDeleteChatData(deleteMsg: String) =
