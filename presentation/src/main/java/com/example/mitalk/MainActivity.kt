@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -54,13 +55,19 @@ class MainActivity : ComponentActivity() {
 fun BaseApp(navController: NavHostController) {
     val chatViewModel = viewModel<ChatViewModel>()
 
+    LaunchedEffect(chatViewModel) {
+        chatViewModel.getAccessToken()
+        chatViewModel.fetchChatInfo()
+        chatViewModel.setChatTypeSocket()
+    }
+
     NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
         composable(AppNavigationItem.Splash.route) {
             SplashScreen(navController = navController)
         }
 
         composable(AppNavigationItem.Main.route) {
-            MainScreen(navController = navController)
+            MainScreen(navController = navController, chatViewModel = chatViewModel)
         }
 
         composable(AppNavigationItem.Question.route) {
@@ -71,22 +78,10 @@ fun BaseApp(navController: NavHostController) {
             ChatTypeScreen(navController = navController, vm = chatViewModel)
         }
 
-        composable(
-            route = AppNavigationItem.ChatRoom.route
-                    + DeepLinkKey.ROOM_ID + "{${DeepLinkKey.ROOM_ID}}",
-            arguments = listOf(
-                navArgument(DeepLinkKey.ROOM_ID) {
-                    type = NavType.StringType
-                    defaultValue = ""
-                }
-            )
-        ) {
-            val roomId = it.arguments?.getString(DeepLinkKey.ROOM_ID) ?: ""
-
+        composable(AppNavigationItem.ChatRoom.route) {
             ChatRoomScreen(
                 navController = navController,
-                vm = chatViewModel,
-                roomId = roomId
+                vm = chatViewModel
             )
         }
 
@@ -146,5 +141,4 @@ sealed class AppNavigationItem(val route: String) {
 object DeepLinkKey {
     const val HEADER_ID = "headerId"
     const val RECORD_ID = "recordId"
-    const val ROOM_ID = "roomId"
 }

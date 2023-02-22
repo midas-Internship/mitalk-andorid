@@ -4,8 +4,8 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-fun LocalTime.toChatTime(): String {
-    return this.format(DateTimeFormatter.ofPattern("a HH:mm"))
+fun LocalDateTime.toChatTime(): String {
+    return format(DateTimeFormatter.ofPattern("a HH:mm"))
 }
 
 fun String.toChatTime(): String {

@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.domain.entity.ChatInfoEntity
 import com.example.mitalk.AppNavigationItem
 import com.example.mitalk.DeepLinkKey
 import com.example.mitalk.R
@@ -44,37 +45,16 @@ fun ChatTypeScreen(
     val state = container.stateFlow.collectAsState().value
     val sideEffect = container.sideEffectFlow
     var waitingDialogVisible by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        vm.getAccessToken()
-        vm.setChatTypeSocket(
-            ChatSocket(
-                failAction = {
-
-                }, waitingAction = {
-                    vm.setRemainPeople(it)
-                }, successAction = {
-                    waitingDialogVisible = false
-                    vm.successRoom(it)
-                }, receiveAction = {
-                    vm.receiveChat(it)
-                }, receiveActionUpdate = {
-                    vm.receiveChatUpdate(it)
-                }, receiveActionDelete = {
-                    vm.receiveChatDelete(it)
-                }, finishAction = {
-                    vm.finishRoom()
-                })
-        )
-    }
+    var chatType by remember { mutableStateOf("") }
 
     sideEffect.observeWithLifecycle {
         when (it) {
             is ChatSideEffect.SuccessRoom -> {
-                navController.navigate(
-                    route = AppNavigationItem.ChatRoom.route
-                            + DeepLinkKey.ROOM_ID + it.roomId
-                )
+                waitingDialogVisible = false
+                vm.saveChatInfo(ChatInfoEntity(chatType = chatType))
+                navController.navigate(AppNavigationItem.ChatRoom.route) {
+                    popUpTo(AppNavigationItem.Main.route)
+                }
             }
         }
     }
@@ -173,7 +153,7 @@ fun ChatTypeScreen(
         }
         Spacer(modifier = Modifier.height(25.dp))
         WaitingDialog(visible = waitingDialogVisible, remainPeople = state.remainPeople) {
-            state.chatSocket.close()
+            state.chatSocket.closeSocket()
             waitingDialogVisible = false
         }
     }

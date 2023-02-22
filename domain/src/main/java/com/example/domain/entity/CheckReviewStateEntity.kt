@@ -5,4 +5,5 @@ import java.util.UUID
 data class CheckReviewStateEntity(
     val counsellorId: UUID?,
     val name: String?,
+    val roomId: String?,
 )

@@ -47,8 +47,11 @@ class MainViewModel @Inject constructor(
                     reduce {
                         state.copy(
                             counsellorId = it.counsellorId,
-                            counsellorName = it.name
+                            counsellorName = it.name,
                         )
+                    }
+                    if (it.roomId != null) {
+                        postSideEffect(MainSideEffect.RemainRoom(it.roomId!!))
                     }
                 }
                 .onFailure {

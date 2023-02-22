@@ -10,8 +10,10 @@ import com.example.domain.usecase.chat.ClearChatInfoUseCase
 import com.example.domain.usecase.chat.FetchChatInfoUseCase
 import com.example.domain.usecase.chat.SaveChatInfoUseCase
 import com.example.domain.usecase.file.PostFileUseCase
+import com.example.domain.usecase.record.GetRecordDetailUseCase
 import com.example.mitalk.mvi.ChatSideEffect
 import com.example.mitalk.mvi.ChatState
+import com.example.mitalk.mvi.toChatData
 import com.example.mitalk.socket.ChatSocket
 import com.example.mitalk.socket.toDeleteChatData
 import com.example.mitalk.ui.chat.ChatData
@@ -36,6 +38,7 @@ class ChatViewModel @Inject constructor(
     private val fetchChatInfoUseCase: FetchChatInfoUseCase,
     private val clearChatInfoUseCase: ClearChatInfoUseCase,
     private val postFileUseCase: PostFileUseCase,
+    private val getRecordDetailUseCase: GetRecordDetailUseCase
 ) : ContainerHost<ChatState, ChatSideEffect>, ViewModel() {
     override val container = container<ChatState, ChatSideEffect>(ChatState())
 
@@ -48,6 +51,25 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun loadChatData(roomId: String, deleteMsg: String) = intent {
+        viewModelScope.launch {
+            getRecordDetailUseCase(recordId = roomId)
+                .onSuccess {
+                    reduce {
+                        state.copy(chatList = it.messageRecords.map {
+                            it.toChatData(
+                                deleteMsg
+                            )
+                        })
+                    }
+                }
+        }
+    }
+
+    fun clearChatData() = intent {
+        reduce { state.copy(chatList = listOf(), uploadList = listOf(), callCheck = false) }
+    }
+
     fun saveChatInfo(chatInfoEntity: ChatInfoEntity) = intent {
         viewModelScope.launch {
             saveChatInfoUseCase(chatInfoEntity = chatInfoEntity)
@@ -58,7 +80,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             fetchChatInfoUseCase()
                 .onSuccess {
-                    postSideEffect(ChatSideEffect.ChatInfo(it))
+                    reduce { state.copy(chatType = it.chatType) }
                 }
         }
     }
@@ -115,34 +137,58 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun setRemainPeople(remainPeople: String) = intent {
+    fun setChatTypeSocket() = intent {
+        reduce {
+            state.copy(chatSocket = ChatSocket(
+                failAction = {
+
+                }, startAction = {
+                    startSocket()
+                }, waitingAction = {
+                    setRemainPeople(it)
+                }, successAction = {
+                    successRoom(it)
+                }, receiveAction = {
+                    receiveChat(it)
+                }, receiveActionUpdate = {
+                    receiveChatUpdate(it)
+                }, receiveActionDelete = {
+                    receiveChatDelete(it)
+                }, finishAction = {
+                    finishRoom()
+                })
+            )
+        }
+    }
+
+    private fun startSocket() = intent {
+        reduce { state.copy(callCheck = true) }
+    }
+
+    private fun setRemainPeople(remainPeople: String) = intent {
         reduce { state.copy(remainPeople = remainPeople) }
     }
 
-    fun successRoom(roomId: String) = intent {
-        postSideEffect(ChatSideEffect.SuccessRoom(roomId))
+    private fun successRoom(name: String) = intent {
+        reduce { state.copy(counsellorName = name) }
+        postSideEffect(ChatSideEffect.SuccessRoom(name))
     }
 
-    fun finishRoom() = intent {
+    private fun finishRoom() = intent {
+        clearChatData()
         postSideEffect(ChatSideEffect.FinishRoom)
     }
 
-    fun receiveChat(chat: ChatData) = intent {
+    private fun receiveChat(chat: ChatData) = intent {
         reduce { state.copy(chatList = state.chatList.plus(chat)) }
         postSideEffect(ChatSideEffect.ReceiveChat(chat, state.chatList.size))
     }
 
-    fun receiveChatUpdate(chat: ChatData) = intent {
+    private fun receiveChatUpdate(chat: ChatData) = intent {
         postSideEffect(ChatSideEffect.ReceiveChatUpdate(chat))
     }
 
-    fun receiveChatDelete(chatId: String) = intent {
+    private fun receiveChatDelete(chatId: String) = intent {
         postSideEffect(ChatSideEffect.ReceiveChatDelete(chatId))
-    }
-
-    fun setChatTypeSocket(
-        chatSocket: ChatSocket,
-    ) = intent {
-        reduce { state.copy(chatSocket = chatSocket) }
     }
 }

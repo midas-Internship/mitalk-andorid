@@ -52,8 +52,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 const val EmptyTime = 300
 
@@ -61,14 +60,13 @@ data class ChatData(
     val id: String,
     val text: String,
     val isMe: Boolean,
-    val time: LocalTime,
+    val time: LocalDateTime,
 )
 
 @OptIn(InternalCoroutinesApi::class)
 @Composable
 fun ChatRoomScreen(
     navController: NavController,
-    roomId: String,
     vm: ChatViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -125,7 +123,6 @@ fun ChatRoomScreen(
                 fileExceptionDialogVisible = true
             }
             ChatSideEffect.FinishRoom -> {
-                state.chatSocket.close()
                 navController.popBackStack()
             }
             is ChatSideEffect.ReceiveChat -> {
@@ -140,7 +137,7 @@ fun ChatRoomScreen(
                 vm.deleteChatList(effect.chatId, deleteMsg)
             }
             is ChatSideEffect.SuccessUpload -> {
-                state.chatSocket.send(roomId = roomId, text = effect.url)
+                state.chatSocket.send(text = effect.url)
             }
         }
     }
@@ -156,12 +153,13 @@ fun ChatRoomScreen(
             backPressed = { exitChatDialogVisible = true })
         Box(modifier = Modifier.weight(1f)) {
             ChatList(
+                name = state.counsellorName,
                 chatList = state.chatList,
                 uploadList = state.uploadList,
                 chatListState = chatListState,
                 selectItemUUID = selectItemUUID,
                 longClickAction = { uuid, time ->
-                    selectItemUUID = if (time.plusMinutes(1) >= LocalTime.now()) {
+                    selectItemUUID = if (time.plusMinutes(1) >= LocalDateTime.now()) {
                         uuid
                     } else {
                         null
@@ -174,7 +172,7 @@ fun ChatRoomScreen(
                     selectItemUUID = null
                 },
                 deleteAction = {
-                    state.chatSocket.send(roomId = roomId, messageId = it, messageType = "DELETE")
+                    state.chatSocket.send(messageId = it, messageType = "DELETE")
                     selectItemUUID = null
                 })
         }
@@ -185,14 +183,13 @@ fun ChatRoomScreen(
                 emptyTime = EmptyTime
                 if (editMsgId != null) {
                     state.chatSocket.send(
-                        roomId = roomId,
                         messageId = editMsgId,
                         text = it,
                         messageType = "UPDATE"
                     )
                     editMsgId = null
                 } else {
-                    state.chatSocket.send(roomId = roomId, text = it)
+                    state.chatSocket.send(text = it)
                 }
             }, fileSendAction = {
                 vm.postFile(uri = it, context = context)
@@ -208,7 +205,6 @@ fun ChatRoomScreen(
             content = stringResource(id = R.string.main_screen_comment),
             onDismissRequest = { exitChatDialogVisible = false },
             onBtnPressed = {
-                state.chatSocket.close()
                 navController.popBackStack()
             })
         EmptyDialog(visible = emptyDialogVisible, onDismissRequest = {
@@ -230,11 +226,12 @@ fun ChatRoomScreen(
 
 @Composable
 fun ChatList(
+    name: String,
     chatList: List<ChatData>,
     uploadList: List<Uri>,
     chatListState: LazyListState = rememberLazyListState(),
     selectItemUUID: String?,
-    longClickAction: (String?, LocalTime) -> Unit,
+    longClickAction: (String?, LocalDateTime) -> Unit,
     editAction: (String, String) -> Unit,
     deleteAction: (String) -> Unit,
 ) {
@@ -267,7 +264,7 @@ fun ChatList(
                         }
                     )
                 } else {
-                    CounselorChat(item = item)
+                    CounselorChat(item = item, name = name)
                 }
             }
         }
@@ -424,6 +421,7 @@ fun ChatEditText(
 @Composable
 fun CounselorChat(
     item: ChatData,
+    name: String
 ) {
     Row(
         verticalAlignment = Alignment.Bottom
@@ -437,7 +435,7 @@ fun CounselorChat(
         )
         Spacer(modifier = Modifier.width(3.dp))
         Column {
-            Light09NO(text = stringResource(id = R.string.counselor))
+            Light09NO(text = "$name ${stringResource(id = R.string.counselor)}")
             ChatItem(
                 item = item.text, isMe = item.isMe, modifier = Modifier
                     .background(
@@ -457,7 +455,7 @@ fun CounselorChat(
 fun ClientChat(
     item: ChatData,
     isFile: Boolean,
-    longClickAction: (String?, LocalTime) -> Unit,
+    longClickAction: (String?, LocalDateTime) -> Unit,
     editAction: (String, String) -> Unit,
     deleteAction: (String) -> Unit,
     itemVisible: Boolean,
@@ -604,6 +602,6 @@ fun IconButton(
 fun showChatRoomScreen() {
     MitalkTheme() {
         val navController = rememberNavController()
-        ChatRoomScreen(navController, "")
+        ChatRoomScreen(navController)
     }
 }

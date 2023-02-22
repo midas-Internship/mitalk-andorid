@@ -7,6 +7,7 @@ data class RecordDetailEntity(
     val messageRecords: List<MessageRecord>,
 ) {
     data class MessageRecord(
+        val messageId: String,
         val sender: String,
         val isFile: Boolean,
         val isDeleted: Boolean,
