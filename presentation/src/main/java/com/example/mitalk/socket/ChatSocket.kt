@@ -45,7 +45,7 @@ class ChatSocket(
                     "SYSTEM_3_1" -> {
                         val result = gson.fromJson(text, SuccessRoom::class.java)
                         roomId = result.roomId
-                        successAction(result.roomId)
+                        successAction(result.name)
                     }
                     "SYSTEM_3_2" -> {
                         closeSocket()
