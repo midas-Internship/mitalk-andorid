@@ -149,6 +149,7 @@ fun ChatRoomScreen(
         }
     }) {
         MiHeader(
+            text = "${state.counsellorName} ${stringResource(id = R.string.counselor)}",
             modifier = Modifier.background(Color(0xFFF2F2F2)),
             backPressed = { exitChatDialogVisible = true })
         Box(modifier = Modifier.weight(1f)) {
@@ -301,7 +302,7 @@ fun ChatInput(
     sendAction: (String) -> Unit,
     fileSendAction: (Uri) -> Unit,
     isEditable: Boolean,
-    editCancelAction: () -> Unit
+    editCancelAction: () -> Unit,
 ) {
     var isExpand by remember { mutableStateOf(false) }
     var targetValue by remember { mutableStateOf(0F) }
@@ -421,7 +422,7 @@ fun ChatEditText(
 @Composable
 fun CounselorChat(
     item: ChatData,
-    name: String
+    name: String,
 ) {
     Row(
         verticalAlignment = Alignment.Bottom
@@ -543,7 +544,7 @@ fun ChatItem(
     item: String,
     isMe: Boolean = true,
     modifier: Modifier = Modifier,
-    findText: String = ""
+    findText: String = "",
 ) {
     val context = LocalContext.current
     if (item.contains("https://mitalk-s3.s3.ap-northeast-2.amazonaws.com/")) {
