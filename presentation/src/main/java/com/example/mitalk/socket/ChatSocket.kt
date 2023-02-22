@@ -9,7 +9,6 @@ import java.util.UUID
 
 class ChatSocket(
     failAction: () -> Unit,
-    startAction: () -> Unit,
     waitingAction: (String) -> Unit,
     successAction: (String) -> Unit,
     finishAction: () -> Unit,
@@ -25,11 +24,6 @@ class ChatSocket(
 
     init {
         listener = object : WebSocketListener() {
-            override fun onOpen(webSocket: WebSocket, response: Response) {
-                super.onOpen(webSocket, response)
-                startAction()
-            }
-
             override fun onMessage(webSocket: WebSocket, text: String) {
                 super.onMessage(webSocket, text)
                 val gson = Gson()

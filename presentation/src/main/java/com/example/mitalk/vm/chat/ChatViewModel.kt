@@ -52,6 +52,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun loadChatData(roomId: String, deleteMsg: String) = intent {
+        reduce { state.copy(callCheck = true) }
         viewModelScope.launch {
             getRecordDetailUseCase(recordId = roomId)
                 .onSuccess {
@@ -142,8 +143,6 @@ class ChatViewModel @Inject constructor(
             state.copy(chatSocket = ChatSocket(
                 failAction = {
 
-                }, startAction = {
-                    startSocket()
                 }, waitingAction = {
                     setRemainPeople(it)
                 }, successAction = {
@@ -161,16 +160,12 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private fun startSocket() = intent {
-        reduce { state.copy(callCheck = true) }
-    }
-
     private fun setRemainPeople(remainPeople: String) = intent {
         reduce { state.copy(remainPeople = remainPeople) }
     }
 
     private fun successRoom(name: String) = intent {
-        reduce { state.copy(counsellorName = name) }
+        reduce { state.copy(counsellorName = name, callCheck = true) }
         postSideEffect(ChatSideEffect.SuccessRoom(name))
     }
 

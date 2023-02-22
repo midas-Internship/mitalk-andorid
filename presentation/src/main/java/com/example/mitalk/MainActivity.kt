@@ -92,7 +92,8 @@ fun BaseApp(navController: NavHostController) {
         composable(
             route = AppNavigationItem.RecordDetail.route
                     + DeepLinkKey.HEADER_ID + "{${DeepLinkKey.HEADER_ID}}"
-                    + DeepLinkKey.RECORD_ID + "{${DeepLinkKey.RECORD_ID}}",
+                    + DeepLinkKey.RECORD_ID + "{${DeepLinkKey.RECORD_ID}}"
+                    + DeepLinkKey.COUNSELLOR_NAME + "{${DeepLinkKey.COUNSELLOR_NAME}}",
             arguments = listOf(
                 navArgument(DeepLinkKey.HEADER_ID) {
                     type = NavType.IntType
@@ -101,16 +102,22 @@ fun BaseApp(navController: NavHostController) {
                 navArgument(DeepLinkKey.RECORD_ID) {
                     type = NavType.StringType
                     defaultValue = ""
+                },
+                navArgument(DeepLinkKey.COUNSELLOR_NAME) {
+                    type = NavType.StringType
+                    defaultValue = ""
                 }
             )
         ) {
             val headerId = it.arguments?.getInt(DeepLinkKey.HEADER_ID) ?: R.string.function_question
             val recordId = it.arguments?.getString(DeepLinkKey.RECORD_ID) ?: ""
+            val counsellorName = it.arguments?.getString(DeepLinkKey.COUNSELLOR_NAME) ?: ""
 
             RecordDetailScreen(
                 navController = navController,
                 headerId = headerId,
-                recordId = recordId
+                recordId = recordId,
+                counsellorName = counsellorName
             )
         }
 
@@ -141,4 +148,5 @@ sealed class AppNavigationItem(val route: String) {
 object DeepLinkKey {
     const val HEADER_ID = "headerId"
     const val RECORD_ID = "recordId"
+    const val COUNSELLOR_NAME = "counsellorName"
 }
