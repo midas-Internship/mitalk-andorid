@@ -91,7 +91,7 @@ class ChatSocket(
         webSocket.send(data.toString())
     }
 
-    fun startSocket(chatType: String, accessToken: String, roomId: String = "") {
+    fun startSocket(chatType: String, accessToken: String, roomId: String = "null") {
         client = OkHttpClient()
         request = Request.Builder()
             .addHeader("Authorization", "Bearer $accessToken")
