@@ -88,6 +88,11 @@ fun MainScreen(
 
     chatSideEffect.observeWithLifecycle {
         when (it) {
+            ChatSideEffect.FinishRoom -> {
+                mainViewModel.checkReviewState()
+                chatViewModel.clearChatData()
+                chatViewModel.clearChatInfo()
+            }
             is ChatSideEffect.ReceiveChat -> {
                 isNewAnswer = true
             }
@@ -153,9 +158,6 @@ fun MainScreen(
             callCheck = chatState.callCheck,
             disConnectAction = {
                 chatState.chatSocket.send(messageType = "END")
-                mainViewModel.checkReviewState()
-                chatViewModel.clearChatData()
-                chatViewModel.clearChatInfo()
             }
         ) {
             if (chatState.callCheck) {
@@ -185,12 +187,12 @@ fun MainScreen(
             visible = (state.counsellorId != null),
             mainViewModel = mainViewModel,
             onDismissRequest = {
-                mainViewModel.postReview(ReviewParam(null, null, listOf(), null))
+                mainViewModel.postReview(ReviewParam(null, null, listOf(), state.counsellorId))
             },
             onBtnPressed = {
                 mainViewModel.postReview(
                     ReviewParam(
-                        star = state.starCount,
+                        star = (6 - state.starCount),
                         message = state.evaluateComment,
                         reviewItem = if ((5 - state.starCount) < 2) listOfNotNull(
                             state.badEvaluationSelected1?.type,

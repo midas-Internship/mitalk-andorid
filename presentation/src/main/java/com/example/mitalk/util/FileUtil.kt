@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
+import com.example.mitalk.BuildConfig
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Files
@@ -16,6 +17,8 @@ fun Uri.toFile(context: Context, approve: Boolean): File {
 
     return file.absolutePath.replace(".x-hwp", "").check(approve = approve)
 }
+
+fun String.isFile(): Boolean = contains(BuildConfig.IMAGE_URL)
 
 private fun Uri.getFileName(context: Context): String {
     val name = this.toString().split("/").last()

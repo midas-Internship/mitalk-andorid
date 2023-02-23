@@ -67,6 +67,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             postReviewUseCase(reviewParam = reviewParam)
                 .onSuccess {
+                    clearEvaluateInfo()
                     postSideEffect(MainSideEffect.ReviewSuccess)
                 }.onFailure {
 
@@ -96,5 +97,18 @@ class MainViewModel @Inject constructor(
 
     fun inputBadEvaluationSelected2(evaluation: EvaluateItemType?) = intent {
         reduce { state.copy(badEvaluationSelected2 = evaluation) }
+    }
+
+    private fun clearEvaluateInfo() = intent {
+        reduce {
+            state.copy(
+                starCount = 1,
+                evaluateComment = "",
+                goodEvaluationSelected1 = null,
+                goodEvaluationSelected2 = null,
+                badEvaluationSelected1 = null,
+                badEvaluationSelected2 = null
+            )
+        }
     }
 }
